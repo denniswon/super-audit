@@ -1,5 +1,5 @@
 {
-  "name": "hardhat3-plugin-template",
+  "name": "super-audit",
   "private": true,
   "scripts": {
     "build": "pnpm --recursive build",
