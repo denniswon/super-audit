@@ -2,7 +2,7 @@
 
 > **Advanced static analysis plugin for Hardhat with Control Flow Graph analysis, YAML programmable audits, and comprehensive vulnerability detection.**
 
-[![npm version](https://img.shields.io/npm/v/hardhat-superaudit.svg)](https://www.npmjs.com/package/hardhat-superaudit)
+[![npm version](https://img.shields.io/npm/v/super-audit.svg)](https://www.npmjs.com/package/super-audit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
@@ -11,10 +11,10 @@
 
 ```bash
 # Install in your Hardhat project
-npm install hardhat-superaudit
+pnpm install super-audit
 
 # Add to hardhat.config.ts
-import superauditPlugin from "hardhat-superaudit";
+import superauditPlugin from "super-audit";
 export default {
   plugins: [superauditPlugin]
 };
@@ -42,19 +42,19 @@ SuperAudit is a **comprehensive smart contract security analysis plugin** for Ha
 
 ### 🎨 **Key Features**
 
-| Feature | Description | Status |
-|---------|-------------|--------|
-| **AST Analysis** | Pattern-based vulnerability detection | ✅ Complete |
-| **CFG Analysis** | Control flow graph construction & analysis | ✅ Complete |
-| **Advanced Rules** | Reentrancy, unreachable code, CEI violations | ✅ Complete |
-| **YAML Playbooks** | Programmable audit logic with DSL | ✅ Complete |
-| **📋 ERC20 Playbook** | Comprehensive token security analysis | ✅ Complete |
-| **📋 Vault Playbook** | DeFi vault and strategy security | ✅ Complete |
-| **📋 Complete DeFi** | Full-stack project audit (tokens + vaults) | ✅ Complete |
-| **Dynamic Testing** | Blockchain forking & fuzzing framework | ✅ Framework Ready |
-| **Multiple Formats** | Console, JSON, SARIF output | ✅ Complete |
-| **📁 File Output** | Save reports to files (txt, json, sarif) | ✅ Complete |
-| **🤖 AI Enhancement** | LLM-powered explanations & fix suggestions | ✅ Complete |
+| Feature               | Description                                  | Status             |
+| --------------------- | -------------------------------------------- | ------------------ |
+| **AST Analysis**      | Pattern-based vulnerability detection        | ✅ Complete        |
+| **CFG Analysis**      | Control flow graph construction & analysis   | ✅ Complete        |
+| **Advanced Rules**    | Reentrancy, unreachable code, CEI violations | ✅ Complete        |
+| **YAML Playbooks**    | Programmable audit logic with DSL            | ✅ Complete        |
+| **📋 ERC20 Playbook** | Comprehensive token security analysis        | ✅ Complete        |
+| **📋 Vault Playbook** | DeFi vault and strategy security             | ✅ Complete        |
+| **📋 Complete DeFi**  | Full-stack project audit (tokens + vaults)   | ✅ Complete        |
+| **Dynamic Testing**   | Blockchain forking & fuzzing framework       | ✅ Framework Ready |
+| **Multiple Formats**  | Console, JSON, SARIF output                  | ✅ Complete        |
+| **📁 File Output**    | Save reports to files (txt, json, sarif)     | ✅ Complete        |
+| **🤖 AI Enhancement** | LLM-powered explanations & fix suggestions   | ✅ Complete        |
 
 ---
 
@@ -84,13 +84,13 @@ npx hardhat superaudit
 VulnerableVault.sol
   [CRITICAL] external-before-state at line 58
     External call occurs before state update (CEI pattern violation)
-    
+
     REENTRANCY ATTACK ANALYSIS:
     1. Attacker deploys malicious contract with fallback function
     2. Attacker calls withdraw() to trigger external call
     3. In fallback, attacker reenters withdraw() before balance update
     4. Attacker drains vault by withdrawing more than deposited
-    
+
     MITIGATION:
     ✅ Update state BEFORE external calls
     ✅ Use OpenZeppelin's ReentrancyGuard
@@ -98,13 +98,13 @@ VulnerableVault.sol
 
 📊 Summary:
   Critical: 5
-  High: 10  
+  High: 10
   Medium: 20
   Total: 25 issues
 
 📈 Analysis Performance:
    Time: 5ms
-   
+
 ⚠️ Critical issues detected - review required
 ```
 
@@ -136,27 +136,32 @@ SuperAudit Architecture
 ### What We Built
 
 **✅ Phase 1: Advanced Static Analysis**
+
 - CFG construction for all functions
 - Basic block identification and edge mapping
 - State variable tracking (reads/writes)
 - External call detection and analysis
 
 **✅ Phase 2: CFG-Based Rules**
+
 - `external-before-state` - CEI pattern enforcement
 - `unreachable-code` - Dead code detection via graph traversal
 - `reentrancy-paths` - Multi-path attack analysis
 
 **✅ Phase 3: YAML Playbook System**
+
 - Full DSL parser for audit strategies
 - Rule interpreter (order, pattern, access, value rules)
 - Sample playbooks (DeFi, ERC20, Access Control)
 
 **✅ Phase 4: Dynamic Testing Framework**
+
 - Fork management (blockchain state manipulation)
 - Fuzzing engine (property-based testing)
 - Reentrancy attack simulation
 
 **✅ Phase 5: Enhanced Reporting**
+
 - SARIF format (GitHub Code Scanning)
 - JSON API (CI/CD integration)
 - Educational console output
@@ -169,13 +174,13 @@ SuperAudit Architecture
 
 ```bash
 # Using npm
-npm install hardhat-superaudit
+pnpm install super-audit
 
 # Using pnpm
-pnpm add hardhat-superaudit
+pnpm add super-audit
 
 # Using yarn
-yarn add hardhat-superaudit
+yarn add super-audit
 ```
 
 ### 2. Configure Hardhat
@@ -184,7 +189,7 @@ Add to your `hardhat.config.ts`:
 
 ```typescript
 import { HardhatUserConfig } from "hardhat/config";
-import superauditPlugin from "hardhat-superaudit";
+import superauditPlugin from "super-audit";
 
 const config: HardhatUserConfig = {
   solidity: "0.8.28",
@@ -244,11 +249,11 @@ SuperAudit includes pre-built playbooks for common contract types:
 ```typescript
 superaudit: {
   // For ERC20 tokens
-  playbook: "./playbooks/erc20-token-security.yaml"
-  
+  playbook: "./playbooks/erc20-token-security.yaml";
+
   // For DeFi vaults
   // playbook: "./vault-security.yaml"
-  
+
   // For complete projects (tokens + vaults)
   // playbook: "./playbooks/complete-defi-security.yaml"
 }
@@ -291,7 +296,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - run: npm install
+      - run: pnpm install
       - run: npx hardhat superaudit --format sarif > results.sarif
       - uses: github/codeql-action/upload-sarif@v2
         with:
@@ -312,17 +317,17 @@ checks:
   - id: "check-cei-pattern"
     rule: "order.externalBefore(state=['balances','shares'])"
     severity: "critical"
-    
+
   - id: "unsafe-transfers"
     rule: "pattern.transfer(!checkedReturn)"
     severity: "high"
-    
+
   - id: "missing-access-control"
     rule: "access.missingOwnable(functions=['withdraw','pause'])"
     severity: "high"
 ```
 
-*Note: Playbook infrastructure is ready, CLI integration coming soon.*
+_Note: Playbook infrastructure is ready, CLI integration coming soon._
 
 ---
 
@@ -339,8 +344,9 @@ SuperAudit now supports **AI-enhanced security analysis** using OpenAI GPT-4 or 
 ### Setup AI Enhancement
 
 **1. Install dependencies** (already included):
+
 ```bash
-npm install openai @anthropic-ai/sdk dotenv
+pnpm install openai @anthropic-ai/sdk dotenv
 ```
 
 **2. Configure API keys**:
@@ -373,44 +379,47 @@ npx hardhat superaudit
 ### AI-Enhanced Output Example
 
 Without AI:
+
 ```
 [CRITICAL] external-before-state at line 58
   External call occurs before state update (CEI pattern violation)
 ```
 
 With AI (--ai flag):
-```
+
+````
 [CRITICAL] external-before-state at line 58
   External call occurs before state update (CEI pattern violation)
-  
+
   🤖 AI ANALYSIS:
   This is a classic reentrancy vulnerability. An attacker can:
   1. Deploy a malicious contract with a fallback function
   2. Call withdraw() to trigger the external call
   3. In the fallback, reenter withdraw() before balance is updated
   4. Drain the entire vault by withdrawing more than deposited
-  
+
   💰 ESTIMATED IMPACT: High - Total vault funds at risk
-  
+
   🔧 SUGGESTED FIX:
   ```solidity
   function withdraw(uint256 amount) external {
       require(balances[msg.sender] >= amount);
-      
+
       // Update state FIRST (Effects)
       balances[msg.sender] -= amount;
-      
+
       // External call LAST (Interactions)
       (bool success,) = msg.sender.call{value: amount}("");
       require(success);
   }
-  ```
-  
-  📚 ALTERNATIVE: Use OpenZeppelin's ReentrancyGuard
-  
-  ⚠️ RISK SCORE: 9/10
-  🎯 CONFIDENCE: 95%
-```
+````
+
+📚 ALTERNATIVE: Use OpenZeppelin's ReentrancyGuard
+
+⚠️ RISK SCORE: 9/10
+🎯 CONFIDENCE: 95%
+
+````
 
 ### AI-Enhanced YAML Playbooks
 
@@ -437,16 +446,18 @@ checks:
       1. Attack scenario with estimated financial impact
       2. Step-by-step fix with code
       3. Alternative secure patterns
-```
+````
 
 ### Cost Optimization
 
 **Estimated Costs (OpenAI GPT-4)**:
+
 - Small project (10 issues): ~$0.30
 - Medium project (50 issues): ~$1.50
 - Large project (200 issues): ~$6.00
 
 **Cost-Saving Tips**:
+
 1. Use `gpt-3.5-turbo` for faster, cheaper analysis
 2. Run basic analysis first, then use AI for critical issues only
 3. Enable caching (coming soon) to avoid re-analyzing identical code
@@ -454,11 +465,11 @@ checks:
 
 ### Supported Providers
 
-| Provider | Models | Cost (per issue) | Setup |
-|----------|--------|------------------|-------|
-| **OpenAI** | gpt-4, gpt-3.5-turbo | $0.03 - $0.10 | `OPENAI_API_KEY` |
-| **Anthropic** | claude-3-sonnet, claude-3-opus | $0.02 - $0.08 | `ANTHROPIC_API_KEY` |
-| **Local** | Coming soon | Free | N/A |
+| Provider      | Models                         | Cost (per issue) | Setup               |
+| ------------- | ------------------------------ | ---------------- | ------------------- |
+| **OpenAI**    | gpt-4, gpt-3.5-turbo           | $0.03 - $0.10    | `OPENAI_API_KEY`    |
+| **Anthropic** | claude-3-sonnet, claude-3-opus | $0.02 - $0.08    | `ANTHROPIC_API_KEY` |
+| **Local**     | Coming soon                    | Free             | N/A                 |
 
 ---
 
@@ -466,20 +477,20 @@ checks:
 
 ### Basic AST Rules (Fast)
 
-| Rule ID | Description | Severity |
-|---------|-------------|----------|
-| `no-tx-origin` | Detects authorization bypasses using tx.origin | Error |
-| `explicit-visibility` | Enforces explicit state variable visibility | Warning |
-| `contract-naming` | Enforces PascalCase for contracts | Warning |
-| `function-naming` | Enforces camelCase for functions | Warning |
+| Rule ID               | Description                                    | Severity |
+| --------------------- | ---------------------------------------------- | -------- |
+| `no-tx-origin`        | Detects authorization bypasses using tx.origin | Error    |
+| `explicit-visibility` | Enforces explicit state variable visibility    | Warning  |
+| `contract-naming`     | Enforces PascalCase for contracts              | Warning  |
+| `function-naming`     | Enforces camelCase for functions               | Warning  |
 
 ### Advanced CFG Rules (Thorough)
 
-| Rule ID | Description | Analysis Type |
-|---------|-------------|---------------|
-| `external-before-state` | CEI pattern enforcement | Path Analysis |
-| `unreachable-code` | Dead code detection | Graph Traversal |
-| `reentrancy-paths` | Multi-path attack detection | Flow Analysis |
+| Rule ID                 | Description                 | Analysis Type   |
+| ----------------------- | --------------------------- | --------------- |
+| `external-before-state` | CEI pattern enforcement     | Path Analysis   |
+| `unreachable-code`      | Dead code detection         | Graph Traversal |
+| `reentrancy-paths`      | Multi-path attack detection | Flow Analysis   |
 
 ### Analysis Modes
 
@@ -494,18 +505,20 @@ checks:
 ### Reentrancy Vulnerability
 
 **Vulnerable Code:**
+
 ```solidity
 function withdraw(uint256 amount) external {
     require(balances[msg.sender] >= amount);
-    
+
     // VULNERABILITY: External call before state update
     token.transfer(msg.sender, amount);
-    
+
     balances[msg.sender] -= amount; // Too late!
 }
 ```
 
 **SuperAudit Detection:**
+
 ```
 [CRITICAL] external-before-state at line 58
 External call occurs before updating critical state variable 'balances'
@@ -526,6 +539,7 @@ MITIGATION:
 ### tx.origin Authorization Bypass
 
 **Vulnerable Code:**
+
 ```solidity
 function emergencyWithdraw() external {
     require(tx.origin == owner); // VULNERABLE!
@@ -534,6 +548,7 @@ function emergencyWithdraw() external {
 ```
 
 **SuperAudit Detection:**
+
 ```
 [HIGH] no-tx-origin at line 105
 Avoid using tx.origin for authorization
@@ -573,17 +588,17 @@ checks:
   - id: "cei-enforcement"
     rule: "order.externalBefore(state=['balance','shares'])"
     severity: "critical"
-    
+
   # Pattern rules (code patterns)
   - id: "unchecked-calls"
     rule: "pattern.transferFrom(!checkedReturn)"
     severity: "high"
-    
+
   # Access rules (permissions)
   - id: "public-critical"
     rule: "access.missingOwnable(functions=['mint','burn'])"
     severity: "high"
-    
+
   # Value rules (constraints)
   - id: "amount-validation"
     rule: "value.range(variable='amount', min=0, max=1000000)"
@@ -690,7 +705,7 @@ pnpm link --global
 
 # Use in another project
 cd your-project
-pnpm link --global hardhat-superaudit
+pnpm link --global super-audit
 npx hardhat superaudit
 ```
 
@@ -705,43 +720,45 @@ pnpm test
 
 ## 📊 **Performance**
 
-| Project Size | Contracts | Time | Memory |
-|--------------|-----------|------|--------|
-| Small (1-5) | 5 | <10ms | ~50MB |
-| Medium (5-20) | 20 | ~50ms | ~100MB |
-| Large (20-100) | 100 | ~500ms | ~200MB |
+| Project Size   | Contracts | Time   | Memory |
+| -------------- | --------- | ------ | ------ |
+| Small (1-5)    | 5         | <10ms  | ~50MB  |
+| Medium (5-20)  | 20        | ~50ms  | ~100MB |
+| Large (20-100) | 100       | ~500ms | ~200MB |
 
-*Benchmarked on M1 MacBook Pro with 16GB RAM*
+_Benchmarked on M1 MacBook Pro with 16GB RAM_
 
 ---
 
 ## 🎯 **Comparison with Other Tools**
 
-| Feature | SuperAudit | Slither | Mythril | Manticore |
-|---------|-----------|---------|---------|-----------|
-| **CFG Analysis** | ✅ Built-in | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Hardhat Integration** | ✅ Native | ⚠️ External | ⚠️ External | ⚠️ External |
-| **YAML Playbooks** | ✅ Yes | ❌ No | ❌ No | ❌ No |
-| **Educational Output** | ✅ Detailed | ⚠️ Basic | ⚠️ Basic | ⚠️ Basic |
-| **Speed** | ✅ <10ms | ⚠️ Slower | ❌ Slow | ❌ Very Slow |
-| **GitHub Integration** | ✅ SARIF | ✅ Yes | ⚠️ Limited | ❌ No |
-| **Learning Curve** | ✅ Easy | ⚠️ Medium | ⚠️ Medium | ❌ Hard |
+| Feature                 | SuperAudit  | Slither     | Mythril     | Manticore    |
+| ----------------------- | ----------- | ----------- | ----------- | ------------ |
+| **CFG Analysis**        | ✅ Built-in | ✅ Yes      | ✅ Yes      | ✅ Yes       |
+| **Hardhat Integration** | ✅ Native   | ⚠️ External | ⚠️ External | ⚠️ External  |
+| **YAML Playbooks**      | ✅ Yes      | ❌ No       | ❌ No       | ❌ No        |
+| **Educational Output**  | ✅ Detailed | ⚠️ Basic    | ⚠️ Basic    | ⚠️ Basic     |
+| **Speed**               | ✅ <10ms    | ⚠️ Slower   | ❌ Slow     | ❌ Very Slow |
+| **GitHub Integration**  | ✅ SARIF    | ✅ Yes      | ⚠️ Limited  | ❌ No        |
+| **Learning Curve**      | ✅ Easy     | ⚠️ Medium   | ⚠️ Medium   | ❌ Hard      |
 
 ---
 
 ## 🐛 **Troubleshooting**
 
 ### "Command not found"
+
 ```bash
 # Ensure plugin is installed
-npm list hardhat-superaudit
+npm list super-audit
 
 # Rebuild if needed
-cd node_modules/hardhat-superaudit
-npm run build
+cd node_modules/super-audit
+pnpm run build
 ```
 
 ### "Parse errors"
+
 ```bash
 # Check Solidity version (0.8.x supported)
 # Ensure contracts compile first
@@ -749,6 +766,7 @@ npx hardhat compile
 ```
 
 ### "No issues found" (but you expect some)
+
 ```bash
 # Try advanced mode
 npx hardhat superaudit --mode advanced
@@ -781,6 +799,7 @@ npx hardhat superaudit --ai
 ### Expected Output
 
 You should see:
+
 - ✅ "🤖 AI Enhancement: ENABLED (openai)"
 - ✅ Enhanced findings with detailed explanations
 - ✅ Fix suggestions with code examples
@@ -795,6 +814,7 @@ cd packages/example-project
 ```
 
 This automated script will:
+
 1. Check your environment configuration
 2. Run basic analysis (no AI baseline)
 3. Run AI-enhanced analysis
@@ -810,6 +830,7 @@ This automated script will:
 **Issue: "AI Enhancement: DISABLED (No API key found)"**
 
 **Solution:**
+
 ```bash
 # Check .env file exists
 ls -la .env
@@ -826,7 +847,9 @@ cat .env
 **Issue: "OpenAI API error"**
 
 **Solutions:**
+
 1. Verify API key is valid:
+
    ```bash
    curl https://api.openai.com/v1/models \
      -H "Authorization: Bearer $OPENAI_API_KEY"
@@ -843,6 +866,7 @@ cat .env
 **Issue: "No AI analysis shown in output"**
 
 **Solutions:**
+
 1. Ensure you're using the `--ai` flag OR have `SUPERAUDIT_AI_ENABLED=true` in `.env`
 2. Check that issues were actually found (AI only enhances existing findings)
 3. Look for the "🤖 AI ANALYSIS:" section in issue output
@@ -852,6 +876,7 @@ cat .env
 **Issue: TypeScript compilation errors**
 
 **Solution:**
+
 ```bash
 cd packages/plugin
 pnpm install
@@ -861,9 +886,10 @@ pnpm build
 **Issue: "Command not found: hardhat"**
 
 **Solution:**
+
 ```bash
 # Install locally in your project
-npm install --save-dev hardhat hardhat-superaudit
+pnpm install --save-dev hardhat super-audit
 
 # Or run from example project
 cd packages/example-project
@@ -875,7 +901,9 @@ npx hardhat superaudit
 **Issue: AI enhancement is too slow**
 
 **Solutions:**
+
 1. Use faster model:
+
    ```bash
    export SUPERAUDIT_AI_MODEL=gpt-3.5-turbo
    ```
@@ -893,26 +921,30 @@ npx hardhat superaudit
 **Issue: API costs too high**
 
 **Solutions:**
+
 1. **Use GPT-3.5-Turbo** (~100x cheaper than GPT-4):
+
    ```bash
    export SUPERAUDIT_AI_MODEL=gpt-3.5-turbo
    ```
 
 2. **Run AI selectively**: Use basic mode first, then AI for finals:
+
    ```bash
    # Fast initial scan
    npx hardhat superaudit --mode basic
-   
+
    # AI-enhanced final review
    npx hardhat superaudit --ai
    ```
 
 3. **Disable AI in CI**, enable for release audits:
+
    ```yaml
    # .github/workflows/audit.yml
    - name: Quick Audit (No AI)
      run: npx hardhat superaudit
-     
+
    # Only for release branches
    - name: Full AI Audit
      if: github.ref == 'refs/heads/main'
@@ -926,6 +958,7 @@ npx hardhat superaudit
 ## 📝 **Roadmap**
 
 ### ✅ Completed (v1.0)
+
 - [x] AST-based rule engine
 - [x] CFG construction and analysis
 - [x] Advanced vulnerability detection
@@ -934,17 +967,20 @@ npx hardhat superaudit
 - [x] Dynamic testing framework foundation
 
 ### ✅ Completed (v1.1)
+
 - [x] LLM integration for AI-enhanced analysis
 - [x] OpenAI and Anthropic provider support
 - [x] AI-enhanced playbook configuration
 
 ### 🔄 In Progress (v1.2)
+
 - [ ] Response caching for cost optimization
 - [ ] Batch AI processing
 - [ ] Playbook marketplace integration
 - [ ] Incremental analysis with caching
 
 ### 📋 Planned (v2.0)
+
 - [ ] VSCode extension for real-time analysis
 - [ ] Cross-contract vulnerability detection
 - [ ] Automated test case generation
@@ -962,12 +998,14 @@ MIT License - see [LICENSE](./LICENSE) file for details.
 ## 🙏 **Credits**
 
 Built with:
+
 - [Hardhat](https://hardhat.org/) - Ethereum development environment
 - [@solidity-parser/parser](https://github.com/solidity-parser/parser) - Solidity AST parser
 - [Chalk](https://github.com/chalk/chalk) - Terminal styling
 - [YAML](https://github.com/eemeli/yaml) - YAML parsing
 
 Inspired by:
+
 - [Slither](https://github.com/crytic/slither) - Python static analyzer
 - [Mythril](https://github.com/ConsenSys/mythril) - Security analysis tool
 - [OpenZeppelin](https://www.openzeppelin.com/) - Security best practices
@@ -993,14 +1031,15 @@ SuperAudit represents a **paradigm shift** in smart contract security:
 ✅ **Educational explanations for every finding**  
 ✅ **Automated fix suggestions with code examples**  
 ✅ **Sub-10ms analysis performance (without AI)**  
-✅ **Native Hardhat 3 integration**  
+✅ **Native Hardhat 3 integration**
 
 **Making comprehensive AI-enhanced security analysis accessible to every developer!** 🔐🤖✨
 
 ---
 
 **Try it now:**
+
 ```bash
-npm install hardhat-superaudit
+pnpm install super-audit
 npx hardhat superaudit
 ```
