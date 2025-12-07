@@ -1,5 +1,5 @@
 import { HardhatUserConfig } from "hardhat/config";
-import superauditPlugin from "super-audit";
+import superauditPlugin from "@jhwon0820/super-audit";
 
 export default {
   plugins: [superauditPlugin],

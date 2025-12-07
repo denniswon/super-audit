@@ -5,6 +5,7 @@
 **SuperAudit now supports saving audit reports to files!**
 
 Users can now save their security audit reports in multiple formats for:
+
 - 📁 Documentation and compliance
 - 📊 Historical tracking and comparison
 - 🤝 Team sharing and collaboration
@@ -18,11 +19,13 @@ Users can now save their security audit reports in multiple formats for:
 ### 1. Core File Output Functionality ✅
 
 **Files Modified:**
+
 - `packages/plugin/src/tasks/analyze.ts` - Added output parameter and file writing logic
 - `packages/plugin/src/type-extensions.ts` - Added `output?: string` to config types
 - `packages/plugin/src/config.ts` - Added output to resolved config
 
 **New Functions Added:**
+
 ```typescript
 // Enhanced output functions with file support
 outputConsole(reporter, analysisTime, mode, outputFile?)
@@ -35,6 +38,7 @@ stripAnsiCodes() - Removes color codes for clean file output
 ```
 
 **Key Features:**
+
 - ✅ Automatic file extension handling (.txt, .json, .sarif)
 - ✅ ANSI color stripping for text files
 - ✅ Simultaneous console + file output
@@ -47,20 +51,23 @@ stripAnsiCodes() - Removes color codes for clean file output
 **Three ways to configure output:**
 
 #### A. Hardhat Config (Recommended)
+
 ```typescript
 // hardhat.config.ts
 superaudit: {
-  output: "./reports/audit-report.txt"
+  output: "./reports/audit-report.txt";
 }
 ```
 
 #### B. Environment Variable
+
 ```bash
 # .env
 SUPERAUDIT_OUTPUT=./audit-report.txt
 ```
 
 #### C. Command Line
+
 ```bash
 npx hardhat superaudit --output ./report.txt
 ```
@@ -70,12 +77,14 @@ npx hardhat superaudit --output ./report.txt
 ### 3. Documentation Created ✅
 
 **New Documentation Files:**
+
 1. **FILE-OUTPUT-EXAMPLES.md** (New) - Comprehensive examples and workflows
 2. **USAGE.md** - Updated with file output section
 3. **QUICK-REFERENCE.md** - Updated with file output examples
 4. **README.md** - Updated architecture and features list
 
 **Documentation Includes:**
+
 - ✅ Quick start examples
 - ✅ All three output format examples
 - ✅ Real-world workflow examples
@@ -88,30 +97,39 @@ npx hardhat superaudit --output ./report.txt
 ## 📊 Testing Results
 
 ### Test 1: Console Output to Text File ✅
+
 ```bash
 SUPERAUDIT_OUTPUT=./audit-report.txt npx hardhat superaudit
 ```
-**Result:** 
+
+**Result:**
+
 - ✅ File created: `audit-report.txt` (6.1 KB)
 - ✅ ANSI codes stripped
 - ✅ Full report content preserved
 - ✅ Console output also displayed
 
 ### Test 2: JSON Output to File ✅
+
 ```bash
 SUPERAUDIT_FORMAT=json SUPERAUDIT_OUTPUT=./audit-results.json npx hardhat superaudit
 ```
+
 **Result:**
+
 - ✅ File created: `audit-results.json` (8.2 KB, 179 lines)
 - ✅ Valid JSON structure
 - ✅ Contains summary + all issues
 - ✅ Includes timestamp and analysis time
 
 ### Test 3: SARIF Output to File ✅
+
 ```bash
 SUPERAUDIT_FORMAT=sarif SUPERAUDIT_OUTPUT=./superaudit.sarif npx hardhat superaudit
 ```
+
 **Result:**
+
 - ✅ File created: `superaudit.sarif` (15 KB)
 - ✅ Valid SARIF 2.1.0 format
 - ✅ GitHub-compatible structure
@@ -122,12 +140,14 @@ SUPERAUDIT_FORMAT=sarif SUPERAUDIT_OUTPUT=./superaudit.sarif npx hardhat superau
 ## 🎯 Use Cases Enabled
 
 ### 1. Historical Tracking
+
 ```bash
 # Save daily audits with timestamps
 SUPERAUDIT_OUTPUT="./reports/audit-$(date +%Y-%m-%d).txt" npx hardhat superaudit
 ```
 
 ### 2. Version Comparison
+
 ```bash
 # Before changes
 git checkout v1.0.0
@@ -142,13 +162,14 @@ diff audit-v1.0.0.txt audit-v1.1.0.txt
 ```
 
 ### 3. GitHub Actions Integration
+
 ```yaml
 - name: Run Security Audit
   run: npx hardhat superaudit
   env:
     SUPERAUDIT_FORMAT: sarif
     SUPERAUDIT_OUTPUT: ./superaudit.sarif
-    
+
 - name: Upload to GitHub
   uses: github/codeql-action/upload-sarif@v2
   with:
@@ -156,6 +177,7 @@ diff audit-v1.0.0.txt audit-v1.1.0.txt
 ```
 
 ### 4. Team Sharing
+
 ```bash
 # Generate and share report
 SUPERAUDIT_OUTPUT=./shared-reports/security-audit-v2.txt npx hardhat superaudit
@@ -168,17 +190,17 @@ git push
 
 ## 📈 Features Comparison
 
-| Feature | Before | After |
-|---------|--------|-------|
-| Console output | ✅ | ✅ |
-| JSON output | ✅ | ✅ |
-| SARIF output | ✅ | ✅ |
-| **Save to file** | ❌ | **✅ NEW** |
-| **Auto extension** | ❌ | **✅ NEW** |
-| **ANSI stripping** | ❌ | **✅ NEW** |
-| **Config support** | ❌ | **✅ NEW** |
-| **Historical tracking** | ❌ | **✅ NEW** |
-| **CI/CD integration** | Manual | **Automated** |
+| Feature                 | Before | After         |
+| ----------------------- | ------ | ------------- |
+| Console output          | ✅     | ✅            |
+| JSON output             | ✅     | ✅            |
+| SARIF output            | ✅     | ✅            |
+| **Save to file**        | ❌     | **✅ NEW**    |
+| **Auto extension**      | ❌     | **✅ NEW**    |
+| **ANSI stripping**      | ❌     | **✅ NEW**    |
+| **Config support**      | ❌     | **✅ NEW**    |
+| **Historical tracking** | ❌     | **✅ NEW**    |
+| **CI/CD integration**   | Manual | **Automated** |
 
 ---
 
@@ -227,6 +249,7 @@ git push
 ## 🎨 User Experience
 
 ### Before (No File Output)
+
 ```bash
 $ npx hardhat superaudit > output.txt  # Manual redirect
 # Problems:
@@ -237,6 +260,7 @@ $ npx hardhat superaudit > output.txt  # Manual redirect
 ```
 
 ### After (Built-in File Output)
+
 ```bash
 $ npx hardhat superaudit
 # With config:
@@ -265,10 +289,11 @@ $ npx hardhat superaudit
 ## 🚀 Next Steps for Users
 
 1. **Try It Now:**
+
    ```typescript
    // hardhat.config.ts
    superaudit: {
-     output: "./my-audit-report.txt"
+     output: "./my-audit-report.txt";
    }
    ```
 

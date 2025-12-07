@@ -230,13 +230,13 @@ npx hardhat superaudit
 ### How It Actually Works
 
 1. **Plugin Registration**
-   - Hardhat loads plugin via `import superauditPlugin from "super-audit"`
+   - Hardhat loads plugin via `import superauditPlugin from "@jhwon0820/super-audit"`
    - Plugin registers `superaudit` task
    - Configuration hooks validate and resolve config
 
 2. **Task Execution Flow**
 
-   ```
+   ```txt
    User runs: npx hardhat superaudit
    ↓
    Task reads config (hardhat.config + env vars)
@@ -258,7 +258,7 @@ npx hardhat superaudit
 
 3. **AI Enhancement Pipeline**
 
-   ```
+   ```txt
    Issue detected → Mark for enhancement → Filter (security only)
    ↓
    Extract code snippet + context
@@ -275,7 +275,8 @@ npx hardhat superaudit
    ```
 
 4. **Configuration Priority**
-   ```
+
+   ```txt
    Environment Variables (highest)
    ↓
    Hardhat Config File

@@ -232,14 +232,16 @@ export class PlaybookParser {
     // Examples:
     // pattern.transferFrom(!checkedReturn)
     // pattern.delegatecall(target=untrusted)
+    // pattern.selfdestruct()  // Empty parameters allowed
 
-    const match = expression.match(/pattern\.(\w+)\((.+)\)/);
+    // Match pattern.method() or pattern.method(params)
+    const match = expression.match(/pattern\.(\w+)\(([^)]*)\)/);
     if (!match) {
       throw new Error(`Invalid pattern rule syntax: ${expression}`);
     }
 
     const [, method, paramsStr] = match;
-    const params = this.parseParameterList(paramsStr);
+    const params = paramsStr.trim() ? this.parseParameterList(paramsStr) : {};
 
     return {
       type: "pattern",

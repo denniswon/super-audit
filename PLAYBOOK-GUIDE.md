@@ -15,6 +15,7 @@ SuperAudit now includes comprehensive YAML playbooks for auditing different type
 **Targets:** `*Token`, `Token*`, `ERC20*`
 
 **Key Checks:**
+
 - ✅ Arithmetic overflow/underflow protection
 - ✅ Zero address validation
 - ✅ Access control on mint/burn functions
@@ -25,6 +26,7 @@ SuperAudit now includes comprehensive YAML playbooks for auditing different type
 - ✅ Total supply consistency
 
 **Critical Issues Detected:**
+
 - 🔴 **Unprotected mint function** - Found in ExampleToken.sol!
 - 🔴 Arithmetic overflow risks
 - 🔴 Missing zero address checks
@@ -32,10 +34,11 @@ SuperAudit now includes comprehensive YAML playbooks for auditing different type
 - 🔵 Magic numbers in code
 
 **Usage:**
+
 ```typescript
 // hardhat.config.ts
 superaudit: {
-  playbook: "./playbooks/erc20-token-security.yaml"
+  playbook: "./playbooks/erc20-token-security.yaml";
 }
 ```
 
@@ -48,6 +51,7 @@ superaudit: {
 **Targets:** `Vault*`, `Strategy*`, `*Vault`, `*Strategy`
 
 **Key Checks:**
+
 - ✅ Reentrancy protection in deposits/withdrawals
 - ✅ CEI (Checks-Effects-Interactions) pattern
 - ✅ ERC20 transfer safety
@@ -57,15 +61,17 @@ superaudit: {
 - ✅ Balance consistency invariants
 
 **Critical Issues:**
+
 - 🔴 External calls before state updates
 - 🔴 Unchecked transfer returns
 - 🔴 Missing access control
 - 🔴 Dangerous delegatecall
 
 **Usage:**
+
 ```typescript
 superaudit: {
-  playbook: "./vault-security.yaml"
+  playbook: "./vault-security.yaml";
 }
 ```
 
@@ -78,6 +84,7 @@ superaudit: {
 **Targets:** All token and vault contracts in your project
 
 **Key Checks:**
+
 - ✅ All ERC20 token checks
 - ✅ All vault security checks
 - ✅ Cross-contract reentrancy
@@ -86,6 +93,7 @@ superaudit: {
 - ✅ Missing events and documentation
 
 **Advanced Features:**
+
 - 🧪 Cross-contract attack scenarios
 - 🧪 Token supply manipulation tests
 - 🧪 Vault unauthorized access tests
@@ -93,9 +101,10 @@ superaudit: {
 - 🧪 Invariant testing across contracts
 
 **Usage:**
+
 ```typescript
 superaudit: {
-  playbook: "./playbooks/complete-defi-security.yaml"
+  playbook: "./playbooks/complete-defi-security.yaml";
 }
 ```
 
@@ -108,6 +117,7 @@ superaudit: {
 **Targets:** DeFi protocols with focus on common vulnerabilities
 
 **AI Features:**
+
 - 🤖 Detailed vulnerability explanations
 - 🤖 Attack vector analysis
 - 🤖 Financial impact assessment
@@ -115,6 +125,7 @@ superaudit: {
 - 🤖 Alternative secure patterns
 
 **Usage:**
+
 ```typescript
 superaudit: {
   playbook: "./playbooks/ai-defi-security.yaml",
@@ -183,19 +194,19 @@ npx hardhat superaudit
 ExampleToken.sol
   [CRITICAL] token-unprotected-mint at line 31
     Mint function is missing access control
-    
+
     🔴 SEVERITY: CRITICAL
     💰 IMPACT: Unlimited token minting by anyone
-    
+
     ⚠️ VULNERABILITY:
     The mint() function has no access control, allowing any address
     to mint unlimited tokens. This completely breaks token economics.
-    
+
     🔧 FIX:
     Add OpenZeppelin Ownable and restrict mint to owner:
-    
+
     import "@openzeppelin/contracts/access/Ownable.sol";
-    
+
     contract ExampleToken is Ownable {
         function mint(address to, uint256 value) external onlyOwner {
             require(to != address(0), "ERC20: mint to zero address");
@@ -232,8 +243,8 @@ meta:
     model: "gpt-4o-mini"
 
 targets:
-  contracts: ["*Token", "*Vault"]  # Patterns to match
-  exclude: ["Test*", "Mock*"]       # Patterns to exclude
+  contracts: ["*Token", "*Vault"] # Patterns to match
+  exclude: ["Test*", "Mock*"] # Patterns to exclude
 
 checks:
   - id: "check-identifier"
@@ -250,11 +261,11 @@ dynamic:
     - name: "test-scenario"
       steps: [...]
       assert: [...]
-  
+
   invariants:
     - id: "invariant-check"
       expression: "mathematical expression"
-      
+
   fuzzing:
     runs: 10000
     targets: ["function signatures"]
@@ -267,11 +278,13 @@ dynamic:
 ### Create Your Own Playbook
 
 1. **Copy existing playbook:**
+
 ```bash
 cp playbooks/erc20-token-security.yaml playbooks/my-custom-audit.yaml
 ```
 
 2. **Modify targets:**
+
 ```yaml
 targets:
   contracts: ["MyContract", "*Special"]
@@ -279,6 +292,7 @@ targets:
 ```
 
 3. **Add custom checks:**
+
 ```yaml
 checks:
   - id: "my-custom-check"
@@ -288,9 +302,10 @@ checks:
 ```
 
 4. **Use it:**
+
 ```typescript
 superaudit: {
-  playbook: "./playbooks/my-custom-audit.yaml"
+  playbook: "./playbooks/my-custom-audit.yaml";
 }
 ```
 
@@ -298,22 +313,23 @@ superaudit: {
 
 ## 📈 Playbook Features Comparison
 
-| Feature | ERC20 Token | Vault | Complete DeFi | AI DeFi |
-|---------|-------------|-------|---------------|---------|
-| Token Security | ✅ | ❌ | ✅ | ✅ |
-| Vault Security | ❌ | ✅ | ✅ | ✅ |
-| Access Control | ✅ | ✅ | ✅ | ✅ |
-| Reentrancy | ✅ | ✅ | ✅ | ✅ |
-| AI Analysis | ✅ | ❌ | ✅ | ✅ |
-| Dynamic Tests | ✅ | ✅ | ✅ | ❌ |
-| Fuzzing | ✅ 5K | ✅ 1K | ✅ 10K | ❌ |
-| Cross-Contract | ❌ | ❌ | ✅ | ❌ |
+| Feature        | ERC20 Token | Vault | Complete DeFi | AI DeFi |
+| -------------- | ----------- | ----- | ------------- | ------- |
+| Token Security | ✅          | ❌    | ✅            | ✅      |
+| Vault Security | ❌          | ✅    | ✅            | ✅      |
+| Access Control | ✅          | ✅    | ✅            | ✅      |
+| Reentrancy     | ✅          | ✅    | ✅            | ✅      |
+| AI Analysis    | ✅          | ❌    | ✅            | ✅      |
+| Dynamic Tests  | ✅          | ✅    | ✅            | ❌      |
+| Fuzzing        | ✅ 5K       | ✅ 1K | ✅ 10K        | ❌      |
+| Cross-Contract | ❌          | ❌    | ✅            | ❌      |
 
 ---
 
 ## 🎯 Best Practices
 
 ### 1. **Start with Specific Playbooks**
+
 ```bash
 # First audit tokens
 superaudit: { playbook: "./playbooks/erc20-token-security.yaml" }
@@ -326,6 +342,7 @@ superaudit: { playbook: "./playbooks/complete-defi-security.yaml" }
 ```
 
 ### 2. **Enable AI for Critical Projects**
+
 ```typescript
 superaudit: {
   playbook: "./playbooks/erc20-token-security.yaml",
@@ -338,6 +355,7 @@ superaudit: {
 ```
 
 ### 3. **Save Reports for Documentation**
+
 ```typescript
 superaudit: {
   playbook: "./playbooks/complete-defi-security.yaml",
@@ -347,13 +365,14 @@ superaudit: {
 ```
 
 ### 4. **Use Multiple Playbooks in CI/CD**
+
 ```bash
 # GitHub Actions workflow
 - name: Token Audit
   run: npx hardhat superaudit
   env:
     SUPERAUDIT_PLAYBOOK: ./playbooks/erc20-token-security.yaml
-    
+
 - name: Vault Audit
   run: npx hardhat superaudit
   env:
@@ -398,6 +417,7 @@ superaudit: {
 ## 🎉 Summary
 
 SuperAudit playbooks provide:
+
 - ✅ Targeted security analysis for specific contract types
 - ✅ AI-enhanced vulnerability explanations
 - ✅ Automatic fix suggestions with code examples

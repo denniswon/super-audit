@@ -24,7 +24,7 @@ The Playbook Registry provides a robust system for:
 
 ### Files
 
-```
+```txt
 playbooks/
 ├── registry.ts          # Core registry implementation
 ├── registry-utils.ts    # Utility functions

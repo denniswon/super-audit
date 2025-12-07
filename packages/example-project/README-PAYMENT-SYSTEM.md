@@ -30,7 +30,6 @@ npx hardhat superaudit --playbook-cid <PLAYBOOK_CID>
 
 ## Test Accounts
 
-
 ## Payment Flow
 
 1. **Upload**: Creator uploads encrypted playbook with payment info

@@ -764,11 +764,69 @@ function getAIConfig() {
         ? process.env.ANTHROPIC_API_KEY
         : undefined;
 
+  // Get model from env, or use provider-appropriate default
+  let model = process.env.SUPERAUDIT_AI_MODEL;
+  if (!model) {
+    // Set default based on provider
+    if (provider === "anthropic") {
+      model = "claude-sonnet-4-0"; // Default Anthropic model (latest 2025)
+    } else if (provider === "openai") {
+      model = "gpt-4o-mini"; // Default OpenAI model (cost-effective)
+    }
+  } else {
+    // Validate model matches provider
+    const isOpenAIModel = model.startsWith("gpt-") || model.startsWith("o1-") || model.startsWith("o3-");
+    const isAnthropicModel = model.startsWith("claude-");
+
+    if (provider === "openai" && !isOpenAIModel) {
+      // User set non-OpenAI model but provider is OpenAI - use OpenAI default
+      if (isAnthropicModel) {
+        console.warn(
+          `⚠️  Warning: Model "${model}" is for Anthropic, but provider is OpenAI. Using default OpenAI model "gpt-4o-mini".`,
+        );
+      } else {
+        console.warn(
+          `⚠️  Warning: Unknown model "${model}" for OpenAI provider. Using default "gpt-4o-mini".`,
+        );
+      }
+      model = "gpt-4o-mini";
+    } else if (provider === "anthropic" && !isAnthropicModel) {
+      // User set non-Anthropic model but provider is Anthropic - use Anthropic default
+      if (isOpenAIModel) {
+        console.warn(
+          `⚠️  Warning: Model "${model}" is for OpenAI, but provider is Anthropic. Using default Anthropic model "claude-sonnet-4-0".`,
+        );
+      } else {
+        console.warn(
+          `⚠️  Warning: Unknown model "${model}" for Anthropic provider. Using default "claude-sonnet-4-0".`,
+        );
+      }
+      model = "claude-sonnet-4-0";
+    }
+  }
+
+  // Final validation - ensure model matches provider
+  if (model) {
+    if (provider === "anthropic" && (model.startsWith("gpt-") || model.startsWith("o1-") || model.startsWith("o3-"))) {
+      console.warn(`⚠️  Correcting model mismatch: "${model}" -> "claude-sonnet-4-0"`);
+      model = "claude-sonnet-4-0";
+    } else if (provider === "openai" && model.startsWith("claude-")) {
+      console.warn(`⚠️  Correcting model mismatch: "${model}" -> "gpt-4o-mini"`);
+      model = "gpt-4o-mini";
+    }
+  }
+  
+  // Ensure model is set
+  if (!model) {
+    model = provider === "anthropic" ? "claude-sonnet-4-0" : "gpt-4o-mini";
+  }
+
   return {
     provider,
     apiKey,
-    model: process.env.SUPERAUDIT_AI_MODEL,
+    model,
     temperature: parseFloat(process.env.SUPERAUDIT_AI_TEMPERATURE || "0.3"),
     maxTokens: parseInt(process.env.SUPERAUDIT_AI_MAX_TOKENS || "1000"),
   };
 }
+

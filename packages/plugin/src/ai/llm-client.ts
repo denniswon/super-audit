@@ -104,8 +104,10 @@ Provide your analysis in the following JSON format:
     if (!this.openai) throw new Error("OpenAI not initialized");
 
     try {
-      // Default to latest 2025 GPT model (gpt-4o-mini-2025 or gpt-5.1)
-      const model = this.config.model || "gpt-4o-mini-2025";
+      // Default to latest GPT model (gpt-4o-mini recommended for cost-effectiveness)
+      // Latest: gpt-4.1, gpt-4.1-mini (Apr 2025)
+      // Current: gpt-4o, gpt-4o-mini (recommended)
+      const model = this.config.model || "gpt-4o-mini";
       const baseParams: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming =
         {
           model,
@@ -197,17 +199,16 @@ Provide your analysis in the following JSON format:
     if (!this.anthropic) throw new Error("Anthropic not initialized");
 
     try {
-      // Default to latest 2025 Claude model
-      // Supports all Claude models with date suffixes (2025):
-      // - claude-opus-4.5 (Nov 24, 2025: latest and most capable)
-      // - claude-haiku-4.5 (Oct 15, 2025: fast and cost-effective)
-      // - claude-sonnet-4 (May 22, 2025)
-      // - claude-opus-4 (May 22, 2025)
-      // - claude-3.7-sonnet (20241022, etc.)
-      // - claude-3.5-sonnet, claude-3.5-opus, claude-3.5-haiku (20241022, etc.)
-      // - claude-3-opus, claude-3-sonnet, claude-3-haiku (20240229, etc.)
+      // Default to latest Claude model (2025)
+      // Latest Anthropic models:
+      // - claude-opus-4-1-20250805 (alias: claude-opus-4-1) - most capable
+      // - claude-opus-4-20250514 (alias: claude-opus-4-0)
+      // - claude-sonnet-4-20250514 (alias: claude-sonnet-4-0) - recommended
+      // Older models (deprecated but still work):
+      // - claude-3-5-sonnet-20241022 (deprecated Oct 2025)
+      // - claude-3-opus-20240229 (deprecated Jan 2026)
       // Note: Claude models support JSON output natively when requested in prompts
-      const model = this.config.model || "claude-opus-4.5";
+      const model = this.config.model || "claude-sonnet-4-0";
 
       const message = await this.anthropic.messages.create({
         model,
@@ -223,10 +224,49 @@ Provide your analysis in the following JSON format:
 
       const content = message.content[0];
       if (content.type === "text") {
-        const parsed = JSON.parse(content.text);
-        const response: Record<string, unknown> =
-          typeof parsed === "object" && parsed !== null ? parsed : {};
-        return this.validateResponse(response);
+        const responseText = content.text;
+
+        // Try to extract JSON from markdown code blocks if present
+        // Priority: ```json ... ``` > ``` ... ``` > { ... }
+        let jsonText = responseText;
+        const jsonCodeBlockMatch = responseText.match(
+          /```json\n?([\s\S]*?)\n?```/,
+        );
+        if (jsonCodeBlockMatch) {
+          jsonText = jsonCodeBlockMatch[1].trim();
+        } else {
+          const codeBlockMatch = responseText.match(/```\n?([\s\S]*?)\n?```/);
+          if (codeBlockMatch) {
+            jsonText = codeBlockMatch[1].trim();
+          } else {
+            // Try to extract JSON object directly
+            const jsonObjectMatch = responseText.match(/\{[\s\S]*\}/);
+            if (jsonObjectMatch) {
+              jsonText = jsonObjectMatch[0];
+            }
+          }
+        }
+
+        try {
+          const parsed = JSON.parse(jsonText);
+          const response: Record<string, unknown> =
+            typeof parsed === "object" && parsed !== null ? parsed : {};
+          return this.validateResponse(response);
+        } catch (parseError) {
+          console.warn(
+            `Anthropic JSON parsing error: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
+          );
+          // If JSON parsing fails, try original text as fallback
+          try {
+            const parsed = JSON.parse(responseText);
+            const response: Record<string, unknown> =
+              typeof parsed === "object" && parsed !== null ? parsed : {};
+            return this.validateResponse(response);
+          } catch {
+            // Final fallback: return basic response
+            return this.getFallbackResponse();
+          }
+        }
       }
 
       throw new Error("Invalid response from Anthropic");

@@ -2,7 +2,7 @@
 
 > **Advanced static analysis plugin for Hardhat with Control Flow Graph analysis, YAML programmable audits, and comprehensive vulnerability detection.**
 
-[![npm version](https://img.shields.io/npm/v/super-audit.svg)](https://www.npmjs.com/package/super-audit)
+[![npm version](https://img.shields.io/npm/v/@jhwon0820%2Fsuper-audit.svg)](https://www.npmjs.com/package/@jhwon0820/super-audit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
@@ -11,10 +11,10 @@
 
 ```bash
 # Install in your Hardhat project
-pnpm install super-audit
+pnpm install @jhwon0820/super-audit
 
 # Add to hardhat.config.ts
-import superauditPlugin from "super-audit";
+import superauditPlugin from "@jhwon0820/super-audit";
 export default {
   plugins: [superauditPlugin]
 };
@@ -174,13 +174,13 @@ SuperAudit Architecture
 
 ```bash
 # Using npm
-pnpm install super-audit
+npm install @jhwon0820/super-audit
 
 # Using pnpm
-pnpm add super-audit
+pnpm install @jhwon0820/super-audit
 
 # Using yarn
-yarn add super-audit
+yarn add @jhwon0820/super-audit
 ```
 
 ### 2. Configure Hardhat
@@ -189,10 +189,10 @@ Add to your `hardhat.config.ts`:
 
 ```typescript
 import { HardhatUserConfig } from "hardhat/config";
-import superauditPlugin from "super-audit";
+import superauditPlugin from "@jhwon0820/super-audit";
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.28",
+  solidity: "0.8.27",
   plugins: [superauditPlugin],
   // ... your other config
 };
@@ -613,6 +613,138 @@ checks:
 
 ---
 
+## 💰 **Encrypted Playbooks & Payment System**
+
+SuperAudit supports **encrypted playbooks** stored on Lighthouse/IPFS that creators can monetize. Payment is **only required** when accessing encrypted playbooks from the community marketplace.
+
+### When Payment is Required
+
+Payment is **only required** when:
+
+- Using `--playbook-cid` to load an encrypted playbook from Lighthouse/IPFS
+- The playbook creator has configured payment requirements
+- You don't already have access (haven't paid before)
+
+### When Payment is NOT Required
+
+You can use SuperAudit **without payment** for:
+
+- ✅ Local playbook files (`--playbook ./path/to/playbook.yaml`)
+- ✅ Built-in analysis modes (`--mode basic|advanced|full`)
+- ✅ Specific rule sets (`--rules rule1,rule2`)
+- ✅ Non-encrypted playbooks from the registry
+
+### Accessing Encrypted Playbooks
+
+**1. Upload an Encrypted Playbook (Creators)**
+
+```bash
+# Set up Lighthouse keys
+export PLATFORM_PUBLIC_KEY="0x..."
+export PLATFORM_PRIVATE_KEY="0x..."
+
+# Upload encrypted playbook with payment info
+npx hardhat upload-playbook-encrypted \
+  --file ./playbooks/my-premium-playbook.yaml \
+  --creator-public-key 0x... \
+  --payment-amount 0.01
+```
+
+This creates a payment entry in `playbook-payments.json`:
+
+```json
+{
+  "bafkreib...": {
+    "cid": "bafkreib...",
+    "creatorPublicKey": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+    "paymentAmount": "0.01",
+    "network": "https://eth-mainnet.g.alchemy.com/v2/demo"
+  }
+}
+```
+
+**2. Access an Encrypted Playbook (Users)**
+
+```bash
+# Access encrypted playbook
+npx hardhat superaudit --playbook-cid bafkreib...
+```
+
+**Payment Flow:**
+
+1. **Detection**: Plugin detects encrypted playbook during registration
+2. **Access Check**: Checks if you already have access (via `encrypted-users-{cid}.json`)
+3. **Payment Prompt**: If no access, prompts for payment:
+
+   ```
+   💰 Payment Required for Access
+   ================================
+      Amount: 0.01 ETH
+      Creator: 0x7099...
+      Network: https://eth-mainnet.g.alchemy.com/v2/demo
+
+      Choose payment method (1=Auto, 2=Manual):
+   ```
+
+4. **Payment Options**:
+   - **Auto (1)**: Enter payment private key, system sends transaction automatically
+   - **Manual (2)**: Send ETH manually, then provide transaction hash
+5. **Verification**: System verifies payment on-chain
+6. **Access Grant**: Adds you to encrypted access list
+7. **Decryption**: Uses Lighthouse to decrypt and share playbook
+
+**3. Request Access Separately**
+
+You can also request access without running analysis:
+
+```bash
+npx hardhat request-access \
+  --playbook-cid bafkreib... \
+  --creator-public-key 0x... \
+  --payment-amount 0.01 \
+  --rpc-url https://eth-mainnet.g.alchemy.com/v2/demo
+```
+
+### Payment Configuration
+
+Payment information is stored in `playbook-payments.json`:
+
+```json
+{
+  "bafkreib...": {
+    "cid": "bafkreib...",
+    "creatorPublicKey": "0x...",
+    "paymentAmount": "0.01",
+    "network": "https://eth-mainnet.g.alchemy.com/v2/demo",
+    "platformPublicKey": "0x...",
+    "uploadedAt": "2025-01-24T16:49:15.094Z"
+  }
+}
+```
+
+### Access Management
+
+Once you've paid, your access is stored locally in `encrypted-users-{cid}.json`. You won't need to pay again for the same playbook.
+
+**Note**: Payment verification uses the configured network (default: Ethereum mainnet). For testing, use Anvil:
+
+```bash
+# Start Anvil fork
+anvil --fork-url https://eth-mainnet.g.alchemy.com/v2/demo --port 8545
+
+# Payment verification will use localhost:8545
+```
+
+### Why Payment Exists
+
+- **Monetization**: Playbook creators can charge for premium security audit strategies
+- **Access Control**: Only paid users can decrypt and use encrypted playbooks
+- **Lighthouse Integration**: Leverages Lighthouse's encryption and file sharing features
+
+**Summary**: Payment is **optional** and only for encrypted playbooks. Most SuperAudit usage (local playbooks, built-in rules) requires **no payment**.
+
+---
+
 ## 🤖 **LLM Integration (Planned)**
 
 The architecture is ready for AI-enhanced analysis. See [`LLM-INTEGRATION-PLAN.md`](./LLM-INTEGRATION-PLAN.md) for:
@@ -705,7 +837,7 @@ pnpm link --global
 
 # Use in another project
 cd your-project
-pnpm link --global super-audit
+pnpm link --global @jhwon0820/super-audit
 npx hardhat superaudit
 ```
 
@@ -750,10 +882,10 @@ _Benchmarked on M1 MacBook Pro with 16GB RAM_
 
 ```bash
 # Ensure plugin is installed
-npm list super-audit
+npm list @jhwon0820/super-audit
 
 # Rebuild if needed
-cd node_modules/super-audit
+cd node_modules/@jhwon0820/super-audit
 pnpm run build
 ```
 
@@ -889,7 +1021,7 @@ pnpm build
 
 ```bash
 # Install locally in your project
-pnpm install --save-dev hardhat super-audit
+pnpm install --save-dev hardhat @jhwon0820/super-audit
 
 # Or run from example project
 cd packages/example-project
@@ -1040,6 +1172,6 @@ SuperAudit represents a **paradigm shift** in smart contract security:
 **Try it now:**
 
 ```bash
-pnpm install super-audit
+pnpm install @jhwon0820/super-audit
 npx hardhat superaudit
 ```

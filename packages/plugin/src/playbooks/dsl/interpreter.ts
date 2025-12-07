@@ -168,11 +168,17 @@ class DSLRule implements Rule {
       case "transferFrom":
         this.checkTransferFromPattern(ast, params, context);
         break;
+      case "transfer":
+        this.checkTransferPattern(ast, params, context);
+        break;
       case "delegatecall":
         this.checkDelegatecallPattern(ast, params, context);
         break;
       case "lowLevelCall":
         this.checkLowLevelCallPattern(ast, params, context);
+        break;
+      case "selfdestruct":
+        this.checkSelfdestructPattern(ast, params, context);
         break;
       default:
         this.checkGenericPattern(ast, method, params, context);
@@ -203,6 +209,59 @@ class DSLRule implements Rule {
               });
             }
           }
+        }
+      },
+    });
+  }
+
+  /**
+   * Check transfer patterns (e.g., unchecked return values)
+   */
+  private checkTransferPattern(
+    ast: ASTNode,
+    params: any,
+    context: AnalysisContext,
+  ): void {
+    parser.visit(ast, {
+      FunctionCall: (node: any) => {
+        if (this.isTransferCall(node)) {
+          if (params.checkedReturn === false || params["!checkedReturn"]) {
+            // Check if return value is checked
+            if (!this.isReturnValueChecked(node)) {
+              context.issues.push({
+                ruleId: this.id,
+                message: `${this.description}: transfer call without checking return value`,
+                severity: this.severity,
+                file: context.filePath,
+                line: node.loc?.start.line || 0,
+                column: node.loc?.start.column || 0,
+              });
+            }
+          }
+        }
+      },
+    });
+  }
+
+  /**
+   * Check selfdestruct patterns
+   */
+  private checkSelfdestructPattern(
+    ast: ASTNode,
+    params: any,
+    context: AnalysisContext,
+  ): void {
+    parser.visit(ast, {
+      FunctionCall: (node: any) => {
+        if (this.isSelfdestructCall(node)) {
+          context.issues.push({
+            ruleId: this.id,
+            message: `${this.description}: selfdestruct usage detected`,
+            severity: this.severity,
+            file: context.filePath,
+            line: node.loc?.start.line || 0,
+            column: node.loc?.start.column || 0,
+          });
         }
       },
     });
@@ -429,6 +488,23 @@ class DSLRule implements Rule {
     return (
       node.expression?.type === "MemberAccess" &&
       node.expression.memberName === "transferFrom"
+    );
+  }
+
+  private isTransferCall(node: any): boolean {
+    return (
+      node.expression?.type === "MemberAccess" &&
+      node.expression.memberName === "transfer"
+    );
+  }
+
+  private isSelfdestructCall(node: any): boolean {
+    return (
+      node.expression?.type === "Identifier" &&
+      node.expression.name === "selfdestruct"
+    ) || (
+      node.expression?.type === "MemberAccess" &&
+      node.expression.memberName === "selfdestruct"
     );
   }
 

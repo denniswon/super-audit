@@ -5,6 +5,7 @@ This document demonstrates all available CLI commands in the SuperAudit plugin f
 ## Prerequisites
 
 Make sure you have:
+
 - Installed dependencies: `pnpm install`
 - Built the plugin: `cd packages/plugin && pnpm build`
 - Set up `.env` file with API keys (already configured)
@@ -163,6 +164,7 @@ node --import tsx/esm src/playbooks/lighthouse-example.ts
 ```
 
 This will demonstrate:
+
 - ✅ Uploading playbooks to IPFS
 - ✅ Getting CID and gateway URL
 - ✅ Downloading from Lighthouse
@@ -172,6 +174,7 @@ This will demonstrate:
 ## Output Files Generated
 
 After running various commands, you'll see:
+
 - `audit-report.txt` - Console format report
 - `audit-results.json` - JSON format report
 - `superaudit.sarif` - SARIF format for GitHub
@@ -186,27 +189,32 @@ After running various commands, you'll see:
 ## Cost Estimates (AI Enhancement)
 
 When using AI enhancement with OpenAI:
+
 - **GPT-3.5-turbo**: ~$0.002 per issue analyzed
 - **GPT-4**: ~$0.01-0.03 per issue analyzed
 
 For a typical project with 20-30 issues:
+
 - **GPT-3.5-turbo**: ~$0.05-0.10 per full audit
 - **GPT-4**: ~$0.20-0.90 per full audit
 
 ## Troubleshooting
 
 ### If analysis fails:
+
 1. Make sure contracts are in `./contracts` directory
 2. Check that playbook file exists and is valid YAML
 3. Verify .env file has API keys (if using AI)
 4. Rebuild plugin: `cd ../plugin && pnpm build`
 
 ### If AI enhancement fails:
+
 1. Check OPENAI_API_KEY in .env file
 2. Verify API key is valid and has credits
 3. Try with `--mode basic` first to isolate the issue
 
 ### If playbook fails to load:
+
 1. Validate YAML syntax
 2. Check rule DSL patterns are valid
 3. Ensure file path is correct (relative to project root)

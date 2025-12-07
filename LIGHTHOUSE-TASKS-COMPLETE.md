@@ -7,14 +7,17 @@ Five new Hardhat tasks have been successfully implemented for managing playbooks
 ## 🎯 Implemented Tasks
 
 ### 1. `lighthouse-info` - Storage Information
+
 Shows Lighthouse configuration, usage instructions, and available commands.
 
 **Usage:**
+
 ```bash
 npx hardhat lighthouse-info
 ```
 
 **Features:**
+
 - Displays storage status (shared vs custom API key)
 - Shows all available commands
 - Provides helpful tips and examples
@@ -23,20 +26,24 @@ npx hardhat lighthouse-info
 ---
 
 ### 2. `upload-playbook` - Upload to Community Storage
+
 Upload a playbook YAML file to shared Lighthouse/IPFS storage and register it.
 
 **Usage:**
+
 ```bash
 PLAYBOOK_FILE=./playbooks/your-playbook.yaml npx hardhat upload-playbook
 ```
 
 **Example:**
+
 ```bash
 cd packages/example-project
 PLAYBOOK_FILE=./playbooks/erc20-token-security.yaml npx hardhat upload-playbook
 ```
 
 **Output:**
+
 ```
 📤 Uploading Playbook to Community Storage
 
@@ -62,6 +69,7 @@ PLAYBOOK_FILE=./playbooks/erc20-token-security.yaml npx hardhat upload-playbook
 ```
 
 **Features:**
+
 - Uploads to shared community storage (no API key needed)
 - Returns shareable CID
 - Auto-registers in local registry
@@ -71,19 +79,23 @@ PLAYBOOK_FILE=./playbooks/erc20-token-security.yaml npx hardhat upload-playbook
 ---
 
 ### 3. `download-playbook` - Download from IPFS
+
 Download and display a playbook from Lighthouse by its CID.
 
 **Usage:**
+
 ```bash
 PLAYBOOK_CID=<your-cid> npx hardhat download-playbook
 ```
 
 **Example:**
+
 ```bash
 PLAYBOOK_CID=bafkreifnhbl7m6jga6f24b7wiqo6iyrk46nuubdcpwx4bjhsvsps3otygy npx hardhat download-playbook
 ```
 
 **Output:**
+
 ```
 📥 Downloading Playbook from Community Storage
 
@@ -109,6 +121,7 @@ PLAYBOOK_CID=bafkreifnhbl7m6jga6f24b7wiqo6iyrk46nuubdcpwx4bjhsvsps3otygy npx har
 ```
 
 **Features:**
+
 - Downloads from IPFS gateway
 - Caches locally for faster access
 - Displays playbook metadata
@@ -117,14 +130,17 @@ PLAYBOOK_CID=bafkreifnhbl7m6jga6f24b7wiqo6iyrk46nuubdcpwx4bjhsvsps3otygy npx har
 ---
 
 ### 4. `list-playbooks` - List All Playbooks
+
 Display all registered playbooks including builtin and downloaded ones.
 
 **Usage:**
+
 ```bash
 npx hardhat list-playbooks
 ```
 
 **Output:**
+
 ```
 📚 Available Playbooks
 
@@ -158,6 +174,7 @@ Found 3 playbook(s):
 ```
 
 **Features:**
+
 - Shows all registered playbooks
 - Displays metadata for each playbook
 - Indicates source (builtin, lighthouse, file, etc.)
@@ -167,14 +184,17 @@ Found 3 playbook(s):
 ---
 
 ### 5. `sync-playbooks` - Sync Community Playbooks
+
 Sync playbooks from Lighthouse community storage.
 
 **Usage:**
+
 ```bash
 npx hardhat sync-playbooks
 ```
 
 **Output (when new playbooks available):**
+
 ```
 🔄 Syncing Community Playbooks
 
@@ -190,6 +210,7 @@ npx hardhat sync-playbooks
 ```
 
 **Output (when up to date):**
+
 ```
 🔄 Syncing Community Playbooks
 
@@ -201,6 +222,7 @@ npx hardhat sync-playbooks
 ```
 
 **Features:**
+
 - Auto-discovers new community playbooks
 - Only downloads new/updated playbooks
 - Shows sync statistics
@@ -258,6 +280,7 @@ Due to Hardhat v3's strict argument validation, tasks use **environment variable
 - `PLAYBOOK_CID` - CID for download-playbook
 
 This approach:
+
 - ✅ Avoids Hardhat's argument validation errors
 - ✅ Works consistently across platforms
 - ✅ Clear and explicit
@@ -278,38 +301,46 @@ const lighthouse = initializeLighthouseFromEnv();
 ## 📋 Complete Workflow Example
 
 ### 1. Check Lighthouse Status
+
 ```bash
 npx hardhat lighthouse-info
 ```
 
 ### 2. Upload a Custom Playbook
+
 ```bash
 PLAYBOOK_FILE=./my-playbook.yaml npx hardhat upload-playbook
 # Copy the CID from output
 ```
 
 ### 3. Share the CID
+
 Share the CID with your team:
+
 ```
 bafkreifnhbl7m6jga6f24b7wiqo6iyrk46nuubdcpwx4bjhsvsps3otygy
 ```
 
 ### 4. Download on Another Machine
+
 ```bash
 PLAYBOOK_CID=bafkreif... npx hardhat download-playbook
 ```
 
 ### 5. Run Analysis with Shared Playbook
+
 ```bash
 npx hardhat superaudit --playbook-cid bafkreif...
 ```
 
 ### 6. List All Available Playbooks
+
 ```bash
 npx hardhat list-playbooks
 ```
 
 ### 7. Sync Community Playbooks
+
 ```bash
 npx hardhat sync-playbooks
 ```
@@ -321,6 +352,7 @@ npx hardhat sync-playbooks
 All tasks have been tested and verified working:
 
 ### ✅ lighthouse-info
+
 ```bash
 cd packages/example-project
 npx hardhat lighthouse-info
@@ -328,6 +360,7 @@ npx hardhat lighthouse-info
 ```
 
 ### ✅ upload-playbook
+
 ```bash
 cd packages/example-project
 PLAYBOOK_FILE=./playbooks/erc20-token-security.yaml npx hardhat upload-playbook
@@ -335,6 +368,7 @@ PLAYBOOK_FILE=./playbooks/erc20-token-security.yaml npx hardhat upload-playbook
 ```
 
 ### ✅ download-playbook
+
 ```bash
 cd packages/example-project
 PLAYBOOK_CID=bafkreifnhbl7m6jga6f24b7wiqo6iyrk46nuubdcpwx4bjhsvsps3otygy npx hardhat download-playbook
@@ -342,6 +376,7 @@ PLAYBOOK_CID=bafkreifnhbl7m6jga6f24b7wiqo6iyrk46nuubdcpwx4bjhsvsps3otygy npx har
 ```
 
 ### ✅ list-playbooks
+
 ```bash
 cd packages/example-project
 npx hardhat list-playbooks
@@ -349,6 +384,7 @@ npx hardhat list-playbooks
 ```
 
 ### ✅ sync-playbooks
+
 ```bash
 cd packages/example-project
 npx hardhat sync-playbooks

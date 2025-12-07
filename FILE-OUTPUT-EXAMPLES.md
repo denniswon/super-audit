@@ -7,6 +7,7 @@ SuperAudit now supports saving audit reports to files for documentation, complia
 ### 1. Console Report to Text File
 
 **Configuration:**
+
 ```typescript
 // hardhat.config.ts
 superaudit: {
@@ -16,6 +17,7 @@ superaudit: {
 ```
 
 **Result:**
+
 - ✅ Creates `./reports/audit-2024-10-23.txt`
 - Contains full console output (ANSI colors stripped)
 - Perfect for human-readable reports
@@ -27,6 +29,7 @@ superaudit: {
 ### 2. JSON Report to File
 
 **Configuration:**
+
 ```typescript
 // hardhat.config.ts
 superaudit: {
@@ -36,6 +39,7 @@ superaudit: {
 ```
 
 **Result:**
+
 ```json
 {
   "summary": {
@@ -66,6 +70,7 @@ superaudit: {
 ### 3. SARIF Report for GitHub
 
 **Configuration:**
+
 ```typescript
 // hardhat.config.ts
 superaudit: {
@@ -75,6 +80,7 @@ superaudit: {
 ```
 
 **Result:**
+
 - ✅ Creates GitHub-compatible SARIF 2.1.0 file
 - Automatically integrates with GitHub Code Scanning
 - Shows issues in Pull Request diffs
@@ -94,6 +100,7 @@ SUPERAUDIT_OUTPUT=./reports/audit-report.txt
 ```
 
 Or set them directly:
+
 ```bash
 SUPERAUDIT_OUTPUT=./audit.json npx hardhat superaudit
 ```
@@ -103,6 +110,7 @@ SUPERAUDIT_OUTPUT=./audit.json npx hardhat superaudit
 ## Real-World Workflow Examples
 
 ### Example 1: Daily CI Checks
+
 ```typescript
 // hardhat.config.ci.ts
 superaudit: {
@@ -118,6 +126,7 @@ npx hardhat --config hardhat.config.ci.ts superaudit
 ```
 
 ### Example 2: Pre-Release Audit
+
 ```typescript
 // hardhat.config.release.ts
 superaudit: {
@@ -137,6 +146,7 @@ npx hardhat --config hardhat.config.release.ts superaudit
 ```
 
 ### Example 3: GitHub Integration
+
 ```yaml
 # .github/workflows/security.yml
 - name: Run SuperAudit
@@ -145,7 +155,7 @@ npx hardhat --config hardhat.config.release.ts superaudit
   env:
     SUPERAUDIT_FORMAT: sarif
     SUPERAUDIT_OUTPUT: ./superaudit.sarif
-    
+
 - name: Upload SARIF
   uses: github/codeql-action/upload-sarif@v2
   with:
@@ -157,18 +167,21 @@ npx hardhat --config hardhat.config.release.ts superaudit
 ## File Naming Best Practices
 
 ### With Timestamps
+
 ```typescript
-output: `./reports/audit-${new Date().toISOString().split('T')[0]}.txt`
+output: `./reports/audit-${new Date().toISOString().split("T")[0]}.txt`;
 // Result: ./reports/audit-2024-10-23.txt
 ```
 
 ### With Version Numbers
+
 ```typescript
-output: `./reports/audit-v${require('./package.json').version}.json`
+output: `./reports/audit-v${require("./package.json").version}.json`;
 // Result: ./reports/audit-v1.2.3.json
 ```
 
 ### With Git Commit
+
 ```bash
 COMMIT=$(git rev-parse --short HEAD)
 SUPERAUDIT_OUTPUT="./reports/audit-${COMMIT}.txt" npx hardhat superaudit
@@ -179,11 +192,11 @@ SUPERAUDIT_OUTPUT="./reports/audit-${COMMIT}.txt" npx hardhat superaudit
 
 ## Output File Features
 
-| Format | File Extension | ANSI Colors | Size (typical) | GitHub Integration |
-|--------|----------------|-------------|----------------|-------------------|
-| Console | `.txt` | ❌ Stripped | 5-10 KB | ❌ |
-| JSON | `.json` | ❌ | 8-15 KB | ⚠️ Manual |
-| SARIF | `.sarif` | ❌ | 15-30 KB | ✅ Native |
+| Format  | File Extension | ANSI Colors | Size (typical) | GitHub Integration |
+| ------- | -------------- | ----------- | -------------- | ------------------ |
+| Console | `.txt`         | ❌ Stripped | 5-10 KB        | ❌                 |
+| JSON    | `.json`        | ❌          | 8-15 KB        | ⚠️ Manual          |
+| SARIF   | `.sarif`       | ❌          | 15-30 KB       | ✅ Native          |
 
 ---
 
@@ -207,15 +220,16 @@ diff audit-basic.txt audit-full.txt
 SuperAudit automatically adds correct extensions if missing:
 
 ```typescript
-output: "./report"  
+output: "./report";
 // Console: ./report.txt
 // JSON: ./report.json
 // SARIF: ./report.sarif
 ```
 
 Explicit extensions are preserved:
+
 ```typescript
-output: "./my-audit-report.txt"  // ✅ Keeps .txt
+output: "./my-audit-report.txt"; // ✅ Keeps .txt
 ```
 
 ---
@@ -223,13 +237,16 @@ output: "./my-audit-report.txt"  // ✅ Keeps .txt
 ## Tips & Tricks
 
 ### 1. Create Reports Directory Automatically
+
 ```bash
 mkdir -p ./reports
 SUPERAUDIT_OUTPUT=./reports/audit.txt npx hardhat superaudit
 ```
 
 ### 2. Combine Console + File Output
+
 The plugin shows output **AND** saves to file simultaneously:
+
 ```typescript
 superaudit: {
   format: "console",
@@ -238,12 +255,14 @@ superaudit: {
 ```
 
 ### 3. Archive Old Reports
+
 ```bash
 # Keep last 7 days of reports
 find ./reports -name "audit-*.txt" -mtime +7 -delete
 ```
 
 ### 4. Parse JSON in Scripts
+
 ```bash
 # Get issue count from JSON report
 jq '.summary.totalIssues' ./audit-results.json
@@ -294,6 +313,7 @@ ls -lh ./reports/
 4. **Share:** Send reports to team members or auditors
 
 For more information, see:
+
 - [USAGE.md](./USAGE.md) - Complete usage guide
 - [QUICK-REFERENCE.md](./QUICK-REFERENCE.md) - Quick start guide
 - [IMPLEMENTATION-SUMMARY.md](./IMPLEMENTATION-SUMMARY.md) - Technical details

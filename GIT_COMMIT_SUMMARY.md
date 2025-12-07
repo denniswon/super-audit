@@ -23,6 +23,7 @@ git commit -m "feat: Add file output support and comprehensive ERC20/DeFi securi
 ## 📊 Files Changed
 
 ### Modified Core Plugin Files (11)
+
 ```
 M  README.md
 M  packages/plugin/src/tasks/analyze.ts         (+150 lines - file output)
@@ -38,6 +39,7 @@ D  packages/example-project/contracts/Counter.t.sol (removed test)
 ```
 
 ### New Documentation Files (9)
+
 ```
 A  COMMIT_MESSAGE.md                            (detailed commit msg)
 A  GIT_COMMIT_MESSAGE.txt                       (concise commit msg)
@@ -51,12 +53,14 @@ A  QUICK-REFERENCE.md                           (quick reference)
 ```
 
 ### New Playbook Files (2)
+
 ```
 A  packages/example-project/playbooks/erc20-token-security.yaml
 A  packages/example-project/playbooks/complete-defi-security.yaml
 ```
 
 ### New Contract & Generated Reports (4)
+
 ```
 A  packages/example-project/contracts/ExampleToken.sol
 A  packages/example-project/audit-report.txt    (test output)
@@ -69,18 +73,21 @@ A  packages/example-project/superaudit.sarif    (test output)
 ## 📈 Statistics
 
 **Total Files:**
+
 - Modified: 11 files
 - Added: 15 files
 - Deleted: 1 file
 - **Total: 27 files changed**
 
 **Lines of Code:**
+
 - Core Plugin: ~200 lines added/modified
 - Playbooks: ~600 lines (YAML)
 - Documentation: ~3,500 lines
 - **Total: ~4,300 lines added**
 
 **Features Implemented:**
+
 - ✅ File output (3 formats)
 - ✅ ERC20 security playbook (15 checks)
 - ✅ Complete DeFi playbook (20+ checks)
@@ -93,23 +100,27 @@ A  packages/example-project/superaudit.sarif    (test output)
 ## 🎯 Key Achievements
 
 ### 1. File Output System
+
 - Console reports → .txt files (ANSI stripped)
 - Structured data → .json files
 - GitHub integration → .sarif files
 - Configuration via config/env/CLI
 
 ### 2. Security Playbooks
+
 - **ERC20 Token Security:** 15 checks, 5K fuzzing runs
 - **Complete DeFi Security:** 20+ checks, 10K fuzzing runs
 - AI-enhanced explanations and fixes
 - Dynamic testing scenarios
 
 ### 3. Critical Bug Discovery
+
 - **Found:** Unprotected mint() in ExampleToken.sol
 - **Impact:** Unlimited token minting vulnerability
 - **Fix:** Add access control with Ownable pattern
 
 ### 4. AI Enhancement Fixes
+
 - Display bug resolved
 - Cost reduced by 90%
 - Only security issues enhanced
@@ -142,18 +153,18 @@ A  packages/example-project/superaudit.sarif    (test output)
 
 ## 📚 Documentation Coverage
 
-| Document | Lines | Purpose |
-|----------|-------|---------|
-| COMMIT_MESSAGE.md | 350 | Detailed commit documentation |
-| GIT_COMMIT_MESSAGE.txt | 50 | Concise git commit message |
-| FILE-OUTPUT-EXAMPLES.md | 400 | File output usage guide |
-| FILE-OUTPUT-IMPLEMENTATION.md | 450 | Implementation details |
-| PLAYBOOK-GUIDE.md | 550 | Complete playbook guide |
-| EXAMPLETOKEN-PLAYBOOK-IMPLEMENTATION.md | 500 | ExampleToken audit summary |
-| USAGE.md | 450 | Updated usage guide |
-| QUICK-REFERENCE.md | 300 | Updated quick reference |
-| IMPLEMENTATION-SUMMARY.md | 500 | Technical summary |
-| **Total** | **~3,550 lines** | **Complete documentation** |
+| Document                                | Lines            | Purpose                       |
+| --------------------------------------- | ---------------- | ----------------------------- |
+| COMMIT_MESSAGE.md                       | 350              | Detailed commit documentation |
+| GIT_COMMIT_MESSAGE.txt                  | 50               | Concise git commit message    |
+| FILE-OUTPUT-EXAMPLES.md                 | 400              | File output usage guide       |
+| FILE-OUTPUT-IMPLEMENTATION.md           | 450              | Implementation details        |
+| PLAYBOOK-GUIDE.md                       | 550              | Complete playbook guide       |
+| EXAMPLETOKEN-PLAYBOOK-IMPLEMENTATION.md | 500              | ExampleToken audit summary    |
+| USAGE.md                                | 450              | Updated usage guide           |
+| QUICK-REFERENCE.md                      | 300              | Updated quick reference       |
+| IMPLEMENTATION-SUMMARY.md               | 500              | Technical summary             |
+| **Total**                               | **~3,550 lines** | **Complete documentation**    |
 
 ---
 
@@ -175,6 +186,7 @@ A  packages/example-project/superaudit.sarif    (test output)
 ## 💡 Usage After Commit
 
 ### For Users:
+
 ```bash
 git pull origin feat/ai-integration
 
@@ -189,6 +201,7 @@ superaudit: {
 ```
 
 ### For Reviewers:
+
 ```bash
 # See all changes
 git diff HEAD~1

@@ -32,27 +32,30 @@ npx hardhat superaudit --playbook lighthouse-QmXxx...
 ## 💻 Code Examples
 
 ### Upload and Register
+
 ```typescript
 const registry = getPlaybookRegistry();
-const registered = await registry.uploadAndRegisterToLighthouse(
-  "./playbook.yaml"
-);
+const registered =
+  await registry.uploadAndRegisterToLighthouse("./playbook.yaml");
 console.log(`CID: ${registered.source.cid}`);
 ```
 
 ### Register from CID
+
 ```typescript
 const registered = await registry.registerFromLighthouse("QmXxx...");
 console.log(`Registered: ${registered.meta.name}`);
 ```
 
 ### Sync All
+
 ```typescript
 const synced = await registry.syncFromLighthouse();
 console.log(`Synced: ${synced.length} playbooks`);
 ```
 
 ### Direct Lighthouse Usage
+
 ```typescript
 import { getLighthouse } from "./playbooks/index.js";
 
@@ -71,6 +74,7 @@ const uploads = await lighthouse.listUploads();
 ## 🔑 API Reference
 
 ### Registry Methods
+
 ```typescript
 // Upload and register
 await registry.uploadAndRegisterToLighthouse(path, id?, progress?)
@@ -83,6 +87,7 @@ await registry.syncFromLighthouse()
 ```
 
 ### Lighthouse Methods
+
 ```typescript
 // Upload
 await lighthouse.uploadPlaybook(path, progress?)
@@ -100,6 +105,7 @@ lighthouse.clearCache()
 ```
 
 ## 📂 File Structure
+
 ```
 packages/plugin/src/playbooks/
 ├── lighthouse-storage.ts         # Core implementation
@@ -111,9 +117,11 @@ packages/plugin/src/playbooks/
 ## 🎯 Common Workflows
 
 ### Share Playbook
+
 ```typescript
 // 1. Upload
-const registered = await registry.uploadAndRegisterToLighthouse("./playbook.yaml");
+const registered =
+  await registry.uploadAndRegisterToLighthouse("./playbook.yaml");
 
 // 2. Get CID
 const cid = registered.source.cid;
@@ -126,6 +134,7 @@ await registry.registerFromLighthouse(cid);
 ```
 
 ### Auto-Sync Team Playbooks
+
 ```typescript
 // On initialization
 await initializePlaybookRegistry(); // Auto-syncs
@@ -137,11 +146,13 @@ await registry.syncFromLighthouse();
 ## ⚙️ Configuration
 
 ### Environment (.env)
+
 ```bash
 LIGHTHOUSE_API_KEY=your_api_key_here
 ```
 
 ### Programmatic
+
 ```typescript
 import { initializeLighthouse } from "./playbooks/index.js";
 
@@ -151,6 +162,7 @@ const lighthouse = initializeLighthouse("your_api_key");
 ## 🐛 Troubleshooting
 
 ### Lighthouse not initialized
+
 ```typescript
 if (!isLighthouseInitialized()) {
   console.log("Set LIGHTHOUSE_API_KEY in .env");
@@ -158,12 +170,14 @@ if (!isLighthouseInitialized()) {
 ```
 
 ### Upload failed
+
 - Check API key is valid
 - Verify file exists
 - Check file size (<24GB)
 - Ensure internet connection
 
 ### Download failed
+
 - Verify CID is correct
 - Check internet connection
 - Clear cache and retry:
@@ -172,6 +186,7 @@ if (!isLighthouseInitialized()) {
   ```
 
 ### CID not accessible
+
 ```typescript
 const accessible = await lighthouse.isCIDAccessible("QmXxx...");
 if (!accessible) {

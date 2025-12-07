@@ -7,18 +7,21 @@ SuperAudit now has **fully automatic decentralized storage** for security playbo
 ## 🌟 Key Features
 
 ### 1. **Zero Configuration Required**
+
 - ✅ Works out of the box
 - ✅ No API key needed
 - ✅ No registration required
 - ✅ No setup steps
 
 ### 2. **Shared Community Storage**
+
 - 🌐 Default shared Lighthouse account built into the plugin
 - 📤 Upload playbooks to IPFS automatically
 - 📥 Download community playbooks by CID
 - 🔄 Auto-sync community playbooks on every run
 
 ### 3. **Optional Private Storage**
+
 - 🔑 Users can optionally provide their own `LIGHTHOUSE_API_KEY`
 - 🔒 Upload to private account if desired
 - 📊 Fallback to shared storage if no key provided
@@ -32,12 +35,12 @@ const DEFAULT_LIGHTHOUSE_API_KEY = "ecbf40ec.0e9cd023d26c4a038e0fafa1690f32a3";
 export function initializeLighthouseFromEnv(): LighthouseStorageManager {
   // Check for user's own API key first
   const userApiKey = process.env.LIGHTHOUSE_API_KEY;
-  
+
   if (userApiKey) {
     console.log("🔑 Using custom Lighthouse API key");
     return initializeLighthouse(userApiKey);
   }
-  
+
   // Use default shared API key for the community
   console.log("🌐 Using shared SuperAudit community Lighthouse storage");
   return initializeLighthouse(DEFAULT_LIGHTHOUSE_API_KEY);
@@ -47,16 +50,18 @@ export function initializeLighthouseFromEnv(): LighthouseStorageManager {
 ## 🚀 User Experience
 
 ### Before (Required User API Key)
+
 ```bash
 # User had to:
 1. Go to lighthouse.storage
-2. Create an account  
+2. Create an account
 3. Get API key
 4. Add to .env file
 5. Configure environment
 ```
 
 ### After (Zero Setup) ✨
+
 ```bash
 # User just runs:
 npx hardhat superaudit
@@ -69,6 +74,7 @@ npx hardhat superaudit
 ## 📋 Commands Available
 
 ### Run Analysis
+
 ```bash
 # Basic analysis (uses default playbook)
 npx hardhat superaudit
@@ -76,16 +82,18 @@ npx hardhat superaudit
 # Load playbook from IPFS by CID
 npx hardhat superaudit --playbook-cid bafkreih...
 
-# Load playbook from registry by ID  
+# Load playbook from registry by ID
 npx hardhat superaudit --playbook-id erc20-security
 ```
 
 ### List Playbooks
+
 ```bash
 npx hardhat superaudit --list-playbooks
 ```
 
 ### Upload Playbook (Coming Soon via CLI)
+
 ```bash
 # Will be available soon
 npx hardhat superaudit --upload-playbook ./my-playbook.yaml
@@ -138,17 +146,20 @@ npx hardhat superaudit --upload-playbook ./my-playbook.yaml
 ## 📊 Benefits
 
 ### For Regular Users
+
 - ✅ **Instant Setup**: No configuration needed
 - ✅ **Free Storage**: No costs for IPFS storage
 - ✅ **Community Playbooks**: Access shared security rules
 - ✅ **Simple CLI**: Just run `npx hardhat superaudit`
 
 ### For Power Users
+
 - 🔑 **Custom API Key**: Can use their own Lighthouse account
 - 🔒 **Private Storage**: Upload private playbooks if needed
 - 📤 **Share Easily**: Upload and share CIDs with community
 
 ### For the Ecosystem
+
 - 🌍 **Decentralized**: IPFS ensures global availability
 - 🤝 **Collaborative**: Community can share best practices
 - 📈 **Growing Library**: More playbooks over time
@@ -157,7 +168,9 @@ npx hardhat superaudit --upload-playbook ./my-playbook.yaml
 ## 🎯 What This Solves
 
 ### Problem Before
+
 Users had to:
+
 - Sign up for Lighthouse account
 - Get API keys
 - Configure environment variables
@@ -165,7 +178,9 @@ Users had to:
 - Understand IPFS/Lighthouse concepts
 
 ### Solution Now
+
 Users just:
+
 - Install the plugin
 - Run `npx hardhat superaudit`
 - Everything works automatically! ✨
@@ -194,6 +209,7 @@ Users just:
 ## 🧪 Testing
 
 ### Test Without API Key
+
 ```bash
 # Remove LIGHTHOUSE_API_KEY from .env
 cd packages/example-project
@@ -201,12 +217,14 @@ npx hardhat superaudit
 ```
 
 Result:
+
 ```
 🌐 Using shared SuperAudit community Lighthouse storage
 ✅ Analysis successful!
 ```
 
 ### Test With Custom API Key
+
 ```bash
 # Add to .env:
 LIGHTHOUSE_API_KEY=your-key-here
@@ -215,8 +233,9 @@ npx hardhat superaudit
 ```
 
 Result:
+
 ```
-🔑 Using custom Lighthouse API key from environment  
+🔑 Using custom Lighthouse API key from environment
 ✅ Analysis successful!
 ```
 
@@ -250,11 +269,13 @@ Result:
 ## 📝 Summary
 
 Users can now:
+
 1. Install SuperAudit
 2. Run `npx hardhat superaudit`
 3. **That's it!** ✨
 
 Lighthouse storage works automatically with:
+
 - No registration
 - No API keys
 - No configuration

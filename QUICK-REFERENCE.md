@@ -3,26 +3,31 @@
 ## ✅ What Was Fixed
 
 ### 1. AI Integration Issues
+
 - ❌ **Was:** `response_format` error with GPT-4
 - ✅ **Now:** Uses gpt-4o-mini (supports JSON, cheaper, faster)
 
 ### 2. Excessive API Calls
+
 - ❌ **Was:** Enhanced all 25 issues (naming, style, security)
 - ✅ **Now:** Only enhances 5 security issues (80% savings)
 
 ### 3. Missing AI Output
+
 - ❌ **Was:** AI ran but output not displayed
 - ✅ **Now:** Shows detailed AI analysis with colors
 
 ## 🚀 How to Use
 
 ### Quick Start
+
 ```bash
 cd packages/example-project
 npx hardhat superaudit
 ```
 
 ### With AI Enhancement
+
 ```bash
 # 1. Enable in .env
 SUPERAUDIT_AI_ENABLED=true
@@ -33,6 +38,7 @@ npx hardhat superaudit
 ```
 
 ### Save Report to File
+
 ```bash
 # In hardhat.config.ts
 superaudit: {
@@ -44,6 +50,7 @@ SUPERAUDIT_OUTPUT=./audit-report.txt
 ```
 
 ### Different Modes
+
 ```typescript
 // hardhat.config.ts
 superaudit: {
@@ -54,12 +61,13 @@ superaudit: {
 ```
 
 ### Output Formats
+
 ```typescript
 superaudit: {
   format: "console",  // Human-readable (default)
   format: "json",     // Machine-readable
   format: "sarif",    // GitHub integration
-  
+
   output: "./report.txt"    // Save console to file
   output: "./results.json"  // Save JSON to file
   output: "./audit.sarif"   // Save SARIF to file
@@ -69,6 +77,7 @@ superaudit: {
 ## 📁 Files Modified
 
 ### Core Changes
+
 1. `packages/plugin/src/ai/llm-client.ts`
    - Fixed OpenAI model and response_format
    - Added JSON parsing fallbacks
@@ -82,6 +91,7 @@ superaudit: {
    - Color-coded output
 
 ### Configuration
+
 4. `packages/plugin/src/type-extensions.ts`
    - Added SuperAuditConfig types
 
@@ -95,6 +105,7 @@ superaudit: {
    - AI settings enabled
 
 ### Documentation
+
 8. `USAGE.md` - Complete usage guide
 9. `IMPLEMENTATION-SUMMARY.md` - Technical details
 
@@ -111,11 +122,13 @@ superaudit: {
 ## 💡 Cost Comparison
 
 **Before:**
+
 - Model: gpt-4
 - Issues enhanced: 25
 - Cost per run: $0.15-0.30
 
 **After:**
+
 - Model: gpt-4o-mini
 - Issues enhanced: 5 (security only)
 - Cost per run: $0.01-0.03
@@ -137,16 +150,16 @@ superaudit: {
 
 ## 📊 Performance
 
-| Mode | Rules | Time | Use Case |
-|------|-------|------|----------|
-| basic | 4 | ~2ms | CI/CD |
-| advanced | 7 | ~10ms | Pre-commit |
-| full | 7 | ~20ms | Release |
-| full + AI | 7 | ~5-10s | Final audit |
+| Mode      | Rules | Time   | Use Case    |
+| --------- | ----- | ------ | ----------- |
+| basic     | 4     | ~2ms   | CI/CD       |
+| advanced  | 7     | ~10ms  | Pre-commit  |
+| full      | 7     | ~20ms  | Release     |
+| full + AI | 7     | ~5-10s | Final audit |
 
 ## 🎓 Example Output
 
-```
+```txt
 🔍 SuperAudit - Advanced Smart Contract Security Analysis
 
 🤖 AI Enhancement: ENABLED (openai)
@@ -166,15 +179,15 @@ superaudit: {
 
 📋 Static Analysis Report
 
-VulnerableVault.sol:105:16 [Warning] no-tx-origin: 
+VulnerableVault.sol:105:16 [Warning] no-tx-origin:
   Avoid using tx.origin for authorization...
 
   🤖 AI ANALYSIS:
   This is a phishing attack vulnerability. An attacker can...
-  
+
   🔧 SUGGESTED FIX:
   Replace tx.origin with msg.sender...
-  
+
   ⚠️ RISK SCORE: 8/10  •  CONFIDENCE: 95%
 
 📊 Summary:
