@@ -50,7 +50,7 @@ export class Reporter {
       totalIssues: this.issues.length,
       errorCount: 0,
       warningCount: 0,
-      infoCount: 0
+      infoCount: 0,
     };
 
     for (const issue of this.issues) {
@@ -91,36 +91,43 @@ export class Reporter {
     const location = `${issue.file}:${issue.line}:${issue.column}`;
     const severity = this.formatSeverity(issue.severity);
     const ruleId = chalk.dim(issue.ruleId);
-    
+
     let output = `${location} ${severity} ${ruleId}: ${issue.message}`;
-    
+
     // Add AI enhancement if present
     if ((issue as any).aiEnhancement) {
       const ai = (issue as any).aiEnhancement;
-      
+
       output += chalk.cyan("\n\n  🤖 AI ANALYSIS:");
-      output += `\n  ${ai.explanation.split('\n').join('\n  ')}`;
-      
+      output += `\n  ${ai.explanation.split("\n").join("\n  ")}`;
+
       if (ai.suggestedFix) {
         output += chalk.green("\n\n  🔧 SUGGESTED FIX:");
-        output += `\n  ${ai.suggestedFix.split('\n').join('\n  ')}`;
+        output += `\n  ${ai.suggestedFix.split("\n").join("\n  ")}`;
       }
-      
+
       if (ai.additionalContext) {
         output += chalk.blue("\n\n  📚 ADDITIONAL CONTEXT:");
-        output += `\n  ${ai.additionalContext.split('\n').join('\n  ')}`;
+        output += `\n  ${ai.additionalContext.split("\n").join("\n  ")}`;
       }
-      
+
       if (ai.riskScore) {
-        const riskColor = ai.riskScore >= 8 ? chalk.red : ai.riskScore >= 5 ? chalk.yellow : chalk.green;
+        const riskColor =
+          ai.riskScore >= 8
+            ? chalk.red
+            : ai.riskScore >= 5
+              ? chalk.yellow
+              : chalk.green;
         output += riskColor(`\n\n  ⚠️  RISK SCORE: ${ai.riskScore}/10`);
       }
-      
+
       if (ai.confidence) {
-        output += chalk.dim(`  •  CONFIDENCE: ${Math.round(ai.confidence * 100)}%`);
+        output += chalk.dim(
+          `  •  CONFIDENCE: ${Math.round(ai.confidence * 100)}%`,
+        );
       }
     }
-    
+
     return output;
   }
 
@@ -156,14 +163,14 @@ export class Reporter {
         console.log(chalk.bold.underline(issue.file));
         currentFile = issue.file;
       }
-      
+
       console.log(`  ${this.formatIssue(issue)}`);
     }
 
     // Print summary
     const summary = this.getSummary();
     console.log(chalk.bold("\n📊 Summary:"));
-    
+
     if (summary.errorCount > 0) {
       console.log(`  ${chalk.red("Errors")}: ${summary.errorCount}`);
     }
@@ -173,7 +180,7 @@ export class Reporter {
     if (summary.infoCount > 0) {
       console.log(`  ${chalk.blue("Info")}: ${summary.infoCount}`);
     }
-    
+
     console.log(`  ${chalk.bold("Total issues")}: ${summary.totalIssues}`);
   }
 
@@ -182,6 +189,6 @@ export class Reporter {
    * (i.e., should exit with non-zero code)
    */
   hasErrors(): boolean {
-    return this.issues.some(issue => issue.severity === "error");
+    return this.issues.some((issue) => issue.severity === "error");
   }
 }

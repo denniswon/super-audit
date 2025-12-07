@@ -1,6 +1,6 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types/hre";
-import { initializeLighthouseFromEnv } from "../playbooks/index.js";
 import * as dotenv from "dotenv";
+import { initializeLighthouseFromEnv } from "../playbooks/index.js";
 
 dotenv.config();
 
@@ -60,7 +60,7 @@ export default async function lighthouseInfoTask(
       console.log(`• No API key setup required`);
       console.log(`• Your playbooks are permanently stored on IPFS`);
       console.log(`• Share CIDs with others for collaboration\n`);
-      
+
       console.log(`🔑 Want your own storage?`);
       console.log(`   Get a free API key: https://lighthouse.storage`);
       console.log(`   Add to .env: LIGHTHOUSE_API_KEY=your_key\n`);
@@ -69,9 +69,10 @@ export default async function lighthouseInfoTask(
       console.log(`• You can upload unlimited playbooks`);
       console.log(`• Share CIDs to collaborate with others\n`);
     }
-
   } catch (error) {
-    console.error(`\n❌ Error: ${error instanceof Error ? error.message : String(error)}`);
+    console.error(
+      `\n❌ Error: ${error instanceof Error ? error.message : String(error)}`,
+    );
     process.exit(1);
   }
 }

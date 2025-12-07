@@ -1,12 +1,13 @@
 /**
  * Example integration of Playbook Registry with SuperAudit Task
- * 
+ *
  * This file demonstrates how to integrate the playbook registry
  * into the main analyze task for enhanced playbook management.
  */
 
 import { existsSync } from "fs";
 import { basename, extname } from "path";
+import type { Rule } from "../types.js";
 import {
   getPlaybookRegistry,
   initializeRegistry,
@@ -19,29 +20,28 @@ import {
   formatRegistryStats,
   getSamplePlaybooks,
 } from "./index.js";
-import type { Rule } from "../types.js";
 
 /**
  * Initialize the registry with builtin playbooks and Lighthouse
  */
 export async function initializePlaybookRegistry(): Promise<void> {
   console.log("🔧 Initializing Playbook Registry...");
-  
+
   // Initialize Lighthouse from environment if available
   const lighthouse = initializeLighthouseFromEnv();
   if (lighthouse) {
     console.log("✅ Lighthouse storage initialized");
   }
-  
+
   // Get builtin sample playbooks
   const builtins = getSamplePlaybooks();
-  
+
   // Initialize registry
   await initializeRegistry(builtins);
-  
+
   const registry = getPlaybookRegistry();
   console.log(`✅ Loaded ${registry.getAll().length} builtin playbooks`);
-  
+
   // Sync from Lighthouse if available
   if (isLighthouseInitialized()) {
     try {
@@ -58,7 +58,7 @@ export async function initializePlaybookRegistry(): Promise<void> {
 export async function determineAnalysisRulesWithRegistry(
   args: any,
   basicRules: Rule[],
-  advancedRules: Rule[]
+  advancedRules: Rule[],
 ): Promise<{ rules: Rule[]; analysisMode: string }> {
   const registry = getPlaybookRegistry();
 
@@ -100,22 +100,23 @@ export async function determineAnalysisRulesWithRegistry(
   if (args.uploadPlaybook) {
     if (!isLighthouseInitialized()) {
       throw new Error(
-        "Lighthouse not initialized. Set LIGHTHOUSE_API_KEY environment variable."
+        "Lighthouse not initialized. Set LIGHTHOUSE_API_KEY environment variable.",
       );
     }
     if (!existsSync(args.uploadPlaybook)) {
       throw new Error(`Playbook file not found: ${args.uploadPlaybook}`);
     }
-    
+
     const progressCallback = (progressData: any) => {
-      const percentage = 100 - ((progressData?.total / progressData?.uploaded) * 100 || 0);
+      const percentage =
+        100 - ((progressData?.total / progressData?.uploaded) * 100 || 0);
       console.log(`   Upload progress: ${percentage.toFixed(2)}%`);
     };
-    
+
     const registered = await registry.uploadAndRegisterToLighthouse(
       args.uploadPlaybook,
       undefined,
-      progressCallback
+      progressCallback,
     );
     console.log(`✅ Uploaded and registered playbook`);
     console.log(`   ID: ${registered.id}`);
@@ -129,10 +130,10 @@ export async function determineAnalysisRulesWithRegistry(
   if (args.registerFromLighthouse) {
     if (!isLighthouseInitialized()) {
       throw new Error(
-        "Lighthouse not initialized. Set LIGHTHOUSE_API_KEY environment variable."
+        "Lighthouse not initialized. Set LIGHTHOUSE_API_KEY environment variable.",
       );
     }
-    
+
     const cid = args.registerFromLighthouse;
     const registered = await registry.registerFromLighthouse(cid);
     console.log(`✅ Registered playbook from Lighthouse`);
@@ -146,10 +147,10 @@ export async function determineAnalysisRulesWithRegistry(
   if (args.syncLighthouse) {
     if (!isLighthouseInitialized()) {
       throw new Error(
-        "Lighthouse not initialized. Set LIGHTHOUSE_API_KEY environment variable."
+        "Lighthouse not initialized. Set LIGHTHOUSE_API_KEY environment variable.",
       );
     }
-    
+
     const synced = await registry.syncFromLighthouse();
     console.log(`✅ Synced ${synced.length} playbook(s) from Lighthouse`);
     process.exit(0);
@@ -162,9 +163,11 @@ export async function determineAnalysisRulesWithRegistry(
 
   // Handle multiple playbooks
   if (args.playbooks) {
-    const playbookIds = args.playbooks.split(",").map((id: string) => id.trim());
+    const playbookIds = args.playbooks
+      .split(",")
+      .map((id: string) => id.trim());
     console.log(`📋 Loading ${playbookIds.length} playbooks from registry...`);
-    
+
     const playbookRules = await loadRulesFromMultiplePlaybooks(playbookIds);
     return {
       rules: [...basicRules, ...playbookRules],
@@ -174,10 +177,12 @@ export async function determineAnalysisRulesWithRegistry(
 
   // Handle specific rules
   if (args.rules) {
-    const requestedRuleIds = args.rules.split(",").map((id: string) => id.trim());
+    const requestedRuleIds = args.rules
+      .split(",")
+      .map((id: string) => id.trim());
     const allRules = [...basicRules, ...advancedRules];
     const filteredRules = allRules.filter((rule) =>
-      requestedRuleIds.includes(rule.id)
+      requestedRuleIds.includes(rule.id),
     );
 
     if (filteredRules.length === 0) {
@@ -191,17 +196,17 @@ export async function determineAnalysisRulesWithRegistry(
   if (args.autoRecommend) {
     const contractPatterns = extractContractPatterns(args);
     const recommended = getRecommendedPlaybooks(contractPatterns);
-    
+
     if (recommended.length > 0) {
       console.log(`🎯 Auto-recommended ${recommended.length} playbooks:`);
       for (const pb of recommended.slice(0, 3)) {
         console.log(`   - ${pb.meta.name} (${pb.id})`);
       }
-      
+
       const recommendedRules = await loadRulesFromMultiplePlaybooks(
-        recommended.slice(0, 3).map(pb => pb.id)
+        recommended.slice(0, 3).map((pb) => pb.id),
       );
-      
+
       return {
         rules: [...basicRules, ...recommendedRules],
         analysisMode: "auto-recommended",
@@ -232,14 +237,14 @@ export async function determineAnalysisRulesWithRegistry(
  */
 async function loadPlaybookForAnalysis(
   playbookArg: string,
-  basicRules: Rule[]
+  basicRules: Rule[],
 ): Promise<{ rules: Rule[]; analysisMode: string }> {
   const registry = getPlaybookRegistry();
 
   // Check if it's a registered playbook ID
   if (registry.has(playbookArg)) {
     console.log(`📋 Loading playbook from registry: ${playbookArg}`);
-    
+
     const playbook = registry.get(playbookArg);
     if (playbook) {
       console.log(`   Name: ${playbook.meta.name}`);
@@ -248,7 +253,7 @@ async function loadPlaybookForAnalysis(
         console.log(`   Description: ${playbook.meta.description}`);
       }
     }
-    
+
     const playbookRules = await loadRulesFromRegistry(playbookArg);
     return {
       rules: [...basicRules, ...playbookRules],
@@ -259,13 +264,13 @@ async function loadPlaybookForAnalysis(
   // Check if it's a file path
   if (existsSync(playbookArg)) {
     console.log(`📋 Registering and loading playbook: ${playbookArg}`);
-    
+
     // Register the playbook
     const registered = await registry.registerFromFile(playbookArg);
     console.log(`   Registered as: ${registered.id}`);
     console.log(`   Name: ${registered.meta.name}`);
     console.log(`   Author: ${registered.meta.author}`);
-    
+
     // Load rules from newly registered playbook
     const playbookRules = await loadRulesFromRegistry(registered.id);
     return {
@@ -276,9 +281,9 @@ async function loadPlaybookForAnalysis(
 
   throw new Error(
     `Playbook not found: ${playbookArg}\n` +
-    `  - Not registered in registry\n` +
-    `  - Not found as file path\n` +
-    `Use --list-playbooks to see available playbooks`
+      `  - Not registered in registry\n` +
+      `  - Not found as file path\n` +
+      `Use --list-playbooks to see available playbooks`,
   );
 }
 
@@ -322,7 +327,7 @@ function extractContractPatterns(args: any): string[] {
       patterns.some(
         (p) =>
           p.toLowerCase().includes(patternLower) ||
-          patternLower.includes(p.toLowerCase())
+          patternLower.includes(p.toLowerCase()),
       )
     ) {
       patterns.push(pattern);
@@ -335,9 +340,11 @@ function extractContractPatterns(args: any): string[] {
 /**
  * Register playbooks from a project directory
  */
-export async function registerProjectPlaybooks(projectRoot: string): Promise<number> {
+export async function registerProjectPlaybooks(
+  projectRoot: string,
+): Promise<number> {
   const registry = getPlaybookRegistry();
-  
+
   // Common locations for playbooks
   const playbookDirs = [
     `${projectRoot}/playbooks`,
@@ -380,7 +387,7 @@ export function showPlaybookInfo(playbookId: string): void {
   console.log(`Name:        ${playbook.meta.name}`);
   console.log(`Author:      ${playbook.meta.author}`);
   console.log(`Version:     ${playbook.meta.version || "N/A"}`);
-  
+
   if (playbook.meta.description) {
     console.log(`Description: ${playbook.meta.description}`);
   }
@@ -389,7 +396,9 @@ export function showPlaybookInfo(playbookId: string): void {
     console.log(`Tags:        ${playbook.meta.tags.join(", ")}`);
   }
 
-  console.log(`\nSource:      ${playbook.source.type} - ${playbook.source.location}`);
+  console.log(
+    `\nSource:      ${playbook.source.type} - ${playbook.source.location}`,
+  );
   console.log(`Registered:  ${playbook.registeredAt.toLocaleString()}`);
   console.log(`Validated:   ${playbook.validated ? "✅ Yes" : "❌ No"}`);
 
@@ -401,8 +410,9 @@ export function showPlaybookInfo(playbookId: string): void {
   }
 
   if (playbook.parsedPlaybook) {
-    const { staticRules, dynamicScenarios, invariants } = playbook.parsedPlaybook;
-    
+    const { staticRules, dynamicScenarios, invariants } =
+      playbook.parsedPlaybook;
+
     console.log(`\nChecks:`);
     console.log(`  Static Rules:      ${staticRules.length}`);
     console.log(`  Dynamic Scenarios: ${dynamicScenarios.length}`);
@@ -441,8 +451,12 @@ export function showPlaybookInfo(playbookId: string): void {
     console.log(`  Enabled:         Yes`);
     console.log(`  Provider:        ${playbook.meta.ai.provider || "N/A"}`);
     console.log(`  Model:           ${playbook.meta.ai.model || "N/A"}`);
-    console.log(`  Enhance Findings: ${playbook.meta.ai.enhance_findings ? "Yes" : "No"}`);
-    console.log(`  Generate Fixes:   ${playbook.meta.ai.generate_fixes ? "Yes" : "No"}`);
+    console.log(
+      `  Enhance Findings: ${playbook.meta.ai.enhance_findings ? "Yes" : "No"}`,
+    );
+    console.log(
+      `  Generate Fixes:   ${playbook.meta.ai.generate_fixes ? "Yes" : "No"}`,
+    );
   }
 
   console.log();
@@ -453,7 +467,6 @@ export function showPlaybookInfo(playbookId: string): void {
  */
 export function exampleTaskIntegration() {
   // This shows how you would modify the task in tasks/analyze.ts
-  
   /*
   task("superaudit")
     .addParam("playbook", "Playbook file path or registry ID", undefined, types.string, true)

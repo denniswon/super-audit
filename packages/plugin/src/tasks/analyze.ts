@@ -1,4 +1,7 @@
+import { existsSync, writeFileSync, readFileSync } from "fs";
+import { join } from "path";
 import { HardhatRuntimeEnvironment } from "hardhat/types/hre";
+import * as dotenv from "dotenv";
 import { parseAllSourceFiles, ParseError } from "../parser.js";
 import { RuleEngine } from "../rules/engine.js";
 import { Reporter } from "../reporter.js";
@@ -17,9 +20,6 @@ import {
 } from "../playbooks/index.js";
 import { LLMClient } from "../ai/llm-client.js";
 import { AIEnhancedRule } from "../rules/ai-enhanced-rule.js";
-import { existsSync, writeFileSync, readFileSync } from "fs";
-import { join } from "path";
-import * as dotenv from "dotenv";
 import { PaymentManager, type EncryptedUserList } from "../payment/index.js";
 
 // Load environment variables

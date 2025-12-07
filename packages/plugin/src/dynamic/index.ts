@@ -5,15 +5,15 @@ export { FuzzingEngine } from "./fuzzing-engine.js";
 export { ReentrancyTester } from "./attacks/reentrancy-tester.js";
 
 // Convenience functions for dynamic analysis
+import type { HardhatRuntimeEnvironment } from "hardhat/types/hre";
 import { ForkManager } from "./fork-manager.js";
 import { FuzzingEngine } from "./fuzzing-engine.js";
 import { ReentrancyTester } from "./attacks/reentrancy-tester.js";
-import type { HardhatRuntimeEnvironment } from "hardhat/types/hre";
-import type { 
-  FuzzingConfig, 
-  DeployedContract, 
+import type {
+  FuzzingConfig,
+  DeployedContract,
   ReentrancyTestResult,
-  FuzzingResults
+  FuzzingResults,
 } from "./types.js";
 
 /**
@@ -37,7 +37,7 @@ export class DynamicAnalyzer {
    */
   async analyzeContracts(
     contracts: DeployedContract[],
-    config: Partial<FuzzingConfig> = {}
+    config: Partial<FuzzingConfig> = {},
   ): Promise<{
     fuzzingResults: FuzzingResults;
     reentrancyResults: ReentrancyTestResult[];
@@ -49,26 +49,30 @@ export class DynamicAnalyzer {
       depth: config.depth || 3,
       strategy: config.strategy || "coverage",
       timeout: config.timeout || 60, // 1 minute default
-      seed: config.seed
+      seed: config.seed,
     };
 
     // Run fuzzing analysis
     console.log("1️⃣ Running fuzzing campaign...");
-    const fuzzingResults = await this.fuzzingEngine.runFuzzingCampaign(contracts, fuzzingConfig);
+    const fuzzingResults = await this.fuzzingEngine.runFuzzingCampaign(
+      contracts,
+      fuzzingConfig,
+    );
 
     // Run reentrancy tests
     console.log("\n2️⃣ Testing for reentrancy vulnerabilities...");
     const reentrancyResults: ReentrancyTestResult[] = [];
     for (const contract of contracts) {
-      const contractResults = await this.reentrancyTester.testAllFunctions(contract);
+      const contractResults =
+        await this.reentrancyTester.testAllFunctions(contract);
       reentrancyResults.push(...contractResults);
     }
 
     console.log("\n✅ Dynamic analysis complete!");
-    
+
     return {
       fuzzingResults,
-      reentrancyResults
+      reentrancyResults,
     };
   }
 
@@ -77,17 +81,17 @@ export class DynamicAnalyzer {
    */
   async quickReentrancyTest(
     contractAddress: string,
-    functionName: string
+    functionName: string,
   ): Promise<ReentrancyTestResult> {
     // This would be implemented to do a quick single-function test
     // For now, return a mock result
     return {
       isVulnerable: false,
       exploitPath: [],
-      profitAmount: "0", 
+      profitAmount: "0",
       victimContract: contractAddress,
       attackContract: "quick-tester",
-      description: `Quick reentrancy test for ${functionName} - not implemented in MVP`
+      description: `Quick reentrancy test for ${functionName} - not implemented in MVP`,
     };
   }
 

@@ -7,10 +7,10 @@ export * from "./registry-utils.js";
 export * from "./lighthouse-storage.js";
 
 // Convenience functions for working with playbooks
+import type { Rule } from "../types.js";
 import { PlaybookParser } from "./parser.js";
 import { DSLInterpreter } from "./dsl/interpreter.js";
 import type { ParsedPlaybook } from "./types.js";
-import type { Rule } from "../types.js";
 
 /**
  * Load and create executable rules from a playbook file
@@ -33,14 +33,17 @@ export function createRulesFromYAML(yamlContent: string): Rule[] {
 /**
  * Validate a playbook without executing it
  */
-export function validatePlaybook(yamlContent: string): { valid: boolean; errors: string[] } {
+export function validatePlaybook(yamlContent: string): {
+  valid: boolean;
+  errors: string[];
+} {
   try {
     PlaybookParser.parseFromString(yamlContent);
     return { valid: true, errors: [] };
   } catch (error) {
-    return { 
-      valid: false, 
-      errors: [error instanceof Error ? error.message : String(error)]
+    return {
+      valid: false,
+      errors: [error instanceof Error ? error.message : String(error)],
     };
   }
 }
@@ -52,7 +55,7 @@ export function getSamplePlaybooks(): Record<string, string> {
   return {
     "defi-vault-security": getDeFiVaultSecurityPlaybook(),
     "erc20-security": getERC20SecurityPlaybook(),
-    "access-control": getAccessControlPlaybook()
+    "access-control": getAccessControlPlaybook(),
   };
 }
 
@@ -170,7 +173,7 @@ dynamic:
 }
 
 /**
- * Sample ERC20 Security playbook  
+ * Sample ERC20 Security playbook
  */
 function getERC20SecurityPlaybook(): string {
   return `

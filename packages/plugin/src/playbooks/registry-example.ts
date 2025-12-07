@@ -1,6 +1,6 @@
 /**
  * Example test/demo script for the Playbook Registry
- * 
+ *
  * Run with: npx ts-node packages/plugin/src/playbooks/registry-example.ts
  */
 
@@ -67,7 +67,7 @@ async function main() {
   try {
     const rules = await loadRulesFromRegistry("defi-vault-security");
     console.log(`Loaded ${rules.length} rule(s)`);
-    
+
     // Show first few rules
     console.log("\nFirst 3 rules:");
     for (const rule of rules.slice(0, 3)) {
@@ -103,7 +103,7 @@ checks:
     const customPlaybook = await registry.registerFromString(
       customYaml,
       "custom-test",
-      "demo"
+      "demo",
     );
     console.log(`✅ Registered: ${customPlaybook.id}`);
     console.log(`   Name: ${customPlaybook.meta.name}`);
@@ -146,12 +146,12 @@ checks:
   console.log("\n1️⃣2️⃣ Usage tracking:");
   console.log("-".repeat(60));
   console.log("Simulating playbook usage...");
-  
+
   // Use some playbooks
   registry.getAndUse("defi-vault-security");
   registry.getAndUse("defi-vault-security");
   registry.getAndUse("erc20-security");
-  
+
   // Show usage stats
   const statsAfterUsage = registry.getStats();
   console.log("\nMost used playbooks:");
@@ -163,14 +163,16 @@ checks:
   console.log("\n1️⃣3️⃣ Export/Import demonstration:");
   console.log("-".repeat(60));
   const exportedState = registry.export();
-  console.log(`✅ Exported registry with ${exportedState.playbooks.length} playbook(s)`);
+  console.log(
+    `✅ Exported registry with ${exportedState.playbooks.length} playbook(s)`,
+  );
   console.log(`   Export timestamp: ${exportedState.exportedAt}`);
-  
+
   // Clear and re-import
   console.log("\nClearing registry...");
   registry.clear();
   console.log(`   Playbooks after clear: ${registry.getAll().length}`);
-  
+
   console.log("\nRe-importing...");
   registry.import(exportedState);
   console.log(`   Playbooks after import: ${registry.getAll().length}`);

@@ -1,5 +1,5 @@
-import * as yaml from "yaml";
 import { readFileSync, existsSync } from "fs";
+import * as yaml from "yaml";
 import type {
   Playbook,
   ParsedPlaybook,
@@ -9,14 +9,13 @@ import type {
   ParsedScenarioStep,
   ParsedAction,
   RuleType,
-  RuleCategory
+  RuleCategory,
 } from "./types.js";
 
 /**
  * Parses YAML audit playbooks and converts them to executable format
  */
 export class PlaybookParser {
-  
   /**
    * Parse a playbook from file path
    */
@@ -56,9 +55,11 @@ export class PlaybookParser {
       meta: rawPlaybook.meta,
       targets: rawPlaybook.targets || { contracts: ["*"] },
       staticRules: this.parseStaticRules(rawPlaybook.checks),
-      dynamicScenarios: this.parseDynamicScenarios(rawPlaybook.dynamic?.scenarios || []),
+      dynamicScenarios: this.parseDynamicScenarios(
+        rawPlaybook.dynamic?.scenarios || [],
+      ),
       invariants: rawPlaybook.dynamic?.invariants || [],
-      fuzzingConfig: rawPlaybook.dynamic?.fuzzing
+      fuzzingConfig: rawPlaybook.dynamic?.fuzzing,
     };
   }
 
@@ -117,7 +118,9 @@ export class PlaybookParser {
 
     const validSeverities = ["critical", "high", "medium", "low", "info"];
     if (!validSeverities.includes(check.severity)) {
-      throw new Error(`Check ${check.id} has invalid severity: ${check.severity}`);
+      throw new Error(
+        `Check ${check.id} has invalid severity: ${check.severity}`,
+      );
     }
   }
 
@@ -142,12 +145,12 @@ export class PlaybookParser {
    * Parse static rules from checks
    */
   private static parseStaticRules(checks: any[]): ParsedStaticRule[] {
-    return checks.map(check => ({
+    return checks.map((check) => ({
       id: check.id,
       rule: this.parseRuleDSL(check.rule),
       severity: check.severity,
       description: check.description,
-      enabled: check.enabled !== false // Default to true
+      enabled: check.enabled !== false, // Default to true
     }));
   }
 
@@ -157,7 +160,7 @@ export class PlaybookParser {
   private static parseRuleDSL(ruleExpression: string): ParsedRule {
     try {
       // Parse different rule patterns
-      
+
       // Order rules: order.externalBefore(state=['shares','totalShares'])
       if (ruleExpression.startsWith("order.")) {
         return this.parseOrderRule(ruleExpression);
@@ -187,11 +190,12 @@ export class PlaybookParser {
       return {
         type: "pattern",
         category: "security",
-        params: { expression: ruleExpression }
+        params: { expression: ruleExpression },
       };
-
     } catch (error) {
-      throw new Error(`Failed to parse rule DSL: ${ruleExpression}. Error: ${error}`);
+      throw new Error(
+        `Failed to parse rule DSL: ${ruleExpression}. Error: ${error}`,
+      );
     }
   }
 
@@ -216,8 +220,8 @@ export class PlaybookParser {
       category: "security",
       params: {
         method,
-        ...params
-      }
+        ...params,
+      },
     };
   }
 
@@ -238,12 +242,12 @@ export class PlaybookParser {
     const params = this.parseParameterList(paramsStr);
 
     return {
-      type: "pattern", 
+      type: "pattern",
       category: "security",
       params: {
         method,
-        ...params
-      }
+        ...params,
+      },
     };
   }
 
@@ -265,11 +269,11 @@ export class PlaybookParser {
 
     return {
       type: "access",
-      category: "security", 
+      category: "security",
       params: {
         method,
-        ...params
-      }
+        ...params,
+      },
     };
   }
 
@@ -290,8 +294,8 @@ export class PlaybookParser {
       category: "compliance",
       params: {
         method,
-        ...params
-      }
+        ...params,
+      },
     };
   }
 
@@ -312,8 +316,8 @@ export class PlaybookParser {
       category: "security", // Default category
       params: {
         method,
-        ...params
-      }
+        ...params,
+      },
     };
   }
 
@@ -322,14 +326,16 @@ export class PlaybookParser {
    */
   private static parseParameterList(paramStr: string): Record<string, any> {
     const params: Record<string, any> = {};
-    
+
     // Handle array parameters: state=['shares','totalShares']
     const arrayMatches = paramStr.match(/(\w+)=\[([^\]]+)\]/g);
     if (arrayMatches) {
       for (const match of arrayMatches) {
         const [, key, values] = match.match(/(\w+)=\[([^\]]+)\]/) || [];
         if (key && values) {
-          params[key] = values.split(',').map(v => v.trim().replace(/['"]/g, ''));
+          params[key] = values
+            .split(",")
+            .map((v) => v.trim().replace(/['"]/g, ""));
         }
       }
     }
@@ -352,9 +358,9 @@ export class PlaybookParser {
         const [, key, value] = match.match(/(\w+)=([^,\[\]'"]+)/) || [];
         if (key && value !== undefined) {
           const trimmedValue = value.trim();
-          if (trimmedValue === 'true') {
+          if (trimmedValue === "true") {
             params[key] = true;
-          } else if (trimmedValue === 'false') {
+          } else if (trimmedValue === "false") {
             params[key] = false;
           } else if (/^\d+$/.test(trimmedValue)) {
             params[key] = parseInt(trimmedValue);
@@ -373,13 +379,15 @@ export class PlaybookParser {
   /**
    * Parse dynamic scenarios
    */
-  private static parseDynamicScenarios(scenarios: any[]): ParsedDynamicScenario[] {
-    return scenarios.map(scenario => ({
+  private static parseDynamicScenarios(
+    scenarios: any[],
+  ): ParsedDynamicScenario[] {
+    return scenarios.map((scenario) => ({
       name: scenario.name,
       description: scenario.description,
       steps: this.parseScenarioSteps(scenario.steps),
       assertions: scenario.assert || [],
-      setup: scenario.setup
+      setup: scenario.setup,
     }));
   }
 
@@ -387,11 +395,11 @@ export class PlaybookParser {
    * Parse scenario steps
    */
   private static parseScenarioSteps(steps: any[]): ParsedScenarioStep[] {
-    return steps.map(step => ({
+    return steps.map((step) => ({
       action: this.parseAction(step.action),
       value: step.value,
       params: step.params,
-      expect: step.expect || "any"
+      expect: step.expect || "any",
     }));
   }
 
@@ -400,7 +408,7 @@ export class PlaybookParser {
    */
   private static parseAction(actionStr: string): ParsedAction {
     // Examples:
-    // "attacker.depositETH" -> { target: "attacker", method: "depositETH", type: "call" }  
+    // "attacker.depositETH" -> { target: "attacker", method: "depositETH", type: "call" }
     // "vault.transfer" -> { target: "vault", method: "transfer", type: "call" }
     // "deploy.AttackerContract" -> { target: "AttackerContract", method: "", type: "deploy" }
 
@@ -409,19 +417,21 @@ export class PlaybookParser {
       return {
         target: contractName,
         method: "",
-        type: "deploy"
+        type: "deploy",
       };
     }
 
     const [target, method] = actionStr.split(".");
     if (!target || !method) {
-      throw new Error(`Invalid action format: ${actionStr}. Expected format: 'target.method'`);
+      throw new Error(
+        `Invalid action format: ${actionStr}. Expected format: 'target.method'`,
+      );
     }
 
     return {
       target,
       method,
-      type: "call"
+      type: "call",
     };
   }
 }

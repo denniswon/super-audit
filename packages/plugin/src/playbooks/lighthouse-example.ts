@@ -1,20 +1,20 @@
 /**
  * Example: Using Lighthouse Storage with Playbook Registry
- * 
+ *
  * This example demonstrates how to use Lighthouse (IPFS) storage
  * for uploading, retrieving, and managing playbooks.
- * 
+ *
  * Prerequisites:
  * - LIGHTHOUSE_API_KEY set in .env file
  * - @lighthouse-web3/sdk installed
  */
 
-import dotenv from "dotenv";
 import { join } from "path";
 import { tmpdir } from "os";
 import { writeFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import dotenv from "dotenv";
 import {
   initializeRegistry,
   getPlaybookRegistry,
@@ -45,14 +45,14 @@ async function main() {
 
   // 1. Initialize Registry with Lighthouse
   console.log("1️⃣  Initializing Registry with Lighthouse...");
-  
+
   // Initialize Lighthouse
   initializeLighthouseFromEnv();
-  
+
   // Initialize registry with builtins
   const builtins = getSamplePlaybooks();
   await initializeRegistry(builtins);
-  
+
   if (isLighthouseInitialized()) {
     console.log("✅ Lighthouse initialized\n");
   } else {
@@ -98,17 +98,23 @@ checks:
 
   // 3. Upload to Lighthouse
   console.log("3️⃣  Uploading playbook to Lighthouse...");
-  
+
   const progressCallback = (progressData: any) => {
     if (progressData?.total && progressData?.uploaded) {
-      const percentage = ((progressData.uploaded / progressData.total) * 100).toFixed(2);
+      const percentage = (
+        (progressData.uploaded / progressData.total) *
+        100
+      ).toFixed(2);
       console.log(`   Progress: ${percentage}%`);
     }
   };
 
   try {
-    const metadata = await lighthouse.uploadPlaybook(tempFile, progressCallback);
-    
+    const metadata = await lighthouse.uploadPlaybook(
+      tempFile,
+      progressCallback,
+    );
+
     console.log("\n✅ Upload successful!");
     console.log(`   CID: ${metadata.cid}`);
     console.log(`   Name: ${metadata.name}`);
@@ -119,9 +125,9 @@ checks:
     console.log("4️⃣  Registering from Lighthouse CID...");
     const registered = await registry.registerFromLighthouse(
       metadata.cid,
-      "lighthouse-test"
+      "lighthouse-test",
     );
-    
+
     console.log("✅ Registered from Lighthouse");
     console.log(`   ID: ${registered.id}`);
     console.log(`   Name: ${registered.meta.name}`);
@@ -138,9 +144,9 @@ checks:
     const directRegistered = await registry.uploadAndRegisterToLighthouse(
       tempFile,
       "lighthouse-test-direct",
-      progressCallback
+      progressCallback,
     );
-    
+
     console.log("\n✅ Uploaded and registered in one step");
     console.log(`   ID: ${directRegistered.id}`);
     console.log(`   CID: ${directRegistered.source.cid}`);
@@ -168,10 +174,10 @@ checks:
     console.log("9️⃣  All registered playbooks:");
     const allPlaybooks = registry.getAll();
     console.log(`Total: ${allPlaybooks.length} playbook(s)`);
-    
+
     // Show Lighthouse-stored ones
     const lighthousePlaybooks = allPlaybooks.filter(
-      pb => pb.source.type === "lighthouse"
+      (pb) => pb.source.type === "lighthouse",
     );
     console.log(`\nLighthouse-stored: ${lighthousePlaybooks.length}`);
     for (const pb of lighthousePlaybooks) {
@@ -184,7 +190,9 @@ checks:
     // 10. Demonstrate CID accessibility check
     console.log("🔟 Checking CID accessibility...");
     const accessible = await lighthouse.isCIDAccessible(metadata.cid);
-    console.log(`   CID ${metadata.cid.substring(0, 12)}... is ${accessible ? "accessible ✅" : "not accessible ❌"}\n`);
+    console.log(
+      `   CID ${metadata.cid.substring(0, 12)}... is ${accessible ? "accessible ✅" : "not accessible ❌"}\n`,
+    );
 
     // 11. Get playbook metadata
     console.log("1️⃣1️⃣  Getting playbook metadata...");
@@ -206,22 +214,27 @@ checks:
     console.log();
 
     // 13. Summary
-    console.log("=" .repeat(60));
+    console.log("=".repeat(60));
     console.log("✅ Demo Completed Successfully!");
-    console.log("=" .repeat(60));
+    console.log("=".repeat(60));
     console.log("\n📝 Summary:");
     console.log(`   - Uploaded playbook to IPFS`);
     console.log(`   - CID: ${metadata.cid}`);
     console.log(`   - Gateway URL: ${metadata.lighthouseUrl}`);
-    console.log(`   - Registered ${lighthousePlaybooks.length} Lighthouse playbook(s)`);
+    console.log(
+      `   - Registered ${lighthousePlaybooks.length} Lighthouse playbook(s)`,
+    );
     console.log(`   - Loaded ${rules.length} rule(s) from playbook`);
     console.log();
     console.log("🎯 Next Steps:");
     console.log(`   1. Share the CID with others: ${metadata.cid}`);
-    console.log(`   2. They can register it: await registry.registerFromLighthouse("${metadata.cid}")`);
-    console.log(`   3. Or use CLI: npx hardhat superaudit --register-from-lighthouse ${metadata.cid}`);
+    console.log(
+      `   2. They can register it: await registry.registerFromLighthouse("${metadata.cid}")`,
+    );
+    console.log(
+      `   3. Or use CLI: npx hardhat superaudit --register-from-lighthouse ${metadata.cid}`,
+    );
     console.log();
-
   } catch (error) {
     console.error("❌ Error during demo:", error);
     throw error;

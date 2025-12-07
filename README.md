@@ -333,7 +333,7 @@ _Note: Playbook infrastructure is ready, CLI integration coming soon._
 
 ## 🤖 **AI-Powered Analysis (NEW!)**
 
-SuperAudit now supports **AI-enhanced security analysis** using OpenAI GPT-4 or Anthropic Claude to provide:
+SuperAudit now supports **AI-enhanced security analysis** using latest 2025 models (OpenAI GPT-5.1/GPT-5/GPT-4.1 or Anthropic Claude Opus 4.5/Sonnet 4) to provide:
 
 - 🧠 **Detailed Vulnerability Explanations** - Understand WHY code is vulnerable
 - 🔧 **Automated Fix Suggestions** - Get concrete code fixes with examples
@@ -360,7 +360,7 @@ SUPERAUDIT_AI_PROVIDER=openai
 OPENAI_API_KEY=sk-your-api-key-here
 
 # Optional customization
-# SUPERAUDIT_AI_MODEL=gpt-4
+# SUPERAUDIT_AI_MODEL=gpt-4o-mini-2025  # Latest 2025 models: gpt-5.1, gpt-5, gpt-4.1, gpt-4o-mini-2025, claude-opus-4.5, claude-sonnet-4
 # SUPERAUDIT_AI_TEMPERATURE=0.3
 # SUPERAUDIT_AI_MAX_TOKENS=1000
 ```
@@ -432,7 +432,7 @@ meta:
   ai:
     enabled: true
     provider: "openai"
-    model: "gpt-4"
+    model: "gpt-4o-mini-2025"  # Latest 2025 models: gpt-5.1, gpt-5, gpt-4.1, gpt-4o-mini-2025
     enhance_findings: true
     generate_fixes: true
 
@@ -450,7 +450,7 @@ checks:
 
 ### Cost Optimization
 
-**Estimated Costs (OpenAI GPT-4)**:
+**Estimated Costs (OpenAI GPT-4o-mini-2025, default model)**:
 
 - Small project (10 issues): ~$0.30
 - Medium project (50 issues): ~$1.50
@@ -458,18 +458,18 @@ checks:
 
 **Cost-Saving Tips**:
 
-1. Use `gpt-3.5-turbo` for faster, cheaper analysis
+1. Use `gpt-4o-mini-2025` for faster, cheaper analysis (default)
 2. Run basic analysis first, then use AI for critical issues only
 3. Enable caching (coming soon) to avoid re-analyzing identical code
 4. Use Anthropic Claude for similar quality at lower cost
 
 ### Supported Providers
 
-| Provider      | Models                         | Cost (per issue) | Setup               |
-| ------------- | ------------------------------ | ---------------- | ------------------- |
-| **OpenAI**    | gpt-4, gpt-3.5-turbo           | $0.03 - $0.10    | `OPENAI_API_KEY`    |
-| **Anthropic** | claude-3-sonnet, claude-3-opus | $0.02 - $0.08    | `ANTHROPIC_API_KEY` |
-| **Local**     | Coming soon                    | Free             | N/A                 |
+| Provider      | Models (2025)                                                            | Cost (per issue) | Setup               |
+| ------------- | ------------------------------------------------------------------------ | ---------------- | ------------------- |
+| **OpenAI**    | gpt-5.1, gpt-5, gpt-4.1, gpt-4o-mini-2025, gpt-4o-2025, gpt-4-turbo-2025 | $0.03 - $0.10    | `OPENAI_API_KEY`    |
+| **Anthropic** | claude-opus-4.5, claude-sonnet-4, claude-haiku-4.5, claude-opus-4        | $0.02 - $0.08    | `ANTHROPIC_API_KEY` |
+| **Local**     | Coming soon                                                              | Free             | N/A                 |
 
 ---
 
@@ -859,7 +859,7 @@ cat .env
 
 3. Try cheaper model for testing:
    ```bash
-   export SUPERAUDIT_AI_MODEL=gpt-3.5-turbo
+   export SUPERAUDIT_AI_MODEL=gpt-4o-mini-2025  # Faster and cheaper than gpt-5.1
    npx hardhat superaudit --ai
    ```
 
@@ -905,7 +905,7 @@ npx hardhat superaudit
 1. Use faster model:
 
    ```bash
-   export SUPERAUDIT_AI_MODEL=gpt-3.5-turbo
+   export SUPERAUDIT_AI_MODEL=gpt-4o-mini-2025  # Faster and cheaper than gpt-5.1
    ```
 
 2. Run basic analysis first, then AI only for critical issues
@@ -922,10 +922,10 @@ npx hardhat superaudit
 
 **Solutions:**
 
-1. **Use GPT-3.5-Turbo** (~100x cheaper than GPT-4):
+1. **Use GPT-4o-mini-2025** (faster and cheaper than GPT-5.1):
 
    ```bash
-   export SUPERAUDIT_AI_MODEL=gpt-3.5-turbo
+   export SUPERAUDIT_AI_MODEL=gpt-4o-mini-2025  # Faster and cheaper than gpt-5.1
    ```
 
 2. **Run AI selectively**: Use basic mode first, then AI for finals:

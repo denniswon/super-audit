@@ -5,6 +5,7 @@ A centralized registry system for managing, discovering, and validating audit pl
 ## Overview
 
 The Playbook Registry provides a robust system for:
+
 - **Registering** playbooks from various sources (files, strings, directories, built-ins)
 - **Searching** and filtering playbooks by tags, author, severity, and other criteria
 - **Validating** playbook integrity and compatibility
@@ -37,9 +38,9 @@ playbooks/
 ### Basic Usage
 
 ```typescript
-import { 
-  getPlaybookRegistry, 
-  loadRulesFromRegistry 
+import {
+  getPlaybookRegistry,
+  loadRulesFromRegistry,
 } from "./playbooks/index.js";
 
 // Get singleton instance
@@ -60,7 +61,7 @@ const results = await runAnalysis(contracts, rules);
 ```typescript
 // From file
 const playbook1 = await registry.registerFromFile(
-  "./playbooks/erc20-security.yaml"
+  "./playbooks/erc20-security.yaml",
 );
 
 // From YAML string
@@ -72,21 +73,18 @@ meta:
   ...
 `;
 const playbook2 = await registry.registerFromString(
-  yamlContent, 
-  "custom-security"
+  yamlContent,
+  "custom-security",
 );
 
 // From directory (recursive)
 const playbooks = await registry.registerFromDirectory(
   "./playbooks",
-  true  // recursive
+  true, // recursive
 );
 
 // Builtin playbook
-await registry.registerBuiltin(
-  "default-security",
-  builtinPlaybookYaml
-);
+await registry.registerBuiltin("default-security", builtinPlaybookYaml);
 ```
 
 ### Searching and Filtering
@@ -94,19 +92,19 @@ await registry.registerBuiltin(
 ```typescript
 // Search by tags
 const defiPlaybooks = registry.search({
-  tags: ["defi", "vault"]
+  tags: ["defi", "vault"],
 });
 
 // Search by author
 const teamPlaybooks = registry.search({
-  author: "SuperAudit Team"
+  author: "SuperAudit Team",
 });
 
 // Search by multiple criteria
 const criticalERC20 = registry.search({
   tags: ["erc20"],
   severity: ["critical", "high"],
-  aiEnabled: true
+  aiEnabled: true,
 });
 
 // Get playbooks by specific tag
@@ -169,20 +167,20 @@ import {
   loadRulesFromMultiplePlaybooks,
   findAndLoadPlaybooks,
   getRecommendedPlaybooks,
-  mergePlaybooks
+  mergePlaybooks,
 } from "./playbooks/index.js";
 
 // Load rules from multiple playbooks
 const rules = await loadRulesFromMultiplePlaybooks([
   "erc20-security",
   "access-control",
-  "defi-vault"
+  "defi-vault",
 ]);
 
 // Find and load playbooks matching criteria
 const { playbooks, rules } = await findAndLoadPlaybooks({
   tags: ["defi"],
-  severity: ["critical", "high"]
+  severity: ["critical", "high"],
 });
 
 // Get recommended playbooks based on contract patterns
@@ -195,8 +193,8 @@ const merged = await mergePlaybooks(
   "erc20-with-access",
   {
     name: "ERC20 with Access Control",
-    author: "Custom"
-  }
+    author: "Custom",
+  },
 );
 ```
 
@@ -233,11 +231,14 @@ The registry can be integrated into the main SuperAudit analysis task:
 
 ```typescript
 // In tasks/analyze.ts
-import { getPlaybookRegistry, loadRulesFromRegistry } from "../playbooks/index.js";
+import {
+  getPlaybookRegistry,
+  loadRulesFromRegistry,
+} from "../playbooks/index.js";
 
 async function determineAnalysisRules(args: any) {
   const registry = getPlaybookRegistry();
-  
+
   // If playbook ID is provided, load from registry
   if (args.playbook) {
     // Check if it's a registered playbook ID
@@ -246,7 +247,7 @@ async function determineAnalysisRules(args: any) {
       const rules = await loadRulesFromRegistry(args.playbook);
       return { rules, analysisMode: "playbook" };
     }
-    
+
     // Otherwise, treat as file path and register it
     if (existsSync(args.playbook)) {
       console.log(`📋 Registering and loading playbook: ${args.playbook}`);
@@ -255,10 +256,10 @@ async function determineAnalysisRules(args: any) {
       const rules = await loadRulesFromRegistry(id);
       return { rules, analysisMode: "playbook" };
     }
-    
+
     throw new Error(`Playbook not found: ${args.playbook}`);
   }
-  
+
   // ... rest of logic
 }
 ```
@@ -291,15 +292,15 @@ npx hardhat superaudit --playbook-info erc20-security
 
 ```typescript
 interface RegisteredPlaybook {
-  id: string;                    // Unique identifier
-  source: PlaybookSource;        // Source information
-  meta: PlaybookMeta;           // Playbook metadata
+  id: string; // Unique identifier
+  source: PlaybookSource; // Source information
+  meta: PlaybookMeta; // Playbook metadata
   parsedPlaybook?: ParsedPlaybook; // Cached parsed version
-  registeredAt: Date;           // Registration timestamp
-  lastUsed?: Date;              // Last usage timestamp
-  usageCount: number;           // Usage counter
-  validated: boolean;           // Validation status
-  validationErrors?: string[];  // Validation errors if any
+  registeredAt: Date; // Registration timestamp
+  lastUsed?: Date; // Last usage timestamp
+  usageCount: number; // Usage counter
+  validated: boolean; // Validation status
+  validationErrors?: string[]; // Validation errors if any
 }
 ```
 
@@ -308,8 +309,8 @@ interface RegisteredPlaybook {
 ```typescript
 interface PlaybookSource {
   type: "file" | "string" | "remote" | "builtin";
-  location: string;             // Path, URL, or identifier
-  hash?: string;                // Content hash
+  location: string; // Path, URL, or identifier
+  hash?: string; // Content hash
 }
 ```
 
@@ -317,12 +318,12 @@ interface PlaybookSource {
 
 ```typescript
 interface PlaybookSearchCriteria {
-  tags?: string[];              // Filter by tags
-  author?: string;              // Filter by author
-  name?: string;                // Filter by name (partial)
-  minVersion?: string;          // Minimum version
-  severity?: string[];          // Filter by severity levels
-  aiEnabled?: boolean;          // Filter by AI enablement
+  tags?: string[]; // Filter by tags
+  author?: string; // Filter by author
+  name?: string; // Filter by name (partial)
+  minVersion?: string; // Minimum version
+  severity?: string[]; // Filter by severity levels
+  aiEnabled?: boolean; // Filter by AI enablement
 }
 ```
 
@@ -354,23 +355,23 @@ import { getPlaybookRegistry } from "./playbooks/index.js";
 
 describe("PlaybookRegistry", () => {
   let registry;
-  
+
   beforeEach(() => {
     registry = getPlaybookRegistry();
     registry.clear(); // Clear for isolated tests
   });
-  
+
   it("should register a playbook from file", async () => {
     const playbook = await registry.registerFromFile("./test.yaml");
     expect(registry.has(playbook.id)).toBe(true);
   });
-  
+
   it("should search playbooks by tags", async () => {
     await registry.registerFromFile("./erc20.yaml");
     const results = registry.search({ tags: ["erc20"] });
     expect(results.length).toBeGreaterThan(0);
   });
-  
+
   // More tests...
 });
 ```

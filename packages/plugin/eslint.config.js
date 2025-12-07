@@ -13,8 +13,10 @@ export default defineConfig(
       parser: tseslint.parser,
       parserOptions: {
         project: path.join(import.meta.dirname, "tsconfig.json"),
-        tsconfigRootDir: path.join(import.meta.dirname, "tsconfig.json"),
-        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+        projectService: {
+          allowDefaultProject: ["test/**/*.ts"],
+        },
       },
     },
     settings: {
@@ -30,7 +32,31 @@ export default defineConfig(
   eslint.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
   {
-    files: ["src/**/*.ts", "test/**/*.ts", "integration-tests/**/*.ts"],
+    files: ["src/**/*.ts"],
+    languageOptions: {
+      parserOptions: {
+        project: path.join(import.meta.dirname, "tsconfig.json"),
+        tsconfigRootDir: import.meta.dirname,
+        projectService: true,
+      },
+    },
+    rules: {
+      // Disable two rules that conflict with the patterns that we use
+      "@typescript-eslint/require-await": "off",
+      "@typescript-eslint/no-redundant-type-constituents": "off",
+      // We disable the following rule as it's a common pattern when using
+      // the network provider directly
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+    },
+  },
+  {
+    files: ["test/**/*.ts", "integration-tests/**/*.ts"],
+    languageOptions: {
+      parserOptions: {
+        project: false,
+      },
+    },
     rules: {
       // Disable two rules that conflict with the patterns that we use
       "@typescript-eslint/require-await": "off",

@@ -11,12 +11,12 @@
  * Users can optionally provide their own API key via LIGHTHOUSE_API_KEY env var.
  */
 
-import lighthouse from "@lighthouse-web3/sdk";
-import kavach from "@lighthouse-web3/kavach";
-import { ethers } from "ethers";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
 import { join } from "path";
 import { tmpdir } from "os";
+import lighthouse from "@lighthouse-web3/sdk";
+import kavach from "@lighthouse-web3/kavach";
+import { ethers } from "ethers";
 import axios from "axios";
 import type { PlaybookMeta } from "./types.js";
 

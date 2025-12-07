@@ -60,12 +60,14 @@ The Playbook Registry is a comprehensive module for managing, discovering, and v
 ## Key Features
 
 ### 1. Multiple Registration Sources
+
 - **Files**: Register individual YAML files
 - **Strings**: Register from YAML string content
 - **Directories**: Bulk register from directories (recursive)
 - **Builtins**: Register hardcoded builtin playbooks
 
 ### 2. Powerful Search & Discovery
+
 - Search by tags (OR logic)
 - Filter by author
 - Filter by name (partial match)
@@ -74,12 +76,14 @@ The Playbook Registry is a comprehensive module for managing, discovering, and v
 - Smart recommendations based on contract patterns
 
 ### 3. Indexing for Performance
+
 - Tag-based index for fast tag lookups
 - Author-based index for author queries
 - Cached parsed playbooks (no re-parsing)
 - O(1) lookups by ID
 
 ### 4. Usage Tracking
+
 - Track registration timestamp
 - Track last used timestamp
 - Track usage count
@@ -87,12 +91,14 @@ The Playbook Registry is a comprehensive module for managing, discovering, and v
 - Recently added playbooks
 
 ### 5. Validation & Error Handling
+
 - Validate on registration
 - Store validation errors
 - Batch validation of all playbooks
 - Graceful error handling for invalid playbooks
 
 ### 6. Statistics & Analytics
+
 - Total playbooks count
 - Breakdown by source type
 - Breakdown by author
@@ -101,6 +107,7 @@ The Playbook Registry is a comprehensive module for managing, discovering, and v
 - Recently added playbooks
 
 ### 7. Persistence
+
 - Export registry state to JSON
 - Import registry state from JSON
 - Supports saving to file/database
@@ -109,6 +116,7 @@ The Playbook Registry is a comprehensive module for managing, discovering, and v
 ## Architecture
 
 ### Singleton Pattern
+
 ```
 PlaybookRegistry (Singleton)
 ├── playbooks: Map<id, RegisteredPlaybook>
@@ -117,6 +125,7 @@ PlaybookRegistry (Singleton)
 ```
 
 ### Data Flow
+
 ```
 YAML File/String
     ↓
@@ -157,6 +166,7 @@ Executable Rules
 ### Backward Compatibility
 
 The registry is **fully backward compatible**:
+
 - Existing code using `loadPlaybookRules(filePath)` still works
 - Registry is an optional enhancement
 - Can be adopted incrementally
@@ -165,12 +175,14 @@ The registry is **fully backward compatible**:
 ## Usage Patterns
 
 ### Pattern 1: Simple File Loading (Unchanged)
+
 ```typescript
 // Existing code still works
 const rules = await loadPlaybookRules("./my-playbook.yaml");
 ```
 
 ### Pattern 2: Registry-Based Loading (New)
+
 ```typescript
 // Initialize once at startup
 await initializePlaybookRegistry();
@@ -184,6 +196,7 @@ const rules = await loadRulesFromRegistry("my-playbook");
 ```
 
 ### Pattern 3: Auto-Discovery (New)
+
 ```typescript
 // Auto-discover and register all project playbooks
 await registerProjectPlaybooks(projectRoot);
@@ -191,7 +204,7 @@ await registerProjectPlaybooks(projectRoot);
 // Search and use
 const defiPlaybooks = registry.search({ tags: ["defi"] });
 const rules = await loadRulesFromMultiplePlaybooks(
-  defiPlaybooks.map(pb => pb.id)
+  defiPlaybooks.map((pb) => pb.id),
 );
 ```
 
@@ -221,6 +234,7 @@ npx hardhat superaudit --auto-recommend
 ## Benefits
 
 ### For Users
+
 - **Discovery**: Find relevant playbooks by tags/patterns
 - **Organization**: Central management of all playbooks
 - **Reusability**: Reference by ID instead of file paths
@@ -228,6 +242,7 @@ npx hardhat superaudit --auto-recommend
 - **Validation**: Know which playbooks are valid before use
 
 ### For Developers
+
 - **Extensibility**: Easy to add new registration sources
 - **Performance**: Cached parsing, indexed lookups
 - **Testing**: Clear state management (clear/import)
@@ -235,6 +250,7 @@ npx hardhat superaudit --auto-recommend
 - **Analytics**: Usage patterns and statistics
 
 ### For Future Features
+
 - **Marketplace**: Foundation for playbook marketplace
 - **Versioning**: Can support multiple versions
 - **Remote Loading**: Can add IPFS/URL sources
@@ -244,6 +260,7 @@ npx hardhat superaudit --auto-recommend
 ## Testing Strategy
 
 ### Unit Tests (Recommended)
+
 ```typescript
 describe("PlaybookRegistry", () => {
   let registry: PlaybookRegistry;
@@ -269,6 +286,7 @@ describe("PlaybookRegistry", () => {
 ```
 
 ### Integration Tests (Recommended)
+
 ```typescript
 describe("Registry Integration", () => {
   test("load rules from registered playbook", async () => {
@@ -285,7 +303,9 @@ describe("Registry Integration", () => {
 ```
 
 ### Manual Testing
+
 Run the example script:
+
 ```bash
 npx ts-node packages/plugin/src/playbooks/registry-example.ts
 ```
@@ -293,6 +313,7 @@ npx ts-node packages/plugin/src/playbooks/registry-example.ts
 ## Next Steps for Integration
 
 ### Phase 1: Basic Integration (Ready Now)
+
 1. ✅ Core registry implementation
 2. ✅ Utility functions
 3. ✅ Documentation
@@ -300,12 +321,14 @@ npx ts-node packages/plugin/src/playbooks/registry-example.ts
 5. ⏳ Optional: Add initialization to plugin entry point
 
 ### Phase 2: Task Integration (Your Implementation)
+
 1. Add registry initialization to `tasks/analyze.ts`
 2. Enhance `determineAnalysisRules` with registry support
 3. Add new CLI flags for registry operations
 4. Update task help documentation
 
 ### Phase 3: Advanced Features (Future)
+
 1. Add remote playbook loading (IPFS, URLs)
 2. Implement versioning support
 3. Add playbook marketplace integration
@@ -314,6 +337,7 @@ npx ts-node packages/plugin/src/playbooks/registry-example.ts
 6. Auto-update checking
 
 ## File Structure
+
 ```
 packages/plugin/src/playbooks/
 ├── index.ts                     # Main exports (updated)
@@ -331,6 +355,7 @@ packages/plugin/src/playbooks/
 ## API Surface
 
 ### Registry Core
+
 - `getPlaybookRegistry()` - Get singleton instance
 - `registry.registerFromFile(path)` - Register from file
 - `registry.registerFromString(yaml, id)` - Register from string
@@ -350,6 +375,7 @@ packages/plugin/src/playbooks/
 - `registry.clear()` - Clear all
 
 ### Registry Utils
+
 - `loadRulesFromRegistry(id)` - Load rules from ID
 - `loadRulesFromMultiplePlaybooks(ids)` - Batch load
 - `findAndLoadPlaybooks(criteria)` - Search and load
@@ -360,6 +386,7 @@ packages/plugin/src/playbooks/
 - `mergePlaybooks(ids, newId)` - Merge playbooks
 
 ### Integration Helpers
+
 - `initializePlaybookRegistry()` - Initialize with builtins
 - `registerProjectPlaybooks(root)` - Auto-discover
 - `showPlaybookInfo(id)` - Show detailed info

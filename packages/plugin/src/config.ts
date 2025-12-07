@@ -15,10 +15,10 @@ export async function validatePluginConfig(
   userConfig: HardhatUserConfig,
 ): Promise<HardhatUserConfigValidationError[]> {
   const errors: HardhatUserConfigValidationError[] = [];
-  
+
   if (userConfig.superaudit) {
     const config = userConfig.superaudit;
-    
+
     // Validate mode
     if (config.mode && !["basic", "advanced", "full"].includes(config.mode)) {
       errors.push({
@@ -26,24 +26,30 @@ export async function validatePluginConfig(
         message: `Invalid mode: ${config.mode}. Must be one of: basic, advanced, full`,
       });
     }
-    
+
     // Validate format
-    if (config.format && !["console", "json", "sarif"].includes(config.format)) {
+    if (
+      config.format &&
+      !["console", "json", "sarif"].includes(config.format)
+    ) {
       errors.push({
         path: ["superaudit", "format"],
         message: `Invalid format: ${config.format}. Must be one of: console, json, sarif`,
       });
     }
-    
+
     // Validate AI provider
-    if (config.ai?.provider && !["openai", "anthropic", "local"].includes(config.ai.provider)) {
+    if (
+      config.ai?.provider &&
+      !["openai", "anthropic", "local"].includes(config.ai.provider)
+    ) {
       errors.push({
         path: ["superaudit", "ai", "provider"],
         message: `Invalid AI provider: ${config.ai.provider}. Must be one of: openai, anthropic, local`,
       });
     }
   }
-  
+
   return errors;
 }
 
@@ -63,7 +69,7 @@ export async function resolvePluginConfig(
   partiallyResolvedConfig: HardhatConfig,
 ): Promise<HardhatConfig> {
   const userSuperauditConfig = userConfig.superaudit || {};
-  
+
   // Resolve SuperAudit configuration with defaults
   const resolvedSuperauditConfig: SuperAuditConfig = {
     mode: userSuperauditConfig.mode || "full",
@@ -71,15 +77,17 @@ export async function resolvePluginConfig(
     rules: userSuperauditConfig.rules,
     format: userSuperauditConfig.format || "console",
     output: userSuperauditConfig.output,
-    ai: userSuperauditConfig.ai ? {
-      enabled: userSuperauditConfig.ai.enabled !== false, // default true if ai config exists
-      provider: userSuperauditConfig.ai.provider || "openai",
-      model: userSuperauditConfig.ai.model,
-      temperature: userSuperauditConfig.ai.temperature,
-      maxTokens: userSuperauditConfig.ai.maxTokens,
-    } : undefined,
+    ai: userSuperauditConfig.ai
+      ? {
+          enabled: userSuperauditConfig.ai.enabled !== false, // default true if ai config exists
+          provider: userSuperauditConfig.ai.provider || "openai",
+          model: userSuperauditConfig.ai.model,
+          temperature: userSuperauditConfig.ai.temperature,
+          maxTokens: userSuperauditConfig.ai.maxTokens,
+        }
+      : undefined,
   };
-  
+
   return {
     ...partiallyResolvedConfig,
     superaudit: resolvedSuperauditConfig,

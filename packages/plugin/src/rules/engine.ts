@@ -26,7 +26,7 @@ export class RuleEngine {
    */
   removeRule(ruleId: string): boolean {
     const initialLength = this.rules.length;
-    this.rules = this.rules.filter(rule => rule.id !== ruleId);
+    this.rules = this.rules.filter((rule) => rule.id !== ruleId);
     return this.rules.length < initialLength;
   }
 
@@ -51,7 +51,7 @@ export class RuleEngine {
     const context: AnalysisContext = {
       filePath,
       sourceCode,
-      issues: []
+      issues: [],
     };
 
     // Apply each rule to the AST
@@ -63,7 +63,7 @@ export class RuleEngine {
         console.warn(
           `Warning: Rule ${rule.id} failed on ${filePath}: ${
             error instanceof Error ? error.message : String(error)
-          }`
+          }`,
         );
       }
     }
@@ -78,12 +78,16 @@ export class RuleEngine {
    * Analyze multiple files
    */
   analyzeMultiple(
-    parseResults: Array<{ ast: ASTNode; filePath: string; sourceCode: string }>
+    parseResults: Array<{ ast: ASTNode; filePath: string; sourceCode: string }>,
   ): Issue[] {
     const allIssues: Issue[] = [];
 
     for (const result of parseResults) {
-      const issues = this.analyze(result.ast, result.filePath, result.sourceCode);
+      const issues = this.analyze(
+        result.ast,
+        result.filePath,
+        result.sourceCode,
+      );
       allIssues.push(...issues);
     }
 
@@ -106,21 +110,27 @@ export class RuleEngine {
           try {
             rule.apply(node, context);
           } catch (error) {
-            console.warn(`Rule ${rule.id} failed on node type ${node.type}: ${error}`);
+            console.warn(
+              `Rule ${rule.id} failed on node type ${node.type}: ${error}`,
+            );
           }
         }
-      }
+      },
     };
   }
 
   /**
    * Alternative analysis method using visitor pattern for potentially better performance
    */
-  analyzeWithVisitor(ast: ASTNode, filePath: string, sourceCode: string): Issue[] {
+  analyzeWithVisitor(
+    ast: ASTNode,
+    filePath: string,
+    sourceCode: string,
+  ): Issue[] {
     const context: AnalysisContext = {
       filePath,
       sourceCode,
-      issues: []
+      issues: [],
     };
 
     const visitor = this.createOptimizedVisitor(context);
@@ -131,7 +141,7 @@ export class RuleEngine {
       console.warn(
         `Warning: Visitor-based analysis failed on ${filePath}: ${
           error instanceof Error ? error.message : String(error)
-        }`
+        }`,
       );
       // Fall back to direct rule application
       return this.analyze(ast, filePath, sourceCode);

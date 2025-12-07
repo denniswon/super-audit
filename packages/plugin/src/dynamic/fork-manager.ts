@@ -1,10 +1,10 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types/hre";
-import type { 
-  ForkEnvironment, 
-  NetworkManager, 
+import type {
+  ForkEnvironment,
+  NetworkManager,
   DeployedContract,
   ContractInteraction,
-  InteractionResult
+  InteractionResult,
 } from "./types.js";
 
 /**
@@ -26,8 +26,10 @@ export class ForkManager implements NetworkManager {
       // Reset any existing fork
       await this.resetFork();
 
-      const mainnetRpcUrl = process.env.MAINNET_RPC_URL || "https://eth-mainnet.alchemyapi.io/v2/your-api-key";
-      
+      const mainnetRpcUrl =
+        process.env.MAINNET_RPC_URL ||
+        "https://eth-mainnet.alchemyapi.io/v2/your-api-key";
+
       // Configure Hardhat Network to fork mainnet (simplified for demo)
       // In a full implementation, this would properly configure the network
       console.log(`🔗 [DEMO] Would fork mainnet with RPC: ${mainnetRpcUrl}`);
@@ -43,12 +45,13 @@ export class ForkManager implements NetworkManager {
         blockNumber,
         rpcUrl: mainnetRpcUrl,
         accounts,
-        provider: null // Simplified for demo
+        provider: null, // Simplified for demo
       };
 
-      console.log(`🔗 Forked mainnet ${blockNumber ? `at block ${blockNumber}` : "at latest"}`);
+      console.log(
+        `🔗 Forked mainnet ${blockNumber ? `at block ${blockNumber}` : "at latest"}`,
+      );
       return this.currentFork;
-
     } catch (error) {
       throw new Error(`Failed to fork mainnet: ${error}`);
     }
@@ -57,10 +60,17 @@ export class ForkManager implements NetworkManager {
   /**
    * Fork a testnet at a specific block
    */
-  async forkTestnet(network: string, blockNumber?: number): Promise<ForkEnvironment> {
+  async forkTestnet(
+    network: string,
+    blockNumber?: number,
+  ): Promise<ForkEnvironment> {
     const testnetUrls: Record<string, string> = {
-      goerli: process.env.GOERLI_RPC_URL || "https://eth-goerli.alchemyapi.io/v2/your-api-key",
-      sepolia: process.env.SEPOLIA_RPC_URL || "https://eth-sepolia.alchemyapi.io/v2/your-api-key"
+      goerli:
+        process.env.GOERLI_RPC_URL ||
+        "https://eth-goerli.alchemyapi.io/v2/your-api-key",
+      sepolia:
+        process.env.SEPOLIA_RPC_URL ||
+        "https://eth-sepolia.alchemyapi.io/v2/your-api-key",
     };
 
     const rpcUrl = testnetUrls[network];
@@ -84,12 +94,13 @@ export class ForkManager implements NetworkManager {
         blockNumber,
         rpcUrl,
         accounts,
-        provider: null // Simplified for demo
+        provider: null, // Simplified for demo
       };
 
-      console.log(`🔗 Forked ${network} ${blockNumber ? `at block ${blockNumber}` : "at latest"}`);
+      console.log(
+        `🔗 Forked ${network} ${blockNumber ? `at block ${blockNumber}` : "at latest"}`,
+      );
       return this.currentFork;
-
     } catch (error) {
       throw new Error(`Failed to fork ${network}: ${error}`);
     }
@@ -123,10 +134,16 @@ export class ForkManager implements NetworkManager {
   /**
    * Set storage slot value
    */
-  async setStorageAt(address: string, slot: string, value: string): Promise<void> {
+  async setStorageAt(
+    address: string,
+    slot: string,
+    value: string,
+  ): Promise<void> {
     try {
       // Demo implementation
-      console.log(`🗃️ [DEMO] Would set storage at ${address}[${slot}] = ${value}`);
+      console.log(
+        `🗃️ [DEMO] Would set storage at ${address}[${slot}] = ${value}`,
+      );
     } catch (error) {
       throw new Error(`Failed to set storage: ${error}`);
     }
@@ -160,26 +177,27 @@ export class ForkManager implements NetworkManager {
    * Deploy a contract for testing
    */
   async deployContract(
-    contractName: string, 
+    contractName: string,
     constructorArgs: any[] = [],
-    deployer?: string
+    deployer?: string,
   ): Promise<DeployedContract> {
     try {
       // Demo implementation - would compile and deploy actual contract
-      const mockAddress = `0x${Math.floor(Math.random() * 1000000).toString(16).padStart(40, '0')}`;
-      
+      const mockAddress = `0x${Math.floor(Math.random() * 1000000)
+        .toString(16)
+        .padStart(40, "0")}`;
+
       const deployed: DeployedContract = {
         name: contractName,
         address: mockAddress,
         abi: [],
         bytecode: "0x",
         deployer: deployer || "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-        constructorArgs
+        constructorArgs,
       };
 
       console.log(`📄 [DEMO] Would deploy ${contractName} at ${mockAddress}`);
       return deployed;
-
     } catch (error) {
       throw new Error(`Failed to deploy ${contractName}: ${error}`);
     }
@@ -188,28 +206,31 @@ export class ForkManager implements NetworkManager {
   /**
    * Execute contract interaction
    */
-  async executeInteraction(interaction: ContractInteraction): Promise<InteractionResult> {
+  async executeInteraction(
+    interaction: ContractInteraction,
+  ): Promise<InteractionResult> {
     try {
       // Demo implementation - would execute actual contract call
       const success = Math.random() > 0.1; // 90% success rate
       const gasUsed = Math.floor(Math.random() * 100000) + 21000;
-      
-      console.log(`📞 [DEMO] Would call ${interaction.contract.name}.${interaction.method}(${interaction.params.join(', ')})`);
+
+      console.log(
+        `📞 [DEMO] Would call ${interaction.contract.name}.${interaction.method}(${interaction.params.join(", ")})`,
+      );
 
       return {
         success,
         returnValue: success ? "0x1" : undefined,
         gasUsed,
         events: [],
-        trace: undefined
+        trace: undefined,
       };
-
     } catch (error) {
       return {
         success: false,
         gasUsed: 0,
         events: [],
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       };
     }
   }
@@ -227,7 +248,7 @@ export class ForkManager implements NetworkManager {
   private toHex(value: string): string {
     if (value.includes("ether")) {
       const ethAmount = value.replace("ether", "").trim();
-      return `0x${(BigInt(ethAmount) * BigInt('1000000000000000000')).toString(16)}`;
+      return `0x${(BigInt(ethAmount) * BigInt("1000000000000000000")).toString(16)}`;
     }
     return `0x${BigInt(value).toString(16)}`;
   }
@@ -238,15 +259,23 @@ export class ForkManager implements NetworkManager {
   async simulatePriceShock(
     oracleAddress: string,
     newPrice: string,
-    priceSlot?: string
+    priceSlot?: string,
   ): Promise<void> {
     try {
       // Demo implementation
       if (priceSlot) {
-        await this.setStorageAt(oracleAddress, priceSlot, `0x${BigInt(newPrice).toString(16)}`);
-        console.log(`📈 [DEMO] Would manipulate oracle price at ${oracleAddress} to ${newPrice}`);
+        await this.setStorageAt(
+          oracleAddress,
+          priceSlot,
+          `0x${BigInt(newPrice).toString(16)}`,
+        );
+        console.log(
+          `📈 [DEMO] Would manipulate oracle price at ${oracleAddress} to ${newPrice}`,
+        );
       } else {
-        console.warn(`⚠️ Cannot manipulate oracle without storage slot information`);
+        console.warn(
+          `⚠️ Cannot manipulate oracle without storage slot information`,
+        );
       }
     } catch (error) {
       throw new Error(`Failed to simulate price shock: ${error}`);
@@ -256,10 +285,15 @@ export class ForkManager implements NetworkManager {
   /**
    * Simulate network congestion (high gas prices, slow transactions)
    */
-  async simulateNetworkCongestion(baseFee: string, maxPriorityFee: string): Promise<void> {
+  async simulateNetworkCongestion(
+    baseFee: string,
+    maxPriorityFee: string,
+  ): Promise<void> {
     try {
       // Demo implementation
-      console.log(`⛽ [DEMO] Would simulate network congestion: baseFee=${baseFee}, priority=${maxPriorityFee}`);
+      console.log(
+        `⛽ [DEMO] Would simulate network congestion: baseFee=${baseFee}, priority=${maxPriorityFee}`,
+      );
     } catch (error) {
       throw new Error(`Failed to simulate congestion: ${error}`);
     }

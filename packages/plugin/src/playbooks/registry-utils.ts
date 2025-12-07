@@ -2,19 +2,21 @@
  * Utility functions for working with the Playbook Registry
  */
 
-import { getPlaybookRegistry } from "./registry.js";
-import type { 
-  RegisteredPlaybook, 
-  PlaybookSearchCriteria,
-  PlaybookStats 
-} from "./registry.js";
 import type { Rule } from "../types.js";
+import { getPlaybookRegistry } from "./registry.js";
+import type {
+  RegisteredPlaybook,
+  PlaybookSearchCriteria,
+  PlaybookStats,
+} from "./registry.js";
 import { DSLInterpreter } from "./dsl/interpreter.js";
 
 /**
  * Load rules from a registered playbook by ID
  */
-export async function loadRulesFromRegistry(playbookId: string): Promise<Rule[]> {
+export async function loadRulesFromRegistry(
+  playbookId: string,
+): Promise<Rule[]> {
   const registry = getPlaybookRegistry();
   const playbook = registry.getAndUse(playbookId);
 
@@ -24,7 +26,7 @@ export async function loadRulesFromRegistry(playbookId: string): Promise<Rule[]>
 
   if (!playbook.validated) {
     throw new Error(
-      `Playbook ${playbookId} failed validation: ${playbook.validationErrors?.join(", ")}`
+      `Playbook ${playbookId} failed validation: ${playbook.validationErrors?.join(", ")}`,
     );
   }
 
@@ -40,7 +42,7 @@ export async function loadRulesFromRegistry(playbookId: string): Promise<Rule[]>
  * Load rules from multiple registered playbooks
  */
 export async function loadRulesFromMultiplePlaybooks(
-  playbookIds: string[]
+  playbookIds: string[],
 ): Promise<Rule[]> {
   const allRules: Rule[] = [];
 
@@ -60,7 +62,7 @@ export async function loadRulesFromMultiplePlaybooks(
  * Find and load playbooks matching search criteria
  */
 export async function findAndLoadPlaybooks(
-  criteria: PlaybookSearchCriteria
+  criteria: PlaybookSearchCriteria,
 ): Promise<{ playbooks: RegisteredPlaybook[]; rules: Rule[] }> {
   const registry = getPlaybookRegistry();
   const playbooks = registry.search(criteria);
@@ -70,7 +72,7 @@ export async function findAndLoadPlaybooks(
     if (playbook.validated && playbook.parsedPlaybook) {
       const interpreter = new DSLInterpreter();
       const playbookRules = interpreter.createRulesFromDSL(
-        playbook.parsedPlaybook.staticRules
+        playbook.parsedPlaybook.staticRules,
       );
       rules.push(...playbookRules);
     }
@@ -83,14 +85,14 @@ export async function findAndLoadPlaybooks(
  * Get recommended playbooks based on contract analysis
  */
 export function getRecommendedPlaybooks(
-  contractPatterns: string[]
+  contractPatterns: string[],
 ): RegisteredPlaybook[] {
   const registry = getPlaybookRegistry();
   const allPlaybooks = registry.getAll();
 
   // Score playbooks based on how well they match the contract patterns
   const scored = allPlaybooks
-    .map(playbook => {
+    .map((playbook) => {
       let score = 0;
 
       // Check if playbook is validated
@@ -179,7 +181,7 @@ export function formatRegistryStats(stats: PlaybookStats): string {
     lines.push("Most Used Playbooks:");
     for (const playbook of stats.mostUsed.slice(0, 5)) {
       lines.push(
-        `  ${playbook.meta.name} (${playbook.usageCount} times) - ${playbook.id}`
+        `  ${playbook.meta.name} (${playbook.usageCount} times) - ${playbook.id}`,
       );
     }
     lines.push("");
@@ -220,7 +222,9 @@ export function formatPlaybookList(playbooks: RegisteredPlaybook[]): string {
     lines.push(`  Name: ${playbook.meta.name}`);
     lines.push(`  Author: ${playbook.meta.author}`);
     lines.push(`  Tags: ${tags}`);
-    lines.push(`  Source: ${playbook.source.type} - ${playbook.source.location}`);
+    lines.push(
+      `  Source: ${playbook.source.type} - ${playbook.source.location}`,
+    );
 
     if (playbook.meta.description) {
       lines.push(`  Description: ${playbook.meta.description}`);
@@ -230,11 +234,13 @@ export function formatPlaybookList(playbooks: RegisteredPlaybook[]): string {
       const ruleCount = playbook.parsedPlaybook.staticRules.length;
       const scenarioCount = playbook.parsedPlaybook.dynamicScenarios.length;
       lines.push(
-        `  Rules: ${ruleCount} static, ${scenarioCount} dynamic scenarios`
+        `  Rules: ${ruleCount} static, ${scenarioCount} dynamic scenarios`,
       );
     }
 
-    lines.push(`  Registered: ${playbook.registeredAt.toLocaleDateString()}${usageInfo}`);
+    lines.push(
+      `  Registered: ${playbook.registeredAt.toLocaleDateString()}${usageInfo}`,
+    );
 
     if (!playbook.validated && playbook.validationErrors) {
       lines.push(`  Errors: ${playbook.validationErrors.join("; ")}`);
@@ -250,7 +256,7 @@ export function formatPlaybookList(playbooks: RegisteredPlaybook[]): string {
  * Export playbook metadata for sharing/publishing
  */
 export function exportPlaybookMetadata(
-  playbook: RegisteredPlaybook
+  playbook: RegisteredPlaybook,
 ): Record<string, any> {
   return {
     id: playbook.id,
@@ -321,7 +327,7 @@ export async function getOutdatedPlaybooks(): Promise<RegisteredPlaybook[]> {
   const registry = getPlaybookRegistry();
   const filePlaybooks = registry
     .getAll()
-    .filter(pb => pb.source.type === "file");
+    .filter((pb) => pb.source.type === "file");
 
   const outdated: RegisteredPlaybook[] = [];
 
@@ -337,11 +343,11 @@ export async function getOutdatedPlaybooks(): Promise<RegisteredPlaybook[]> {
 export async function mergePlaybooks(
   playbookIds: string[],
   newId: string,
-  newMeta?: Partial<any>
+  newMeta?: Partial<any>,
 ): Promise<RegisteredPlaybook> {
   const registry = getPlaybookRegistry();
   const playbooks = playbookIds
-    .map(id => registry.get(id))
+    .map((id) => registry.get(id))
     .filter((pb): pb is RegisteredPlaybook => pb !== undefined && pb.validated);
 
   if (playbooks.length === 0) {
@@ -350,31 +356,33 @@ export async function mergePlaybooks(
 
   // Combine all static rules
   const allStaticRules = playbooks.flatMap(
-    pb => pb.parsedPlaybook?.staticRules || []
+    (pb) => pb.parsedPlaybook?.staticRules || [],
   );
 
   // Combine all dynamic scenarios
   const allDynamicScenarios = playbooks.flatMap(
-    pb => pb.parsedPlaybook?.dynamicScenarios || []
+    (pb) => pb.parsedPlaybook?.dynamicScenarios || [],
   );
 
   // Combine all invariants
   const allInvariants = playbooks.flatMap(
-    pb => pb.parsedPlaybook?.invariants || []
+    (pb) => pb.parsedPlaybook?.invariants || [],
   );
 
   // Combine tags
   const allTags = Array.from(
-    new Set(playbooks.flatMap(pb => pb.meta.tags || []))
+    new Set(playbooks.flatMap((pb) => pb.meta.tags || [])),
   );
 
   // Create merged metadata
   const mergedMeta = {
-    name: newMeta?.name || `Merged: ${playbooks.map(pb => pb.meta.name).join(" + ")}`,
+    name:
+      newMeta?.name ||
+      `Merged: ${playbooks.map((pb) => pb.meta.name).join(" + ")}`,
     author: newMeta?.author || "SuperAudit Registry",
     description:
       newMeta?.description ||
-      `Merged from: ${playbooks.map(pb => pb.id).join(", ")}`,
+      `Merged from: ${playbooks.map((pb) => pb.id).join(", ")}`,
     tags: allTags,
     version: newMeta?.version || "1.0.0",
     ...newMeta,
@@ -387,7 +395,7 @@ meta:
   name: "${mergedMeta.name}"
   author: "${mergedMeta.author}"
   description: "${mergedMeta.description}"
-  tags: [${allTags.map(t => `"${t}"`).join(", ")}]
+  tags: [${allTags.map((t) => `"${t}"`).join(", ")}]
   version: "${mergedMeta.version}"
 
 checks: []

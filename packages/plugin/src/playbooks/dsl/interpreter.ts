@@ -1,10 +1,10 @@
 import parser from "@solidity-parser/parser";
-import type { 
-  ASTNode, 
-  Rule, 
-  AnalysisContext, 
+import type {
+  ASTNode,
+  Rule,
+  AnalysisContext,
   FunctionDefinition,
-  ContractDefinition 
+  ContractDefinition,
 } from "../../types.js";
 import type { ParsedRule, ParsedStaticRule } from "../types.js";
 import { CFGBuilder } from "../../cfg/builder.js";
@@ -29,8 +29,8 @@ export class DSLInterpreter {
    */
   createRulesFromDSL(parsedRules: ParsedStaticRule[]): Rule[] {
     return parsedRules
-      .filter(rule => rule.enabled)
-      .map(rule => this.createRuleFromDSL(rule));
+      .filter((rule) => rule.enabled)
+      .map((rule) => this.createRuleFromDSL(rule));
   }
 }
 
@@ -45,10 +45,11 @@ class DSLRule implements Rule {
   constructor(
     private parsedRule: ParsedStaticRule,
     private cfgBuilder: CFGBuilder,
-    private cfgAnalyzer: CFGAnalyzer
+    private cfgAnalyzer: CFGAnalyzer,
   ) {
     this.id = parsedRule.id;
-    this.description = parsedRule.description || `DSL rule: ${parsedRule.rule.type}`;
+    this.description =
+      parsedRule.description || `DSL rule: ${parsedRule.rule.type}`;
     this.severity = this.mapSeverity(parsedRule.severity);
   }
 
@@ -86,7 +87,7 @@ class DSLRule implements Rule {
       FunctionDefinition: (node: FunctionDefinition) => {
         try {
           const cfg = this.cfgBuilder.buildCFG(node);
-          
+
           switch (method) {
             case "externalBefore":
               this.checkExternalBefore(cfg, params, context, node);
@@ -101,17 +102,25 @@ class DSLRule implements Rule {
           // CFG analysis failed, skip this function
           console.warn(`CFG analysis failed for ${node.name}: ${error}`);
         }
-      }
+      },
     });
   }
 
   /**
    * Check external calls before state updates
    */
-  private checkExternalBefore(cfg: any, params: any, context: AnalysisContext, node: FunctionDefinition): void {
+  private checkExternalBefore(
+    cfg: any,
+    params: any,
+    context: AnalysisContext,
+    node: FunctionDefinition,
+  ): void {
     const stateVars = params.state || [];
-    const analysisResult = this.cfgAnalyzer.analyzeExternalBeforeState(cfg, stateVars);
-    
+    const analysisResult = this.cfgAnalyzer.analyzeExternalBeforeState(
+      cfg,
+      stateVars,
+    );
+
     for (const violation of analysisResult.violations) {
       context.issues.push({
         ruleId: this.id,
@@ -119,7 +128,7 @@ class DSLRule implements Rule {
         severity: this.severity,
         file: context.filePath,
         line: violation.location.start.line,
-        column: violation.location.start.column
+        column: violation.location.start.column,
       });
     }
   }
@@ -127,11 +136,16 @@ class DSLRule implements Rule {
   /**
    * Check state updates after specific calls
    */
-  private checkStateAfter(cfg: any, params: any, context: AnalysisContext, node: FunctionDefinition): void {
+  private checkStateAfter(
+    cfg: any,
+    params: any,
+    context: AnalysisContext,
+    node: FunctionDefinition,
+  ): void {
     const requiredCalls = params.calls || [];
     // Implementation would check that state is updated after the specified calls
     // This is a simplified version
-    
+
     if (cfg.metadata.hasExternalCalls && cfg.metadata.hasStateUpdates) {
       context.issues.push({
         ruleId: this.id,
@@ -139,7 +153,7 @@ class DSLRule implements Rule {
         severity: this.severity,
         file: context.filePath,
         line: node.loc?.start.line || 0,
-        column: node.loc?.start.column || 0
+        column: node.loc?.start.column || 0,
       });
     }
   }
@@ -168,7 +182,11 @@ class DSLRule implements Rule {
   /**
    * Check transferFrom patterns (e.g., unchecked return values)
    */
-  private checkTransferFromPattern(ast: ASTNode, params: any, context: AnalysisContext): void {
+  private checkTransferFromPattern(
+    ast: ASTNode,
+    params: any,
+    context: AnalysisContext,
+  ): void {
     parser.visit(ast, {
       FunctionCall: (node: any) => {
         if (this.isTransferFromCall(node)) {
@@ -181,19 +199,23 @@ class DSLRule implements Rule {
                 severity: this.severity,
                 file: context.filePath,
                 line: node.loc?.start.line || 0,
-                column: node.loc?.start.column || 0
+                column: node.loc?.start.column || 0,
               });
             }
           }
         }
-      }
+      },
     });
   }
 
   /**
    * Check delegatecall patterns
    */
-  private checkDelegatecallPattern(ast: ASTNode, params: any, context: AnalysisContext): void {
+  private checkDelegatecallPattern(
+    ast: ASTNode,
+    params: any,
+    context: AnalysisContext,
+  ): void {
     parser.visit(ast, {
       FunctionCall: (node: any) => {
         if (this.isDelegatecallCall(node)) {
@@ -205,20 +227,24 @@ class DSLRule implements Rule {
               severity: this.severity,
               file: context.filePath,
               line: node.loc?.start.line || 0,
-              column: node.loc?.start.column || 0
+              column: node.loc?.start.column || 0,
             });
           }
         }
-      }
+      },
     });
   }
 
   /**
    * Check low-level call patterns
    */
-  private checkLowLevelCallPattern(ast: ASTNode, params: any, context: AnalysisContext): void {
+  private checkLowLevelCallPattern(
+    ast: ASTNode,
+    params: any,
+    context: AnalysisContext,
+  ): void {
     const lowLevelMethods = ["call", "staticcall", "delegatecall", "send"];
-    
+
     parser.visit(ast, {
       FunctionCall: (node: any) => {
         if (node.expression?.type === "MemberAccess") {
@@ -230,18 +256,23 @@ class DSLRule implements Rule {
               severity: this.severity,
               file: context.filePath,
               line: node.loc?.start.line || 0,
-              column: node.loc?.start.column || 0
+              column: node.loc?.start.column || 0,
             });
           }
         }
-      }
+      },
     });
   }
 
   /**
    * Check generic pattern (fallback for unknown patterns)
    */
-  private checkGenericPattern(ast: ASTNode, pattern: string, params: any, context: AnalysisContext): void {
+  private checkGenericPattern(
+    ast: ASTNode,
+    pattern: string,
+    params: any,
+    context: AnalysisContext,
+  ): void {
     // Generic pattern matching - look for method name in function calls
     parser.visit(ast, {
       FunctionCall: (node: any) => {
@@ -252,10 +283,10 @@ class DSLRule implements Rule {
             severity: this.severity,
             file: context.filePath,
             line: node.loc?.start.line || 0,
-            column: node.loc?.start.column || 0
+            column: node.loc?.start.column || 0,
           });
         }
-      }
+      },
     });
   }
 
@@ -280,14 +311,21 @@ class DSLRule implements Rule {
   /**
    * Check for missing access control (Ownable pattern)
    */
-  private checkMissingOwnable(ast: ASTNode, params: any, context: AnalysisContext): void {
+  private checkMissingOwnable(
+    ast: ASTNode,
+    params: any,
+    context: AnalysisContext,
+  ): void {
     const targetFunctions = params.functions || [];
-    
+
     parser.visit(ast, {
       FunctionDefinition: (node: FunctionDefinition) => {
         const functionName = node.name || "";
-        
-        if (targetFunctions.length === 0 || targetFunctions.includes(functionName)) {
+
+        if (
+          targetFunctions.length === 0 ||
+          targetFunctions.includes(functionName)
+        ) {
           if (this.isPublicFunction(node) && !this.hasAccessControl(node)) {
             context.issues.push({
               ruleId: this.id,
@@ -295,20 +333,24 @@ class DSLRule implements Rule {
               severity: this.severity,
               file: context.filePath,
               line: node.loc?.start.line || 0,
-              column: node.loc?.start.column || 0
+              column: node.loc?.start.column || 0,
             });
           }
         }
-      }
+      },
     });
   }
 
   /**
    * Check public function security
    */
-  private checkPublicFunction(ast: ASTNode, params: any, context: AnalysisContext): void {
+  private checkPublicFunction(
+    ast: ASTNode,
+    params: any,
+    context: AnalysisContext,
+  ): void {
     const isCritical = params.critical;
-    
+
     parser.visit(ast, {
       FunctionDefinition: (node: FunctionDefinition) => {
         if (this.isPublicFunction(node)) {
@@ -319,11 +361,11 @@ class DSLRule implements Rule {
               severity: this.severity,
               file: context.filePath,
               line: node.loc?.start.line || 0,
-              column: node.loc?.start.column || 0
+              column: node.loc?.start.column || 0,
             });
           }
         }
-      }
+      },
     });
   }
 
@@ -345,7 +387,11 @@ class DSLRule implements Rule {
   /**
    * Check value ranges
    */
-  private checkValueRange(ast: ASTNode, params: any, context: AnalysisContext): void {
+  private checkValueRange(
+    ast: ASTNode,
+    params: any,
+    context: AnalysisContext,
+  ): void {
     const variable = params.variable;
     const min = params.min;
     const max = params.max;
@@ -358,7 +404,7 @@ class DSLRule implements Rule {
       severity: this.severity,
       file: context.filePath,
       line: 0,
-      column: 0
+      column: 0,
     });
   }
 
@@ -374,19 +420,23 @@ class DSLRule implements Rule {
       severity: "info",
       file: context.filePath,
       line: 0,
-      column: 0
+      column: 0,
     });
   }
 
   // Helper methods for pattern matching
   private isTransferFromCall(node: any): boolean {
-    return node.expression?.type === "MemberAccess" && 
-           node.expression.memberName === "transferFrom";
+    return (
+      node.expression?.type === "MemberAccess" &&
+      node.expression.memberName === "transferFrom"
+    );
   }
 
   private isDelegatecallCall(node: any): boolean {
-    return node.expression?.type === "MemberAccess" && 
-           node.expression.memberName === "delegatecall";
+    return (
+      node.expression?.type === "MemberAccess" &&
+      node.expression.memberName === "delegatecall"
+    );
   }
 
   private isReturnValueChecked(node: any): boolean {
@@ -421,7 +471,7 @@ class DSLRule implements Rule {
   private isCriticalFunction(node: FunctionDefinition): boolean {
     const criticalNames = ["withdraw", "transfer", "mint", "burn", "admin"];
     const functionName = (node.name || "").toLowerCase();
-    return criticalNames.some(name => functionName.includes(name));
+    return criticalNames.some((name) => functionName.includes(name));
   }
 
   private mapSeverity(severity: string): "error" | "warning" | "info" {

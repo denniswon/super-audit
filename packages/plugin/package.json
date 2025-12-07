@@ -1,6 +1,6 @@
 {
   "name": "@jhwon0820/super-audit",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Static analysis plugin for Hardhat that detects security vulnerabilities and style issues in Solidity contracts",
   "license": "MIT",
   "type": "module",

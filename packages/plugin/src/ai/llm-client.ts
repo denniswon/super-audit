@@ -36,7 +36,7 @@ export class LLMClient {
 
   constructor(config: LLMConfig) {
     this.config = config;
-    
+
     if (config.provider === "openai" && config.apiKey) {
       this.openai = new OpenAI({ apiKey: config.apiKey });
     } else if (config.provider === "anthropic" && config.apiKey) {
@@ -46,13 +46,13 @@ export class LLMClient {
 
   async analyzeCode(request: LLMAnalysisRequest): Promise<LLMAnalysisResponse> {
     const prompt = this.buildPrompt(request);
-    
+
     if (this.config.provider === "openai") {
-      return await this.callOpenAI(prompt, request);
+      return await this.callOpenAI(prompt);
     } else if (this.config.provider === "anthropic") {
-      return await this.callAnthropic(prompt, request);
+      return await this.callAnthropic(prompt);
     }
-    
+
     throw new Error(`Unsupported LLM provider: ${this.config.provider}`);
   }
 
@@ -100,105 +100,172 @@ Provide your analysis in the following JSON format:
     }
   }
 
-  private async callOpenAI(prompt: string, request: LLMAnalysisRequest): Promise<LLMAnalysisResponse> {
+  private async callOpenAI(prompt: string): Promise<LLMAnalysisResponse> {
     if (!this.openai) throw new Error("OpenAI not initialized");
-    
+
     try {
-      const model = this.config.model || "gpt-4o-mini";  // Default to gpt-4o-mini (supports json_object and is cheaper)
-      const completionParams: any = {
-        model,
-        messages: [
-          {
-            role: "system",
-            content: "You are an expert Solidity security auditor. Always respond with valid JSON."
-          },
-          {
-            role: "user",
-            content: prompt
-          }
-        ],
-        temperature: this.config.temperature || 0.3,
-        max_tokens: this.config.maxTokens || 1000,
-      };
+      // Default to latest 2025 GPT model (gpt-4o-mini-2025 or gpt-5.1)
+      const model = this.config.model || "gpt-4o-mini-2025";
+      const baseParams: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming =
+        {
+          model,
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are an expert Solidity security auditor. Always respond with valid JSON.",
+            },
+            {
+              role: "user",
+              content: prompt,
+            },
+          ],
+          temperature: this.config.temperature || 0.3,
+          max_tokens: this.config.maxTokens || 1000,
+        };
 
-      // Only add response_format for models that support it
-      if (model.includes("gpt-4o") || model.includes("gpt-4-turbo") || model.includes("gpt-3.5-turbo-1106") || model.includes("gpt-3.5-turbo-0125")) {
-        completionParams.response_format = { type: "json_object" };
-      }
+      // Only add response_format for models that support JSON mode
+      // Supported models (2025):
+      // - gpt-5.1 (Nov 2025: gpt-5.1, gpt-5.1-codex-max, etc.)
+      // - gpt-5 (Aug 2025: all versions)
+      // - gpt-4.1 (Apr 2025: all versions)
+      // - gpt-4o (all versions including gpt-4o, gpt-4o-mini, gpt-4o-2024-*, gpt-4o-2025-*, etc.)
+      // - gpt-4-turbo (all versions including gpt-4-turbo, gpt-4-turbo-preview, gpt-4-turbo-2024-*, gpt-4-turbo-2025-*, etc.)
+      // - gpt-4 (0613 and later versions, including 2025 versions)
+      // - gpt-3.5-turbo (1106 and later versions, including 2025 versions)
+      const supportsJsonMode =
+        model.startsWith("gpt-5.1") ||
+        model.startsWith("gpt-5") ||
+        model.startsWith("gpt-4.1") ||
+        model.startsWith("gpt-4o") ||
+        model.startsWith("gpt-4-turbo") ||
+        (model.startsWith("gpt-4") && /^gpt-4-\d{4}/.test(model)) ||
+        (model.startsWith("gpt-3.5-turbo") &&
+          /^gpt-3\.5-turbo-\d{4}/.test(model));
 
-      const completion = await this.openai.chat.completions.create(completionParams);
+      const completionParams: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming =
+        supportsJsonMode
+          ? { ...baseParams, response_format: { type: "json_object" } }
+          : baseParams;
+
+      const completion =
+        await this.openai.chat.completions.create(completionParams);
 
       const responseText = completion.choices[0].message.content || "{}";
-      
+
       // Try to parse as JSON, if it fails, extract JSON from the response
-      let response;
+      let response: Record<string, unknown>;
       try {
-        response = JSON.parse(responseText);
+        const parsed = JSON.parse(responseText);
+        response = typeof parsed === "object" && parsed !== null ? parsed : {};
       } catch {
         // Try to extract JSON from markdown code blocks or other text
-        const jsonMatch = responseText.match(/```json\n?([\s\S]*?)\n?```/) || responseText.match(/\{[\s\S]*\}/);
+        const jsonMatch =
+          responseText.match(/```json\n?([\s\S]*?)\n?```/) ||
+          responseText.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
-          response = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+          try {
+            const parsed = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+            response =
+              typeof parsed === "object" && parsed !== null ? parsed : {};
+          } catch {
+            // Fallback: create a basic response from the text
+            response = {
+              explanation: responseText,
+              confidence: 0.5,
+            };
+          }
         } else {
           // Fallback: create a basic response from the text
           response = {
             explanation: responseText,
-            confidence: 0.5
+            confidence: 0.5,
           };
         }
       }
-      
+
       return this.validateResponse(response);
     } catch (error) {
-      console.warn(`OpenAI API error: ${error}`);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      console.warn(`OpenAI API error: ${errorMessage}`);
       return this.getFallbackResponse();
     }
   }
 
-  private async callAnthropic(prompt: string, request: LLMAnalysisRequest): Promise<LLMAnalysisResponse> {
+  private async callAnthropic(prompt: string): Promise<LLMAnalysisResponse> {
     if (!this.anthropic) throw new Error("Anthropic not initialized");
-    
+
     try {
+      // Default to latest 2025 Claude model
+      // Supports all Claude models with date suffixes (2025):
+      // - claude-opus-4.5 (Nov 24, 2025: latest and most capable)
+      // - claude-haiku-4.5 (Oct 15, 2025: fast and cost-effective)
+      // - claude-sonnet-4 (May 22, 2025)
+      // - claude-opus-4 (May 22, 2025)
+      // - claude-3.7-sonnet (20241022, etc.)
+      // - claude-3.5-sonnet, claude-3.5-opus, claude-3.5-haiku (20241022, etc.)
+      // - claude-3-opus, claude-3-sonnet, claude-3-haiku (20240229, etc.)
+      // Note: Claude models support JSON output natively when requested in prompts
+      const model = this.config.model || "claude-opus-4.5";
+
       const message = await this.anthropic.messages.create({
-        model: this.config.model || "claude-3-sonnet-20240229",
+        model,
         max_tokens: this.config.maxTokens || 1000,
         temperature: this.config.temperature || 0.3,
         messages: [
           {
             role: "user",
-            content: prompt
-          }
-        ]
+            content: prompt,
+          },
+        ],
       });
 
       const content = message.content[0];
       if (content.type === "text") {
-        const response = JSON.parse(content.text);
+        const parsed = JSON.parse(content.text);
+        const response: Record<string, unknown> =
+          typeof parsed === "object" && parsed !== null ? parsed : {};
         return this.validateResponse(response);
       }
-      
+
       throw new Error("Invalid response from Anthropic");
     } catch (error) {
-      console.warn(`Anthropic API error: ${error}`);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      console.warn(`Anthropic API error: ${errorMessage}`);
       return this.getFallbackResponse();
     }
   }
 
-  private validateResponse(response: any): LLMAnalysisResponse {
+  private validateResponse(
+    response: Record<string, unknown>,
+  ): LLMAnalysisResponse {
     return {
-      explanation: response.explanation || "No explanation provided",
-      suggestedFix: response.suggestedFix,
-      riskScore: response.riskScore,
-      additionalContext: response.additionalContext,
-      confidence: response.confidence || 0.5
+      explanation:
+        typeof response.explanation === "string"
+          ? response.explanation
+          : "No explanation provided",
+      suggestedFix:
+        typeof response.suggestedFix === "string"
+          ? response.suggestedFix
+          : undefined,
+      riskScore:
+        typeof response.riskScore === "number" ? response.riskScore : undefined,
+      additionalContext:
+        typeof response.additionalContext === "string"
+          ? response.additionalContext
+          : undefined,
+      confidence:
+        typeof response.confidence === "number" ? response.confidence : 0.5,
     };
   }
 
   private getFallbackResponse(): LLMAnalysisResponse {
     return {
-      explanation: "AI analysis unavailable. Please check your API key and network connection.",
-      confidence: 0.0
+      explanation:
+        "AI analysis unavailable. Please check your API key and network connection.",
+      confidence: 0.0,
     };
   }
 }
-

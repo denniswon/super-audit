@@ -1,13 +1,13 @@
-import { HardhatRuntimeEnvironment } from "hardhat/types/hre";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
+import { HardhatRuntimeEnvironment } from "hardhat/types/hre";
+import * as dotenv from "dotenv";
 import {
   initializeRegistry,
   getPlaybookRegistry,
   initializeLighthouseFromEnv,
   getSamplePlaybooks,
 } from "../playbooks/index.js";
-import * as dotenv from "dotenv";
 
 dotenv.config();
 
@@ -32,7 +32,7 @@ export default async function uploadPlaybookEncryptedTask(
     await initializeRegistry(builtins);
 
     // Get file path from task arguments or environment variable
-    let filePath = taskArguments.file || process.env.PLAYBOOK_FILE;
+    const filePath = taskArguments.file || process.env.PLAYBOOK_FILE;
 
     if (!filePath) {
       console.error("❌ Error: playbook file path is required\n");

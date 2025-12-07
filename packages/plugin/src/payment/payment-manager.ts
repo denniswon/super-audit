@@ -1,5 +1,5 @@
-import { ethers } from "ethers";
 import * as crypto from "crypto";
+import { ethers } from "ethers";
 
 export interface PaymentConfig {
   creatorPublicKey: string;

@@ -11,7 +11,10 @@ The registry is already included in the SuperAudit plugin. No additional install
 ### Step 1: Initialize the Registry
 
 ```typescript
-import { initializePlaybookRegistry, getSamplePlaybooks } from "./playbooks/index.js";
+import {
+  initializePlaybookRegistry,
+  getSamplePlaybooks,
+} from "./playbooks/index.js";
 
 // At application startup
 await initializePlaybookRegistry();
@@ -19,7 +22,7 @@ await initializePlaybookRegistry();
 // Optional: Load with custom builtins
 const builtins = {
   ...getSamplePlaybooks(),
-  "my-custom": myCustomPlaybookYaml
+  "my-custom": myCustomPlaybookYaml,
 };
 await initializeRegistry(builtins);
 ```
@@ -70,8 +73,8 @@ for (const pb of allPlaybooks) {
 const registry = getPlaybookRegistry();
 
 // Find all DeFi-related playbooks
-const defiPlaybooks = registry.search({ 
-  tags: ["defi", "vault"] 
+const defiPlaybooks = registry.search({
+  tags: ["defi", "vault"],
 });
 
 console.log(`Found ${defiPlaybooks.length} DeFi playbooks`);
@@ -100,7 +103,9 @@ import { loadRulesFromMultiplePlaybooks } from "./playbooks/index.js";
 const playbookIds = ["erc20-security", "access-control", "defi-vault"];
 const allRules = await loadRulesFromMultiplePlaybooks(playbookIds);
 
-console.log(`Loaded ${allRules.length} rules from ${playbookIds.length} playbooks`);
+console.log(
+  `Loaded ${allRules.length} rules from ${playbookIds.length} playbooks`,
+);
 ```
 
 ### Check Playbook Validity
@@ -137,7 +142,7 @@ console.log(formatRegistryStats(stats));
 Add to your `tasks/analyze.ts`:
 
 ```typescript
-import { 
+import {
   initializePlaybookRegistry,
   getPlaybookRegistry,
   loadRulesFromRegistry,
@@ -150,27 +155,27 @@ task("superaudit", "Run security analysis")
   .setAction(async (taskArgs, hre) => {
     // Initialize registry
     await initializePlaybookRegistry();
-    
+
     // Auto-discover project playbooks
     await registerProjectPlaybooks(hre.config.paths.root);
-    
+
     // List playbooks if requested
     if (taskArgs.listPlaybooks) {
       const registry = getPlaybookRegistry();
       const playbooks = registry.getAll();
-      
+
       console.log("\nAvailable Playbooks:");
       for (const pb of playbooks) {
         console.log(`  - ${pb.id}: ${pb.meta.name}`);
       }
       return;
     }
-    
+
     // Load playbook
     let rules;
     if (taskArgs.playbook) {
       const registry = getPlaybookRegistry();
-      
+
       // Try as registry ID first
       if (registry.has(taskArgs.playbook)) {
         rules = await loadRulesFromRegistry(taskArgs.playbook);
@@ -182,7 +187,7 @@ task("superaudit", "Run security analysis")
         rules = await loadRulesFromRegistry(id);
       }
     }
-    
+
     // Continue with analysis...
   });
 ```
@@ -245,6 +250,7 @@ const rules = await loadRulesFromRegistry("my-playbook");
 ## Best Practices
 
 ### 1. Initialize Early
+
 ```typescript
 // Do this at startup
 await initializePlaybookRegistry();
@@ -253,6 +259,7 @@ await initializePlaybookRegistry();
 ```
 
 ### 2. Use IDs for Consistency
+
 ```typescript
 // Good: Use consistent IDs
 const rules = await loadRulesFromRegistry("erc20-security");
@@ -262,6 +269,7 @@ const rules = await loadPlaybookRules("../../playbooks/erc20.yaml");
 ```
 
 ### 3. Track Usage
+
 ```typescript
 // Use getAndUse() to track statistics
 const playbook = registry.getAndUse("my-playbook");
@@ -271,6 +279,7 @@ const playbook = registry.get("my-playbook");
 ```
 
 ### 4. Handle Errors Gracefully
+
 ```typescript
 try {
   const rules = await loadRulesFromRegistry("my-playbook");
@@ -282,6 +291,7 @@ try {
 ```
 
 ### 5. Validate Before Use
+
 ```typescript
 const { valid, errors } = registry.validate("my-playbook");
 if (valid) {
@@ -295,6 +305,7 @@ if (valid) {
 ## Troubleshooting
 
 ### Problem: Playbook not found
+
 ```typescript
 // Check if registered
 if (!registry.has("my-playbook")) {
@@ -304,6 +315,7 @@ if (!registry.has("my-playbook")) {
 ```
 
 ### Problem: Validation errors
+
 ```typescript
 const playbook = registry.get("my-playbook");
 if (!playbook.validated) {
@@ -312,6 +324,7 @@ if (!playbook.validated) {
 ```
 
 ### Problem: No playbooks loaded
+
 ```typescript
 const stats = registry.getStats();
 if (stats.totalPlaybooks === 0) {
@@ -323,6 +336,7 @@ if (stats.totalPlaybooks === 0) {
 ## Testing
 
 ### Unit Test Example
+
 ```typescript
 import { getPlaybookRegistry } from "./playbooks/index.js";
 
@@ -343,8 +357,12 @@ describe("My Feature with Registry", () => {
 ```
 
 ### Integration Test Example
+
 ```typescript
-import { initializePlaybookRegistry, registerProjectPlaybooks } from "./playbooks/index.js";
+import {
+  initializePlaybookRegistry,
+  registerProjectPlaybooks,
+} from "./playbooks/index.js";
 
 describe("Registry Integration", () => {
   beforeAll(async () => {
@@ -374,6 +392,7 @@ describe("Registry Integration", () => {
 ## Summary
 
 The Playbook Registry provides:
+
 - ✅ Centralized playbook management
 - ✅ Easy registration from files/strings/directories
 - ✅ Powerful search and discovery
@@ -382,6 +401,7 @@ The Playbook Registry provides:
 - ✅ Simple, intuitive API
 
 Start using it in 3 lines:
+
 ```typescript
 await initializePlaybookRegistry();
 const registry = getPlaybookRegistry();

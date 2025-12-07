@@ -26,10 +26,7 @@ export const BASIC_RULES = [
 ];
 
 // Export the default rule set (basic + advanced)
-export const DEFAULT_RULES = [
-  ...BASIC_RULES,
-  ...ADVANCED_RULES
-];
+export const DEFAULT_RULES = [...BASIC_RULES, ...ADVANCED_RULES];
 
 /**
  * Get all available rules
@@ -42,13 +39,15 @@ export function getAllRules() {
  * Get rules filtered by severity
  */
 export function getRulesBySeverity(severity: "error" | "warning" | "info") {
-  return DEFAULT_RULES.filter(rule => rule.severity === severity);
+  return DEFAULT_RULES.filter((rule) => rule.severity === severity);
 }
 
 /**
  * Get rules filtered by category (based on rule ID patterns)
  */
-export function getRulesByCategory(category: "security" | "style" | "performance" | "all" = "all") {
+export function getRulesByCategory(
+  category: "security" | "style" | "performance" | "all" = "all",
+) {
   if (category === "all") {
     return [...DEFAULT_RULES];
   }
@@ -72,7 +71,7 @@ export function getRulesByCategory(category: "security" | "style" | "performance
       targetRuleIds = [];
   }
 
-  return DEFAULT_RULES.filter(rule => targetRuleIds.includes(rule.id));
+  return DEFAULT_RULES.filter((rule) => targetRuleIds.includes(rule.id));
 }
 
 /**

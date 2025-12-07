@@ -1,25 +1,31 @@
 import parser from "@solidity-parser/parser";
-import type { ASTNode, Rule, AnalysisContext, FunctionDefinition } from "../../types.js";
+import type {
+  ASTNode,
+  Rule,
+  AnalysisContext,
+  FunctionDefinition,
+} from "../../types.js";
 import { CFGBuilder } from "../../cfg/builder.js";
 import { CFGAnalyzer } from "../../cfg/analyzer.js";
 
 /**
  * Advanced rule that analyzes potential reentrancy attack paths using CFG
- * 
+ *
  * This rule goes beyond simple pattern matching to analyze the actual execution
  * paths that could be exploited in a reentrancy attack. It identifies:
- * 
+ *
  * 1. Functions with external calls that could allow reentrancy
  * 2. State that could be inconsistent during reentrant calls
  * 3. Multiple call paths that could be chained in an attack
  * 4. Cross-function reentrancy patterns
- * 
+ *
  * The rule provides detailed attack scenarios and prioritizes findings
  * based on exploitability and potential impact.
  */
 export class ReentrancyPathsRule implements Rule {
   public readonly id = "reentrancy-paths";
-  public readonly description = "Analyze execution paths for potential reentrancy vulnerabilities";
+  public readonly description =
+    "Analyze execution paths for potential reentrancy vulnerabilities";
   public readonly severity = "warning" as const;
 
   private cfgBuilder = new CFGBuilder();
@@ -29,30 +35,37 @@ export class ReentrancyPathsRule implements Rule {
     parser.visit(ast, {
       FunctionDefinition: (node: FunctionDefinition) => {
         this.checkFunction(node, context);
-      }
+      },
     });
   }
 
-  private checkFunction(functionNode: FunctionDefinition, context: AnalysisContext): void {
+  private checkFunction(
+    functionNode: FunctionDefinition,
+    context: AnalysisContext,
+  ): void {
     // Skip functions without body
     if (!functionNode.body || !functionNode.body.statements) {
       return;
     }
 
     // Skip view/pure functions as they can't be reentered meaningfully
-    if (functionNode.stateMutability === "view" || functionNode.stateMutability === "pure") {
+    if (
+      functionNode.stateMutability === "view" ||
+      functionNode.stateMutability === "pure"
+    ) {
       return;
     }
 
     // Skip internal/private functions (they can't be directly called by attackers)
     // but still analyze them as they could be called by vulnerable public functions
-    const isPublicEntry = !functionNode.visibility || 
-                         ["public", "external"].includes(functionNode.visibility);
+    const isPublicEntry =
+      !functionNode.visibility ||
+      ["public", "external"].includes(functionNode.visibility);
 
     try {
       // Build CFG for this function
       const cfg = this.cfgBuilder.buildCFG(functionNode);
-      
+
       // Only analyze functions with external calls
       if (!cfg.metadata.hasExternalCalls) {
         return;
@@ -62,24 +75,32 @@ export class ReentrancyPathsRule implements Rule {
       const analysisResult = this.cfgAnalyzer.analyzeReentrancyPaths(cfg);
 
       // Convert violations to issues with enhanced context
-      const issues = this.cfgAnalyzer.convertToIssues([analysisResult], context);
-      
+      const issues = this.cfgAnalyzer.convertToIssues(
+        [analysisResult],
+        context,
+      );
+
       for (const issue of issues) {
         // Enhance message based on function visibility and reentrancy risk
         const enhancedIssue = {
           ...issue,
           severity: this.calculateSeverity(cfg, isPublicEntry, analysisResult),
-          message: this.enhanceReentrancyMessage(issue.message, cfg, isPublicEntry)
+          message: this.enhanceReentrancyMessage(
+            issue.message,
+            cfg,
+            isPublicEntry,
+          ),
         };
         context.issues.push(enhancedIssue);
       }
 
       // Add detailed reentrancy analysis
       this.addReentrancyAnalysis(analysisResult, context, cfg, isPublicEntry);
-
     } catch (error) {
       // CFG construction failed - fall back to basic analysis
-      console.warn(`CFG analysis failed for function ${functionNode.name}: ${error}`);
+      console.warn(
+        `CFG analysis failed for function ${functionNode.name}: ${error}`,
+      );
       this.performBasicReentrancyCheck(functionNode, context);
     }
   }
@@ -87,19 +108,23 @@ export class ReentrancyPathsRule implements Rule {
   /**
    * Calculate severity based on reentrancy risk factors
    */
-  private calculateSeverity(cfg: any, isPublicEntry: boolean, analysisResult: any): "error" | "warning" | "info" {
+  private calculateSeverity(
+    cfg: any,
+    isPublicEntry: boolean,
+    analysisResult: any,
+  ): "error" | "warning" | "info" {
     // High severity if:
     // - Function is publicly callable
-    // - Has both external calls and state updates  
+    // - Has both external calls and state updates
     // - Involves critical state variables (balances, etc.)
-    
+
     const hasCriticalState = this.hasCriticalStateUpdates(cfg);
     const hasMultiplePaths = analysisResult.violations.length > 1;
-    
+
     if (isPublicEntry && cfg.metadata.hasStateUpdates && hasCriticalState) {
       return "error"; // Critical reentrancy risk
     } else if (isPublicEntry && cfg.metadata.hasStateUpdates) {
-      return "warning"; // Medium reentrancy risk  
+      return "warning"; // Medium reentrancy risk
     } else {
       return "info"; // Low risk or internal function
     }
@@ -108,10 +133,14 @@ export class ReentrancyPathsRule implements Rule {
   /**
    * Enhance reentrancy message with specific context
    */
-  private enhanceReentrancyMessage(baseMessage: string, cfg: any, isPublicEntry: boolean): string {
+  private enhanceReentrancyMessage(
+    baseMessage: string,
+    cfg: any,
+    isPublicEntry: boolean,
+  ): string {
     const functionType = isPublicEntry ? "public/external" : "internal/private";
     const riskLevel = isPublicEntry ? "HIGH" : "MEDIUM";
-    
+
     return `${baseMessage} [${riskLevel} RISK] This ${functionType} function in ${cfg.functionName} could be exploited through reentrancy.`;
   }
 
@@ -138,14 +167,26 @@ export class ReentrancyPathsRule implements Rule {
    */
   private isCriticalVariable(varName: string): boolean {
     const criticalPatterns = [
-      "balance", "balances", "totalSupply", "totalBalance",
-      "shares", "totalShares", "deposits", "withdrawals", 
-      "amount", "amounts", "value", "values",
-      "reserves", "liquidity", "debt", "credit"
+      "balance",
+      "balances",
+      "totalSupply",
+      "totalBalance",
+      "shares",
+      "totalShares",
+      "deposits",
+      "withdrawals",
+      "amount",
+      "amounts",
+      "value",
+      "values",
+      "reserves",
+      "liquidity",
+      "debt",
+      "credit",
     ];
-    
+
     const lowerVarName = varName.toLowerCase();
-    return criticalPatterns.some(pattern => lowerVarName.includes(pattern));
+    return criticalPatterns.some((pattern) => lowerVarName.includes(pattern));
   }
 
   /**
@@ -155,20 +196,20 @@ export class ReentrancyPathsRule implements Rule {
     analysisResult: any,
     context: AnalysisContext,
     cfg: any,
-    isPublicEntry: boolean
+    isPublicEntry: boolean,
   ): void {
     if (analysisResult.violations.length === 0) return;
 
     // Generate attack scenario
     const attackScenario = this.generateAttackScenario(cfg, isPublicEntry);
-    
+
     context.issues.push({
       ruleId: `${this.id}-analysis`,
       message: attackScenario,
       severity: "info",
       file: context.filePath,
       line: cfg.nodes.get(cfg.entryNode)?.location?.start?.line || 0,
-      column: 0
+      column: 0,
     });
 
     // Add mitigation suggestions
@@ -180,7 +221,7 @@ export class ReentrancyPathsRule implements Rule {
         severity: "info",
         file: context.filePath,
         line: 0,
-        column: 0
+        column: 0,
       });
     }
   }
@@ -194,7 +235,7 @@ export class ReentrancyPathsRule implements Rule {
     const hasExternalCalls = cfg.metadata.hasExternalCalls;
 
     let scenario = `REENTRANCY ATTACK ANALYSIS for function ${functionName}:\n`;
-    
+
     if (isPublicEntry) {
       scenario += `
 ATTACK VECTOR (${functionName} is publicly callable):
@@ -233,7 +274,10 @@ EXPLOIT CONDITIONS:
   /**
    * Generate mitigation suggestions
    */
-  private generateMitigationSuggestions(cfg: any, analysisResult: any): string[] {
+  private generateMitigationSuggestions(
+    cfg: any,
+    analysisResult: any,
+  ): string[] {
     const suggestions = [];
 
     // Primary mitigation: Reentrancy guard
@@ -280,7 +324,10 @@ MITIGATION 4: Simplify function complexity
   /**
    * Fallback basic reentrancy check when CFG analysis fails
    */
-  private performBasicReentrancyCheck(functionNode: FunctionDefinition, context: AnalysisContext): void {
+  private performBasicReentrancyCheck(
+    functionNode: FunctionDefinition,
+    context: AnalysisContext,
+  ): void {
     if (!functionNode.body?.statements) return;
 
     let hasExternalCall = false;
@@ -305,7 +352,7 @@ MITIGATION 4: Simplify function complexity
         severity: this.severity,
         file: context.filePath,
         line: externalCallLine,
-        column: 0
+        column: 0,
       });
     }
   }
@@ -316,7 +363,7 @@ MITIGATION 4: Simplify function complexity
   private containsExternalCall(stmt: ASTNode): boolean {
     // This is a simplified version - the CFG version is more accurate
     let hasCall = false;
-    
+
     const visitor = {
       FunctionCall: (node: any) => {
         if (node.expression?.type === "MemberAccess") {
@@ -325,7 +372,7 @@ MITIGATION 4: Simplify function complexity
             hasCall = true;
           }
         }
-      }
+      },
     };
 
     try {
@@ -342,12 +389,12 @@ MITIGATION 4: Simplify function complexity
    */
   private containsStateUpdate(stmt: ASTNode): boolean {
     let hasUpdate = false;
-    
+
     const visitor = {
       AssignmentOperator: () => {
         hasUpdate = true;
       },
-      _node: () => {} // Add default handler to satisfy visitor interface
+      _node: () => {}, // Add default handler to satisfy visitor interface
     };
 
     try {

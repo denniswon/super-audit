@@ -1,12 +1,12 @@
+import { existsSync, readFileSync, writeFileSync } from "fs";
+import { resolve } from "path";
 import { HardhatRuntimeEnvironment } from "hardhat/types/hre";
+import * as dotenv from "dotenv";
 import {
   PaymentManager,
   type PaymentConfig,
   type EncryptedUserList,
 } from "../payment/index.js";
-import { existsSync, readFileSync, writeFileSync } from "fs";
-import { resolve } from "path";
-import * as dotenv from "dotenv";
 
 dotenv.config();
 

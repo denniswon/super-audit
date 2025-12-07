@@ -3,7 +3,7 @@ import type {
   ReentrancyTestResult,
   AttackStep,
   DeployedContract,
-  AttackSimulation
+  AttackSimulation,
 } from "../types.js";
 import { ForkManager } from "../fork-manager.js";
 
@@ -25,26 +25,34 @@ export class ReentrancyTester {
   async testReentrancyVulnerability(
     targetContract: DeployedContract,
     functionName: string,
-    attackParams: any[] = []
+    attackParams: any[] = [],
   ): Promise<ReentrancyTestResult> {
-    console.log(`🔄 Testing reentrancy in ${targetContract.name}.${functionName}...`);
+    console.log(
+      `🔄 Testing reentrancy in ${targetContract.name}.${functionName}...`,
+    );
 
     try {
       // Create snapshot for rollback
       const snapshot = await this.forkManager.snapshot();
 
       // Deploy attacker contract
-      const attackerContract = await this.deployReentrancyAttacker(targetContract.address);
-      
+      const attackerContract = await this.deployReentrancyAttacker(
+        targetContract.address,
+      );
+
       // Get initial balances
-      const initialVictimBalance = await this.getBalance(targetContract.address);
-      const initialAttackerBalance = await this.getBalance(attackerContract.address);
+      const initialVictimBalance = await this.getBalance(
+        targetContract.address,
+      );
+      const initialAttackerBalance = await this.getBalance(
+        attackerContract.address,
+      );
 
       // Setup attack scenario
       const setupSteps = await this.setupReentrancyAttack(
         targetContract,
         attackerContract,
-        attackParams
+        attackParams,
       );
 
       // Execute the reentrancy attack
@@ -52,15 +60,18 @@ export class ReentrancyTester {
         targetContract,
         attackerContract,
         functionName,
-        attackParams
+        attackParams,
       );
 
       // Check if attack was successful
       const finalVictimBalance = await this.getBalance(targetContract.address);
-      const finalAttackerBalance = await this.getBalance(attackerContract.address);
-      
+      const finalAttackerBalance = await this.getBalance(
+        attackerContract.address,
+      );
+
       const profitAmount = finalAttackerBalance - initialAttackerBalance;
-      const isVulnerable = profitAmount > 0 || finalVictimBalance < initialVictimBalance;
+      const isVulnerable =
+        profitAmount > 0 || finalVictimBalance < initialVictimBalance;
 
       const result: ReentrancyTestResult = {
         isVulnerable,
@@ -68,16 +79,15 @@ export class ReentrancyTester {
         profitAmount: profitAmount.toString(),
         victimContract: targetContract.name,
         attackContract: attackerContract.name,
-        description: isVulnerable 
+        description: isVulnerable
           ? `Reentrancy vulnerability confirmed! Attacker profited ${profitAmount} wei from ${functionName}`
-          : `No reentrancy vulnerability detected in ${functionName}`
+          : `No reentrancy vulnerability detected in ${functionName}`,
       };
 
       // Revert to clean state
       await this.forkManager.revert(snapshot);
 
       return result;
-
     } catch (error) {
       return {
         isVulnerable: false,
@@ -85,7 +95,7 @@ export class ReentrancyTester {
         profitAmount: "0",
         victimContract: targetContract.name,
         attackContract: "failed-to-deploy",
-        description: `Reentrancy test failed: ${error}`
+        description: `Reentrancy test failed: ${error}`,
       };
     }
   }
@@ -93,7 +103,9 @@ export class ReentrancyTester {
   /**
    * Deploy a generic reentrancy attacker contract
    */
-  private async deployReentrancyAttacker(targetAddress: string): Promise<DeployedContract> {
+  private async deployReentrancyAttacker(
+    targetAddress: string,
+  ): Promise<DeployedContract> {
     // Create attacker contract bytecode
     const attackerSolidity = `
       contract ReentrancyAttacker {
@@ -146,7 +158,7 @@ export class ReentrancyTester {
       abi: [], // Mock ABI
       bytecode: "0x", // Mock bytecode
       deployer: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-      constructorArgs: [targetAddress]
+      constructorArgs: [targetAddress],
     };
   }
 
@@ -156,19 +168,19 @@ export class ReentrancyTester {
   private async setupReentrancyAttack(
     targetContract: DeployedContract,
     attackerContract: DeployedContract,
-    params: any[]
+    params: any[],
   ): Promise<AttackStep[]> {
     const steps: AttackStep[] = [];
 
     // Give attacker contract some initial funds
     await this.forkManager.setBalance(attackerContract.address, "100 ether");
-    
+
     steps.push({
       contract: "setup",
       method: "setBalance",
       params: [attackerContract.address, "100 ether"],
       gasUsed: 21000,
-      result: "success"
+      result: "success",
     });
 
     return steps;
@@ -181,31 +193,30 @@ export class ReentrancyTester {
     targetContract: DeployedContract,
     attackerContract: DeployedContract,
     functionName: string,
-    params: any[]
+    params: any[],
   ): Promise<AttackStep[]> {
     const steps: AttackStep[] = [];
 
     try {
       // This would be the actual attack execution
       // For now, we simulate the steps
-      
+
       steps.push({
         contract: targetContract.name,
         method: functionName,
         params: params,
         gasUsed: 50000,
-        result: "reentrancy_detected"
+        result: "reentrancy_detected",
       });
 
       return steps;
-
     } catch (error) {
       steps.push({
         contract: targetContract.name,
         method: functionName,
         params: params,
         gasUsed: 0,
-        result: `failed: ${error}`
+        result: `failed: ${error}`,
       });
 
       return steps;
@@ -215,7 +226,9 @@ export class ReentrancyTester {
   /**
    * Test multiple functions for reentrancy
    */
-  async testAllFunctions(contract: DeployedContract): Promise<ReentrancyTestResult[]> {
+  async testAllFunctions(
+    contract: DeployedContract,
+  ): Promise<ReentrancyTestResult[]> {
     const results: ReentrancyTestResult[] = [];
     const publicMethods = this.getPublicMethods(contract);
 
@@ -228,7 +241,7 @@ export class ReentrancyTester {
       const testResult = await this.testReentrancyVulnerability(
         contract,
         method.name,
-        this.generateDefaultParams(method.inputs)
+        this.generateDefaultParams(method.inputs),
       );
 
       results.push(testResult);
@@ -241,16 +254,14 @@ export class ReentrancyTester {
    * Get public methods from contract ABI
    */
   private getPublicMethods(contract: DeployedContract): any[] {
-    return (contract.abi as any[]).filter((item: any) => 
-      item.type === "function"
-    );
+    return contract.abi.filter((item: any) => item.type === "function");
   }
 
   /**
    * Generate default parameters for method inputs
    */
   private generateDefaultParams(inputs: any[]): any[] {
-    return inputs.map(input => {
+    return inputs.map((input) => {
       switch (input.type) {
         case "address":
           return "0x1234567890123456789012345678901234567890";
@@ -287,7 +298,7 @@ export class ReentrancyTester {
       setup: {
         deployAttacker: true,
         initialBalance: "10 ether",
-        requiredTokens: []
+        requiredTokens: [],
       },
       execution: {
         steps: [
@@ -295,17 +306,17 @@ export class ReentrancyTester {
             contract: "attacker",
             method: "startAttack",
             params: [],
-            gasUsed: 0
-          }
+            gasUsed: 0,
+          },
         ],
         maxGasPerStep: 500000,
-        expectedBehavior: "profit"
+        expectedBehavior: "profit",
       },
       validation: {
         profitThreshold: "0",
         invariants: ["balance_consistency", "state_consistency"],
-        assertions: ["profit(attacker) <= 0"]
-      }
+        assertions: ["profit(attacker) <= 0"],
+      },
     };
   }
 }

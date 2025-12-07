@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/node22/tsconfig.json",
+  "extends": "./node_modules/@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
     "outDir": "${configDir}/dist",
     "declaration": true,
@@ -15,5 +15,9 @@
     "isolatedModules": true,
     "typeRoots": ["${configDir}/node_modules/@types"]
   },
-  "exclude": ["${configDir}/dist", "${configDir}/node_modules", "${configDir}/test"]
+  "exclude": [
+    "${configDir}/dist",
+    "${configDir}/node_modules",
+    "${configDir}/test"
+  ]
 }

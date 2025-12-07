@@ -1,22 +1,34 @@
-import type { ControlFlowGraph, CFGAnalysisResult, CFGViolation, CFGPath, CFGEvidence } from "./types.js";
 import type { Issue, AnalysisContext } from "../types.js";
+import type {
+  ControlFlowGraph,
+  CFGAnalysisResult,
+  CFGViolation,
+  CFGPath,
+  CFGEvidence,
+} from "./types.js";
 
 /**
  * Analyzes CFGs to detect security vulnerabilities and patterns
  */
 export class CFGAnalyzer {
-  
   /**
    * Analyze a CFG for external calls before state updates (CEI pattern violation)
    */
-  analyzeExternalBeforeState(cfg: ControlFlowGraph, criticalStateVars: string[] = []): CFGAnalysisResult {
+  analyzeExternalBeforeState(
+    cfg: ControlFlowGraph,
+    criticalStateVars: string[] = [],
+  ): CFGAnalysisResult {
     const violations: CFGViolation[] = [];
-    
+
     // Find all paths from entry to exit
     const paths = this.findAllPaths(cfg, cfg.entryNode, cfg.exitNodes);
-    
+
     for (const path of paths) {
-      const violation = this.checkCEIViolationOnPath(cfg, path, criticalStateVars);
+      const violation = this.checkCEIViolationOnPath(
+        cfg,
+        path,
+        criticalStateVars,
+      );
       if (violation) {
         violations.push(violation);
       }
@@ -26,7 +38,10 @@ export class CFGAnalyzer {
       ruleId: "external-before-state",
       violations,
       confidence: violations.length > 0 ? "high" : "low",
-      exploitPath: violations.length > 0 ? this.buildExploitPath(cfg, violations[0]) : undefined
+      exploitPath:
+        violations.length > 0
+          ? this.buildExploitPath(cfg, violations[0])
+          : undefined,
     };
   }
 
@@ -34,9 +49,9 @@ export class CFGAnalyzer {
    * Check for Check-Effects-Interactions pattern violation on a specific path
    */
   private checkCEIViolationOnPath(
-    cfg: ControlFlowGraph, 
-    path: string[], 
-    criticalStateVars: string[]
+    cfg: ControlFlowGraph,
+    path: string[],
+    criticalStateVars: string[],
   ): CFGViolation | null {
     let lastExternalCallNode: string | null = null;
     let lastExternalCallIndex = -1;
@@ -56,9 +71,11 @@ export class CFGAnalyzer {
 
       // Check if this node updates critical state after external call
       if (lastExternalCallNode && node.metadata?.stateWrites.length) {
-        const criticalWrites = node.metadata.stateWrites.filter(varName =>
-          criticalStateVars.length === 0 || criticalStateVars.includes(varName) ||
-          node.metadata?.isCriticalStateUpdate
+        const criticalWrites = node.metadata.stateWrites.filter(
+          (varName) =>
+            criticalStateVars.length === 0 ||
+            criticalStateVars.includes(varName) ||
+            node.metadata?.isCriticalStateUpdate,
         );
 
         if (criticalWrites.length > 0) {
@@ -67,13 +84,16 @@ export class CFGAnalyzer {
             nodeId: lastExternalCallNode,
             description: `External call in function ${cfg.functionName} occurs before updating critical state variables: ${criticalWrites.join(", ")}. This violates the Check-Effects-Interactions pattern and may allow reentrancy attacks.`,
             severity: "critical",
-            location: node.location || { start: { line: 0, column: 0 }, end: { line: 0, column: 0 } },
+            location: node.location || {
+              start: { line: 0, column: 0 },
+              end: { line: 0, column: 0 },
+            },
             evidence: {
               externalCallNode: lastExternalCallNode,
               stateUpdateNode: nodeId,
               pathToViolation: path.slice(0, i + 1),
-              codeSnippet: this.extractCodeSnippet(node)
-            }
+              codeSnippet: this.extractCodeSnippet(node),
+            },
           };
         }
       }
@@ -99,11 +119,14 @@ export class CFGAnalyzer {
           nodeId,
           description: `Unreachable code detected in function ${cfg.functionName}. This code will never execute and may indicate a logic error.`,
           severity: "medium",
-          location: node.location || { start: { line: 0, column: 0 }, end: { line: 0, column: 0 } },
+          location: node.location || {
+            start: { line: 0, column: 0 },
+            end: { line: 0, column: 0 },
+          },
           evidence: {
             pathToViolation: [],
-            codeSnippet: this.extractCodeSnippet(node)
-          }
+            codeSnippet: this.extractCodeSnippet(node),
+          },
         });
       }
     }
@@ -111,7 +134,7 @@ export class CFGAnalyzer {
     return {
       ruleId: "unreachable-code",
       violations,
-      confidence: "high"
+      confidence: "high",
     };
   }
 
@@ -125,19 +148,25 @@ export class CFGAnalyzer {
     for (const [nodeId, node] of cfg.nodes) {
       if (node.metadata?.externalCalls.length) {
         // Check if there are state reads/writes after this external call
-        const vulnerablePaths = this.findPathsWithStateAccessAfterCall(cfg, nodeId);
-        
+        const vulnerablePaths = this.findPathsWithStateAccessAfterCall(
+          cfg,
+          nodeId,
+        );
+
         for (const path of vulnerablePaths) {
           violations.push({
             nodeId,
             description: `Potential reentrancy vulnerability in function ${cfg.functionName}. External call allows contract to reenter and access/modify state.`,
             severity: "high",
-            location: node.location || { start: { line: 0, column: 0 }, end: { line: 0, column: 0 } },
+            location: node.location || {
+              start: { line: 0, column: 0 },
+              end: { line: 0, column: 0 },
+            },
             evidence: {
               externalCallNode: nodeId,
               pathToViolation: path,
-              codeSnippet: this.extractCodeSnippet(node)
-            }
+              codeSnippet: this.extractCodeSnippet(node),
+            },
           });
         }
       }
@@ -146,7 +175,7 @@ export class CFGAnalyzer {
     return {
       ruleId: "reentrancy-paths",
       violations,
-      confidence: violations.length > 0 ? "medium" : "low"
+      confidence: violations.length > 0 ? "medium" : "low",
     };
   }
 
@@ -158,21 +187,28 @@ export class CFGAnalyzer {
 
     // Check for paths where state variables are read but never updated
     const stateVarUsage = this.analyzeStateVariableUsage(cfg);
-    
+
     for (const [varName, usage] of stateVarUsage) {
-      if (usage.reads > 0 && usage.writes === 0 && usage.isImportantForConsistency) {
+      if (
+        usage.reads > 0 &&
+        usage.writes === 0 &&
+        usage.isImportantForConsistency
+      ) {
         // Find a node that reads this variable
         const readingNode = this.findNodeReadingVariable(cfg, varName);
         if (readingNode) {
           violations.push({
             nodeId: readingNode.id,
             description: `State variable '${varName}' is read but never updated in function ${cfg.functionName}. This might indicate missing state synchronization.`,
-            severity: "low", 
-            location: readingNode.location || { start: { line: 0, column: 0 }, end: { line: 0, column: 0 } },
+            severity: "low",
+            location: readingNode.location || {
+              start: { line: 0, column: 0 },
+              end: { line: 0, column: 0 },
+            },
             evidence: {
               pathToViolation: [readingNode.id],
-              codeSnippet: this.extractCodeSnippet(readingNode)
-            }
+              codeSnippet: this.extractCodeSnippet(readingNode),
+            },
           });
         }
       }
@@ -181,35 +217,39 @@ export class CFGAnalyzer {
     return {
       ruleId: "state-consistency",
       violations,
-      confidence: "low"
+      confidence: "low",
     };
   }
 
   /**
    * Find all paths from start to any of the end nodes
    */
-  private findAllPaths(cfg: ControlFlowGraph, start: string, ends: string[]): string[][] {
+  private findAllPaths(
+    cfg: ControlFlowGraph,
+    start: string,
+    ends: string[],
+  ): string[][] {
     const paths: string[][] = [];
     const visited = new Set<string>();
 
     const dfs = (current: string, path: string[]): void => {
       if (visited.has(current)) return; // Avoid infinite loops
-      
+
       const newPath = [...path, current];
-      
+
       if (ends.includes(current)) {
         paths.push(newPath);
         return;
       }
 
       visited.add(current);
-      
+
       // Follow outgoing edges
-      const outgoingEdges = cfg.edges.filter(edge => edge.from === current);
+      const outgoingEdges = cfg.edges.filter((edge) => edge.from === current);
       for (const edge of outgoingEdges) {
         dfs(edge.to, newPath);
       }
-      
+
       visited.delete(current);
     };
 
@@ -220,12 +260,16 @@ export class CFGAnalyzer {
   /**
    * DFS to find reachable nodes
    */
-  private dfsReachable(cfg: ControlFlowGraph, nodeId: string, reachable: Set<string>): void {
+  private dfsReachable(
+    cfg: ControlFlowGraph,
+    nodeId: string,
+    reachable: Set<string>,
+  ): void {
     if (reachable.has(nodeId)) return;
-    
+
     reachable.add(nodeId);
-    
-    const outgoingEdges = cfg.edges.filter(edge => edge.from === nodeId);
+
+    const outgoingEdges = cfg.edges.filter((edge) => edge.from === nodeId);
     for (const edge of outgoingEdges) {
       this.dfsReachable(cfg, edge.to, reachable);
     }
@@ -234,27 +278,36 @@ export class CFGAnalyzer {
   /**
    * Find paths with state access after external call
    */
-  private findPathsWithStateAccessAfterCall(cfg: ControlFlowGraph, callNodeId: string): string[][] {
+  private findPathsWithStateAccessAfterCall(
+    cfg: ControlFlowGraph,
+    callNodeId: string,
+  ): string[][] {
     const paths: string[][] = [];
-    
+
     // Find paths from the external call node that access state
-    const traverse = (current: string, path: string[], visited: Set<string>): void => {
+    const traverse = (
+      current: string,
+      path: string[],
+      visited: Set<string>,
+    ): void => {
       if (visited.has(current)) return;
-      
+
       const node = cfg.nodes.get(current);
       if (!node) return;
-      
+
       const newPath = [...path, current];
-      
+
       // If this node (after the call) accesses state, we found a potential issue
-      if (current !== callNodeId && 
-          (node.metadata?.stateReads.length || node.metadata?.stateWrites.length)) {
+      if (
+        current !== callNodeId &&
+        (node.metadata?.stateReads.length || node.metadata?.stateWrites.length)
+      ) {
         paths.push(newPath);
       }
-      
+
       visited.add(current);
-      
-      const outgoingEdges = cfg.edges.filter(edge => edge.from === current);
+
+      const outgoingEdges = cfg.edges.filter((edge) => edge.from === current);
       for (const edge of outgoingEdges) {
         traverse(edge.to, newPath, new Set(visited));
       }
@@ -267,11 +320,14 @@ export class CFGAnalyzer {
   /**
    * Analyze state variable usage patterns
    */
-  private analyzeStateVariableUsage(cfg: ControlFlowGraph): Map<string, {
-    reads: number;
-    writes: number;
-    isImportantForConsistency: boolean;
-  }> {
+  private analyzeStateVariableUsage(cfg: ControlFlowGraph): Map<
+    string,
+    {
+      reads: number;
+      writes: number;
+      isImportantForConsistency: boolean;
+    }
+  > {
     const usage = new Map();
 
     for (const [_, node] of cfg.nodes) {
@@ -279,10 +335,11 @@ export class CFGAnalyzer {
         // Count reads
         for (const varName of node.metadata.stateReads) {
           if (!usage.has(varName)) {
-            usage.set(varName, { 
-              reads: 0, 
-              writes: 0, 
-              isImportantForConsistency: this.isImportantForConsistency(varName)
+            usage.set(varName, {
+              reads: 0,
+              writes: 0,
+              isImportantForConsistency:
+                this.isImportantForConsistency(varName),
             });
           }
           usage.get(varName).reads++;
@@ -291,10 +348,11 @@ export class CFGAnalyzer {
         // Count writes
         for (const varName of node.metadata.stateWrites) {
           if (!usage.has(varName)) {
-            usage.set(varName, { 
-              reads: 0, 
-              writes: 0, 
-              isImportantForConsistency: this.isImportantForConsistency(varName)
+            usage.set(varName, {
+              reads: 0,
+              writes: 0,
+              isImportantForConsistency:
+                this.isImportantForConsistency(varName),
             });
           }
           usage.get(varName).writes++;
@@ -310,11 +368,17 @@ export class CFGAnalyzer {
    */
   private isImportantForConsistency(varName: string): boolean {
     const importantPatterns = [
-      "balance", "total", "supply", "count", "amount", "value", "sum"
+      "balance",
+      "total",
+      "supply",
+      "count",
+      "amount",
+      "value",
+      "sum",
     ];
-    
-    return importantPatterns.some(pattern => 
-      varName.toLowerCase().includes(pattern)
+
+    return importantPatterns.some((pattern) =>
+      varName.toLowerCase().includes(pattern),
     );
   }
 
@@ -333,11 +397,14 @@ export class CFGAnalyzer {
   /**
    * Build exploit path from violation
    */
-  private buildExploitPath(cfg: ControlFlowGraph, violation: CFGViolation): CFGPath {
+  private buildExploitPath(
+    cfg: ControlFlowGraph,
+    violation: CFGViolation,
+  ): CFGPath {
     return {
       nodes: violation.evidence.pathToViolation,
       description: `Reentrancy exploit path: ${violation.evidence.pathToViolation.join(" → ")}`,
-      isExploitable: true
+      isExploitable: true,
     };
   }
 
@@ -346,15 +413,18 @@ export class CFGAnalyzer {
    */
   private extractCodeSnippet(node: any): string {
     // Simplified - would extract actual source code
-    return node.statements?.length ? 
-      `${node.statements.length} statement(s) at line ${node.location?.start?.line || "unknown"}` :
-      "No statements";
+    return node.statements?.length
+      ? `${node.statements.length} statement(s) at line ${node.location?.start?.line || "unknown"}`
+      : "No statements";
   }
 
   /**
    * Convert CFG analysis results to standard Issue format
    */
-  convertToIssues(results: CFGAnalysisResult[], context: AnalysisContext): Issue[] {
+  convertToIssues(
+    results: CFGAnalysisResult[],
+    context: AnalysisContext,
+  ): Issue[] {
     const issues: Issue[] = [];
 
     for (const result of results) {
@@ -362,11 +432,15 @@ export class CFGAnalyzer {
         issues.push({
           ruleId: result.ruleId,
           message: violation.description,
-          severity: violation.severity === "critical" ? "error" : 
-                   violation.severity === "high" ? "warning" : "info",
+          severity:
+            violation.severity === "critical"
+              ? "error"
+              : violation.severity === "high"
+                ? "warning"
+                : "info",
           file: context.filePath,
           line: violation.location.start.line,
-          column: violation.location.start.column
+          column: violation.location.start.column,
         });
       }
     }

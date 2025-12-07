@@ -30,7 +30,7 @@ export default {
     ai: {
       enabled: true,
       provider: "openai", // Options: "openai", "anthropic", "local"
-      model: "gpt-4",
+      model: "gpt-4o-mini-2025", // or "gpt-5.1", "gpt-5", "gpt-4.1"
       temperature: 0.3,
       maxTokens: 1000,
     },
@@ -59,7 +59,7 @@ SUPERAUDIT_AI_PROVIDER=openai
 OPENAI_API_KEY=sk-your-api-key-here
 
 # Optional AI settings
-SUPERAUDIT_AI_MODEL=gpt-4
+SUPERAUDIT_AI_MODEL=gpt-4o-mini-2025  # Latest 2025 models: gpt-5.1, gpt-5, gpt-4.1, gpt-4o-mini-2025, claude-opus-4.5, claude-sonnet-4
 SUPERAUDIT_AI_TEMPERATURE=0.3
 SUPERAUDIT_AI_MAX_TOKENS=1000
 ```
@@ -192,7 +192,7 @@ superaudit: {
   ai: {
     enabled: true,
     provider: "openai" | "anthropic" | "local",
-    model: "gpt-4",  // or "gpt-3.5-turbo", "claude-3-sonnet"
+    model: "gpt-4o-mini-2025",  // Latest 2025 models: "gpt-5.1", "gpt-5", "gpt-4.1", "gpt-4o-mini-2025", "claude-opus-4.5", "claude-sonnet-4"
     temperature: 0.3,  // Lower = more deterministic
     maxTokens: 1000  // Max response length
   }
@@ -206,7 +206,7 @@ superaudit: {
 - ⚠️ Risk scoring (1-10 scale)
 - 📚 Educational context and best practices
 
-**Cost Estimates (OpenAI GPT-4):**
+**Cost Estimates (OpenAI GPT-4o-mini-2025, default model):**
 
 - Small project (10 issues): ~$0.30
 - Medium project (50 issues): ~$1.50
@@ -277,7 +277,7 @@ superaudit: {
   ai: {
     enabled: true,
     provider: "anthropic",
-    model: "claude-3-opus"
+    model: "claude-opus-4.5"  // Latest 2025: "claude-opus-4.5", "claude-sonnet-4", "claude-haiku-4.5"
   }
 }
 ```

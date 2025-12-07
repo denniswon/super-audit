@@ -9,7 +9,7 @@ import type {
   InteractionResult,
   ExecutionTrace,
   InputGenerator,
-  FuzzingStrategy
+  FuzzingStrategy,
 } from "./types.js";
 import { ForkManager } from "./fork-manager.js";
 
@@ -32,7 +32,7 @@ export class FuzzingEngine {
    */
   async runFuzzingCampaign(
     contracts: DeployedContract[],
-    config: FuzzingConfig
+    config: FuzzingConfig,
   ): Promise<FuzzingResults> {
     const startTime = Date.now();
     const results: FuzzingResults = {
@@ -41,10 +41,12 @@ export class FuzzingEngine {
       coverage: this.initializeCoverage(),
       violations: [],
       exploits: [],
-      executionTime: 0
+      executionTime: 0,
     };
 
-    console.log(`🎲 Starting fuzzing campaign: ${config.runs} runs, depth ${config.depth}`);
+    console.log(
+      `🎲 Starting fuzzing campaign: ${config.runs} runs, depth ${config.depth}`,
+    );
 
     try {
       for (let run = 0; run < config.runs; run++) {
@@ -59,9 +61,11 @@ export class FuzzingEngine {
         if (violation) {
           results.violations.push(violation);
           results.failedRuns++;
-          
-          console.log(`🚨 Violation found in run ${run}: ${violation.description}`);
-          
+
+          console.log(
+            `🚨 Violation found in run ${run}: ${violation.description}`,
+          );
+
           // For critical violations, we might want to stop early
           if (violation.severity === "critical") {
             console.log("🛑 Critical violation found, stopping fuzzing");
@@ -76,10 +80,11 @@ export class FuzzingEngine {
       }
 
       results.executionTime = Date.now() - startTime;
-      console.log(`✅ Fuzzing complete: ${results.totalRuns} runs, ${results.failedRuns} violations`);
-      
-      return results;
+      console.log(
+        `✅ Fuzzing complete: ${results.totalRuns} runs, ${results.failedRuns} violations`,
+      );
 
+      return results;
     } catch (error) {
       results.executionTime = Date.now() - startTime;
       throw new Error(`Fuzzing campaign failed: ${error}`);
@@ -92,19 +97,22 @@ export class FuzzingEngine {
   private async executeFuzzingRun(
     contracts: DeployedContract[],
     config: FuzzingConfig,
-    runId: number
+    runId: number,
   ): Promise<FuzzingViolation | null> {
     try {
       // Create a snapshot to rollback after each run
       const snapshot = await this.forkManager.snapshot();
 
       // Generate a sequence of random interactions
-      const interactions = this.generateInteractionSequence(contracts, config.depth);
+      const interactions = this.generateInteractionSequence(
+        contracts,
+        config.depth,
+      );
 
       // Execute the sequence
       for (const interaction of interactions) {
         const result = await this.forkManager.executeInteraction(interaction);
-        
+
         // Check for violations
         const violation = this.checkForViolations(interaction, result, runId);
         if (violation) {
@@ -116,16 +124,20 @@ export class FuzzingEngine {
       // Revert to clean state for next run
       await this.forkManager.revert(snapshot);
       return null;
-
     } catch (error) {
       // Execution error might indicate a violation
       return {
         type: "revert",
         function: "unknown",
         input: runId,
-        trace: { steps: [], gasUsed: 0, success: false, revertReason: String(error) },
+        trace: {
+          steps: [],
+          gasUsed: 0,
+          success: false,
+          revertReason: String(error),
+        },
         severity: "medium",
-        description: `Execution error in fuzzing run ${runId}: ${error}`
+        description: `Execution error in fuzzing run ${runId}: ${error}`,
       };
     }
   }
@@ -134,8 +146,8 @@ export class FuzzingEngine {
    * Generate a random sequence of contract interactions
    */
   private generateInteractionSequence(
-    contracts: DeployedContract[], 
-    maxDepth: number
+    contracts: DeployedContract[],
+    maxDepth: number,
   ): ContractInteraction[] {
     const sequence: ContractInteraction[] = [];
     const seqLength = Math.floor(Math.random() * maxDepth) + 1;
@@ -144,9 +156,9 @@ export class FuzzingEngine {
       // Pick a random contract and method
       const contract = contracts[Math.floor(Math.random() * contracts.length)];
       const methods = this.getPublicMethods(contract);
-      
+
       if (methods.length === 0) continue;
-      
+
       const method = methods[Math.floor(Math.random() * methods.length)];
       const params = this.generateMethodParams(method);
 
@@ -155,7 +167,7 @@ export class FuzzingEngine {
         method: method.name,
         params,
         value: Math.random() > 0.9 ? `${Math.random() * 10}` : undefined,
-        gasLimit: 500000
+        gasLimit: 500000,
       });
     }
 
@@ -167,9 +179,12 @@ export class FuzzingEngine {
    */
   private getPublicMethods(contract: DeployedContract): any[] {
     // Filter for public/external functions, excluding view/pure for state-changing fuzzing
-    return (contract.abi as any[]).filter((item: any) => 
-      item.type === "function" && 
-      ["public", "external", "nonpayable", "payable"].includes(item.stateMutability)
+    return contract.abi.filter(
+      (item: any) =>
+        item.type === "function" &&
+        ["public", "external", "nonpayable", "payable"].includes(
+          item.stateMutability,
+        ),
     );
   }
 
@@ -199,7 +214,7 @@ export class FuzzingEngine {
   private checkForViolations(
     interaction: ContractInteraction,
     result: InteractionResult,
-    runId: number
+    runId: number,
   ): FuzzingViolation | null {
     // Check for unexpected reverts
     if (!result.success && result.error && !result.error.includes("revert")) {
@@ -207,21 +222,29 @@ export class FuzzingEngine {
         type: "panic",
         function: interaction.method,
         input: interaction.params,
-        trace: result.trace || { steps: [], gasUsed: result.gasUsed, success: false },
+        trace: result.trace || {
+          steps: [],
+          gasUsed: result.gasUsed,
+          success: false,
+        },
         severity: "high",
-        description: `Panic/Error in ${interaction.method}: ${result.error}`
+        description: `Panic/Error in ${interaction.method}: ${result.error}`,
       };
     }
 
     // Check for excessive gas usage
     if (result.gasUsed > 1000000) {
       return {
-        type: "gas", 
+        type: "gas",
         function: interaction.method,
         input: interaction.params,
-        trace: result.trace || { steps: [], gasUsed: result.gasUsed, success: true },
+        trace: result.trace || {
+          steps: [],
+          gasUsed: result.gasUsed,
+          success: true,
+        },
         severity: "medium",
-        description: `High gas usage in ${interaction.method}: ${result.gasUsed} gas`
+        description: `High gas usage in ${interaction.method}: ${result.gasUsed} gas`,
       };
     }
 
@@ -244,7 +267,7 @@ export class FuzzingEngine {
       totalBranches: 0,
       coveredBranches: 0,
       coveragePercentage: 0,
-      uncoveredLines: []
+      uncoveredLines: [],
     };
   }
 }
@@ -265,38 +288,43 @@ class BasicInputGenerator implements InputGenerator {
     if (Math.random() > 0.7) {
       return this.addresses[Math.floor(Math.random() * this.addresses.length)];
     }
-    
+
     // Generate random address
-    const bytes = Array.from({ length: 20 }, () => 
-      Math.floor(Math.random() * 256).toString(16).padStart(2, '0')
+    const bytes = Array.from({ length: 20 }, () =>
+      Math.floor(Math.random() * 256)
+        .toString(16)
+        .padStart(2, "0"),
     );
-    return `0x${bytes.join('')}`;
+    return `0x${bytes.join("")}`;
   }
 
   generateUint256(min: string = "0", max: string = "1000000"): string {
     const minVal = BigInt(min);
     const maxVal = BigInt(max);
     const range = maxVal - minVal;
-    
+
     if (range <= 0n) return min;
-    
+
     // Generate interesting values more often
     const rand = Math.random();
-    if (rand < 0.1) return "0";           // Zero
-    if (rand < 0.2) return "1";           // One  
-    if (rand < 0.3) return max;           // Maximum
+    if (rand < 0.1) return "0"; // Zero
+    if (rand < 0.2) return "1"; // One
+    if (rand < 0.3) return max; // Maximum
     if (rand < 0.4) return String(maxVal - 1n); // Max - 1
-    
+
     // Random value in range
-    const randomVal = minVal + BigInt(Math.floor(Math.random() * Number(range)));
+    const randomVal =
+      minVal + BigInt(Math.floor(Math.random() * Number(range)));
     return randomVal.toString();
   }
 
   generateBytes(length: number = 32): string {
-    const bytes = Array.from({ length }, () => 
-      Math.floor(Math.random() * 256).toString(16).padStart(2, '0')
+    const bytes = Array.from({ length }, () =>
+      Math.floor(Math.random() * 256)
+        .toString(16)
+        .padStart(2, "0"),
     );
-    return `0x${bytes.join('')}`;
+    return `0x${bytes.join("")}`;
   }
 
   generateBool(): boolean {

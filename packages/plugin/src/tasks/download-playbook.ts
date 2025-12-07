@@ -1,6 +1,6 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types/hre";
-import { initializeLighthouseFromEnv } from "../playbooks/index.js";
 import * as dotenv from "dotenv";
+import { initializeLighthouseFromEnv } from "../playbooks/index.js";
 
 dotenv.config();
 
@@ -16,18 +16,27 @@ export default async function downloadPlaybookTask(
 
     // Get CID from environment variable or first positional argument after task name
     let cid = process.env.PLAYBOOK_CID;
-    
+
     if (!cid) {
       // Try to get from process.argv after filtering out known Hardhat arguments
-      const argv = process.argv.filter(arg => !arg.startsWith('--') && !arg.includes('hardhat'));
-      const taskIndex = argv.findIndex(arg => arg.includes('download-playbook'));
-      cid = taskIndex !== -1 && taskIndex + 1 < argv.length ? argv[taskIndex + 1] : undefined;
+      const argv = process.argv.filter(
+        (arg) => !arg.startsWith("--") && !arg.includes("hardhat"),
+      );
+      const taskIndex = argv.findIndex((arg) =>
+        arg.includes("download-playbook"),
+      );
+      cid =
+        taskIndex !== -1 && taskIndex + 1 < argv.length
+          ? argv[taskIndex + 1]
+          : undefined;
     }
 
     if (!cid) {
       console.error("❌ Error: CID is required\n");
       console.log("💡 Usage (Option 1 - Environment Variable):");
-      console.log("   PLAYBOOK_CID=bafkreih... npx hardhat download-playbook\n");
+      console.log(
+        "   PLAYBOOK_CID=bafkreih... npx hardhat download-playbook\n",
+      );
       console.log("💡 Usage (Option 2 - Direct Command):");
       console.log("   Use the download-playbook.js script:");
       console.log("   node download-playbook.js bafkreih...");
@@ -44,9 +53,9 @@ export default async function downloadPlaybookTask(
     console.log(`✅ Playbook downloaded successfully!\n`);
     console.log(`📋 Details:`);
     console.log(`   Name: ${playbook.name}`);
-    console.log(`   Author: ${playbook.author || 'unknown'}`);
+    console.log(`   Author: ${playbook.author || "unknown"}`);
     console.log(`   Version: ${playbook.version}`);
-    console.log(`   Tags: ${playbook.tags?.join(', ') || 'none'}`);
+    console.log(`   Tags: ${playbook.tags?.join(", ") || "none"}`);
     console.log(`   Checks: ${playbook.checks?.length || 0}\n`);
 
     if (playbook.description) {
@@ -56,9 +65,10 @@ export default async function downloadPlaybookTask(
 
     console.log(`💡 Use this playbook in analysis:`);
     console.log(`   npx hardhat superaudit --playbook-cid ${cid}`);
-
   } catch (error) {
-    console.error(`\n❌ Download failed: ${error instanceof Error ? error.message : String(error)}`);
+    console.error(
+      `\n❌ Download failed: ${error instanceof Error ? error.message : String(error)}`,
+    );
     process.exit(1);
   }
 }

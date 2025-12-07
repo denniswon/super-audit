@@ -1,7 +1,8 @@
-import type { 
-  ASTNode, 
-  FunctionDefinition, 
-  Block, 
+import { v4 as uuidv4 } from "uuid";
+import type {
+  ASTNode,
+  FunctionDefinition,
+  Block,
   IfStatement,
   WhileStatement,
   ForStatement,
@@ -9,7 +10,7 @@ import type {
   VariableDeclaration,
   MemberAccess,
   FunctionCall,
-  Identifier
+  Identifier,
 } from "../types.js";
 import type {
   ControlFlowGraph,
@@ -18,9 +19,8 @@ import type {
   CFGNodeType,
   CFGNodeMetadata,
   ExternalCallInfo,
-  CFGMetadata
+  CFGMetadata,
 } from "./types.js";
-import { v4 as uuidv4 } from "uuid";
 
 /**
  * Builds Control Flow Graphs from function ASTs
@@ -34,14 +34,14 @@ export class CFGBuilder {
    */
   buildCFG(functionNode: FunctionDefinition): ControlFlowGraph {
     const functionName = functionNode.name || "constructor";
-    
+
     this.currentCFG = {
       functionName,
       nodes: new Map(),
       edges: [],
       entryNode: "",
       exitNodes: [],
-      metadata: this.initializeMetadata()
+      metadata: this.initializeMetadata(),
     };
 
     // Create entry node
@@ -51,7 +51,10 @@ export class CFGBuilder {
     // Process function body
     let currentNodeId = entryNode.id;
     if (functionNode.body && functionNode.body.statements) {
-      currentNodeId = this.processStatements(functionNode.body.statements, currentNodeId);
+      currentNodeId = this.processStatements(
+        functionNode.body.statements,
+        currentNodeId,
+      );
     }
 
     // Create exit node if needed
@@ -85,7 +88,10 @@ export class CFGBuilder {
         }
 
         // Process control flow statement
-        currentNodeId = this.processControlFlowStatement(statement, currentNodeId);
+        currentNodeId = this.processControlFlowStatement(
+          statement,
+          currentNodeId,
+        );
       } else {
         // Accumulate statement for basic block
         currentStatements.push(statement);
@@ -108,34 +114,40 @@ export class CFGBuilder {
   private isControlFlowStatement(statement: ASTNode): boolean {
     return [
       "IfStatement",
-      "WhileStatement", 
+      "WhileStatement",
       "ForStatement",
       "ReturnStatement",
       "BreakStatement",
       "ContinueStatement",
       "RevertStatement",
       "RequireStatement",
-      "AssertStatement"
+      "AssertStatement",
     ].includes(statement.type);
   }
 
   /**
    * Process control flow statements (if, while, for, etc.)
    */
-  private processControlFlowStatement(statement: ASTNode, fromNodeId: string): string {
+  private processControlFlowStatement(
+    statement: ASTNode,
+    fromNodeId: string,
+  ): string {
     switch (statement.type) {
       case "IfStatement":
         return this.processIfStatement(statement as IfStatement, fromNodeId);
-      
+
       case "WhileStatement":
-        return this.processWhileStatement(statement as WhileStatement, fromNodeId);
-      
+        return this.processWhileStatement(
+          statement as WhileStatement,
+          fromNodeId,
+        );
+
       case "ForStatement":
         return this.processForStatement(statement as ForStatement, fromNodeId);
-      
+
       case "ReturnStatement":
         return this.processReturnStatement(statement, fromNodeId);
-      
+
       default:
         // For now, treat other control statements as basic blocks
         const node = this.createBasicBlock([statement]);
@@ -149,7 +161,11 @@ export class CFGBuilder {
    */
   private processIfStatement(ifStmt: IfStatement, fromNodeId: string): string {
     // Create condition node
-    const conditionNode = this.createNode("condition", [ifStmt.condition], ifStmt.loc);
+    const conditionNode = this.createNode(
+      "condition",
+      [ifStmt.condition],
+      ifStmt.loc,
+    );
     this.addEdge(fromNodeId, conditionNode.id, "sequential");
 
     // Process true branch
@@ -162,7 +178,10 @@ export class CFGBuilder {
     // Process false branch (else)
     let falseBranchEndId = conditionNode.id;
     if (ifStmt.elseBody) {
-      falseBranchEndId = this.processStatements([ifStmt.elseBody], conditionNode.id);
+      falseBranchEndId = this.processStatements(
+        [ifStmt.elseBody],
+        conditionNode.id,
+      );
       this.addEdge(conditionNode.id, falseBranchEndId, "conditional", "false");
     } else {
       // No else branch - condition can flow directly to merge point
@@ -171,7 +190,7 @@ export class CFGBuilder {
 
     // Create merge node where both branches reconvene
     const mergeNode = this.createNode("basic", [], ifStmt.loc);
-    
+
     if (trueBranchEndId !== conditionNode.id) {
       this.addEdge(trueBranchEndId, mergeNode.id, "sequential");
     }
@@ -189,9 +208,16 @@ export class CFGBuilder {
   /**
    * Process while loop
    */
-  private processWhileStatement(whileStmt: WhileStatement, fromNodeId: string): string {
+  private processWhileStatement(
+    whileStmt: WhileStatement,
+    fromNodeId: string,
+  ): string {
     // Create loop header with condition
-    const headerNode = this.createNode("loop-header", [whileStmt.condition], whileStmt.loc);
+    const headerNode = this.createNode(
+      "loop-header",
+      [whileStmt.condition],
+      whileStmt.loc,
+    );
     this.addEdge(fromNodeId, headerNode.id, "sequential");
 
     // Process loop body
@@ -199,7 +225,7 @@ export class CFGBuilder {
     if (whileStmt.body) {
       bodyEndId = this.processStatements([whileStmt.body], headerNode.id);
       this.addEdge(headerNode.id, bodyEndId, "conditional", "true");
-      
+
       // Back edge from body to header
       this.addEdge(bodyEndId, headerNode.id, "loop-back");
     }
@@ -214,7 +240,10 @@ export class CFGBuilder {
   /**
    * Process for loop
    */
-  private processForStatement(forStmt: ForStatement, fromNodeId: string): string {
+  private processForStatement(
+    forStmt: ForStatement,
+    fromNodeId: string,
+  ): string {
     let currentNodeId = fromNodeId;
 
     // Process initialization
@@ -226,7 +255,11 @@ export class CFGBuilder {
 
     // Create loop header with condition
     const headerStatements = forStmt.condition ? [forStmt.condition] : [];
-    const headerNode = this.createNode("loop-header", headerStatements, forStmt.loc);
+    const headerNode = this.createNode(
+      "loop-header",
+      headerStatements,
+      forStmt.loc,
+    );
     this.addEdge(currentNodeId, headerNode.id, "sequential");
 
     // Process loop body
@@ -256,13 +289,16 @@ export class CFGBuilder {
   /**
    * Process return statement
    */
-  private processReturnStatement(returnStmt: ASTNode, fromNodeId: string): string {
+  private processReturnStatement(
+    returnStmt: ASTNode,
+    fromNodeId: string,
+  ): string {
     const returnNode = this.createNode("return", [returnStmt], returnStmt.loc);
     this.addEdge(fromNodeId, returnNode.id, "sequential");
-    
+
     if (!this.currentCFG) throw new Error("No current CFG");
     this.currentCFG.exitNodes.push(returnNode.id);
-    
+
     return returnNode.id;
   }
 
@@ -272,7 +308,7 @@ export class CFGBuilder {
   private createBasicBlock(statements: ASTNode[]): CFGNode {
     // Analyze statements to determine node type and metadata
     const metadata = this.analyzeStatements(statements);
-    
+
     let nodeType: CFGNodeType = "basic";
     if (metadata.externalCalls.length > 0) {
       nodeType = "external-call";
@@ -287,22 +323,22 @@ export class CFGBuilder {
    * Create a CFG node
    */
   private createNode(
-    type: CFGNodeType, 
-    statements: ASTNode[], 
+    type: CFGNodeType,
+    statements: ASTNode[],
     location?: any,
-    metadata?: CFGNodeMetadata
+    metadata?: CFGNodeMetadata,
   ): CFGNode {
     const node: CFGNode = {
       id: `node_${this.nodeCounter++}`,
       type,
       statements,
       location,
-      metadata: metadata || this.analyzeStatements(statements)
+      metadata: metadata || this.analyzeStatements(statements),
     };
 
     if (!this.currentCFG) throw new Error("No current CFG");
     this.currentCFG.nodes.set(node.id, node);
-    
+
     return node;
   }
 
@@ -310,18 +346,24 @@ export class CFGBuilder {
    * Add an edge between nodes
    */
   private addEdge(
-    from: string, 
-    to: string, 
-    type: "sequential" | "conditional" | "loop-back" | "loop-exit" | "exception" | "return",
-    condition?: string
+    from: string,
+    to: string,
+    type:
+      | "sequential"
+      | "conditional"
+      | "loop-back"
+      | "loop-exit"
+      | "exception"
+      | "return",
+    condition?: string,
   ): void {
     if (!this.currentCFG) throw new Error("No current CFG");
-    
+
     this.currentCFG.edges.push({
       from,
       to,
       type,
-      condition
+      condition,
     });
   }
 
@@ -334,7 +376,7 @@ export class CFGBuilder {
       stateWrites: [],
       externalCalls: [],
       canRevert: false,
-      isCriticalStateUpdate: false
+      isCriticalStateUpdate: false,
     };
 
     for (const stmt of statements) {
@@ -344,10 +386,10 @@ export class CFGBuilder {
     // Remove duplicates
     metadata.stateReads = [...new Set(metadata.stateReads)];
     metadata.stateWrites = [...new Set(metadata.stateWrites)];
-    
+
     // Determine if this is a critical state update
-    metadata.isCriticalStateUpdate = metadata.stateWrites.some(varName => 
-      this.isCriticalStateVariable(varName)
+    metadata.isCriticalStateUpdate = metadata.stateWrites.some((varName) =>
+      this.isCriticalStateVariable(varName),
     );
 
     return metadata;
@@ -356,7 +398,10 @@ export class CFGBuilder {
   /**
    * Recursively analyze a statement for metadata
    */
-  private analyzeStatementRecursively(node: ASTNode, metadata: CFGNodeMetadata): void {
+  private analyzeStatementRecursively(
+    node: ASTNode,
+    metadata: CFGNodeMetadata,
+  ): void {
     switch (node.type) {
       case "ExpressionStatement":
         const exprStmt = node as ExpressionStatement;
@@ -382,7 +427,7 @@ export class CFGBuilder {
         if (callInfo) {
           metadata.externalCalls.push(callInfo);
         }
-        
+
         // Check if this is a revert/require/assert
         if (this.isRevertFunction(funcCall)) {
           metadata.canRevert = true;
@@ -418,21 +463,29 @@ export class CFGBuilder {
   private analyzeFunctionCall(funcCall: FunctionCall): ExternalCallInfo | null {
     // This is a simplified implementation
     // In practice, we'd need more sophisticated analysis to determine if a call is external
-    
+
     if (funcCall.expression.type === "MemberAccess") {
       const memberAccess = funcCall.expression as MemberAccess;
-      
+
       // Check for low-level calls
-      const isLowLevel = ["call", "delegatecall", "staticcall", "send", "transfer"]
-        .includes(memberAccess.memberName);
-      
+      const isLowLevel = [
+        "call",
+        "delegatecall",
+        "staticcall",
+        "send",
+        "transfer",
+      ].includes(memberAccess.memberName);
+
       if (isLowLevel || this.isExternalContract(memberAccess.expression)) {
         return {
           target: this.getCallTarget(memberAccess),
           method: memberAccess.memberName,
-          location: funcCall.loc || { start: { line: 0, column: 0 }, end: { line: 0, column: 0 } },
+          location: funcCall.loc || {
+            start: { line: 0, column: 0 },
+            end: { line: 0, column: 0 },
+          },
           isLowLevel,
-          returnValueChecked: false // TODO: Analyze if return value is checked
+          returnValueChecked: false, // TODO: Analyze if return value is checked
         };
       }
     }
@@ -445,13 +498,20 @@ export class CFGBuilder {
    */
   private isStateVariableAccess(node: ASTNode): boolean {
     // Simplified - in practice would need contract context
-    return node.type === "Identifier" && this.isStateVariable((node as Identifier).name);
+    return (
+      node.type === "Identifier" &&
+      this.isStateVariable((node as Identifier).name)
+    );
   }
 
   private isStateVariable(name: string): boolean {
     // Simplified - would need to track state variables from contract analysis
-    return name !== "msg" && name !== "block" && name !== "tx" && 
-           !this.isLocalVariable(name);
+    return (
+      name !== "msg" &&
+      name !== "block" &&
+      name !== "tx" &&
+      !this.isLocalVariable(name)
+    );
   }
 
   private isLocalVariable(name: string): boolean {
@@ -462,13 +522,22 @@ export class CFGBuilder {
   private isCriticalStateVariable(name: string): boolean {
     // Variables that are commonly critical in DeFi contracts
     const criticalNames = [
-      "balance", "balances", "totalSupply", "reserves", 
-      "shares", "totalShares", "deposits", "withdrawals",
-      "price", "oracle", "owner", "paused"
+      "balance",
+      "balances",
+      "totalSupply",
+      "reserves",
+      "shares",
+      "totalShares",
+      "deposits",
+      "withdrawals",
+      "price",
+      "oracle",
+      "owner",
+      "paused",
     ];
-    
-    return criticalNames.some(critical => 
-      name.toLowerCase().includes(critical.toLowerCase())
+
+    return criticalNames.some((critical) =>
+      name.toLowerCase().includes(critical.toLowerCase()),
     );
   }
 
@@ -483,8 +552,10 @@ export class CFGBuilder {
 
   private isExternalContract(node: ASTNode): boolean {
     // Simplified - would need contract context to determine external contracts
-    return node.type === "Identifier" && 
-           !["this", "msg", "block", "tx"].includes((node as Identifier).name);
+    return (
+      node.type === "Identifier" &&
+      !["this", "msg", "block", "tx"].includes((node as Identifier).name)
+    );
   }
 
   private getCallTarget(memberAccess: MemberAccess): string {
@@ -502,15 +573,18 @@ export class CFGBuilder {
     return false;
   }
 
-  private visitChildNodes(node: ASTNode, visitor: (child: ASTNode) => void): void {
+  private visitChildNodes(
+    node: ASTNode,
+    visitor: (child: ASTNode) => void,
+  ): void {
     // Simplified visitor - would need to handle all AST node types properly
     const nodeAny = node as any;
-    
+
     for (const key in nodeAny) {
       const value = nodeAny[key];
       if (value && typeof value === "object") {
         if (Array.isArray(value)) {
-          value.forEach(item => {
+          value.forEach((item) => {
             if (item && item.type) {
               visitor(item);
             }
@@ -546,10 +620,10 @@ export class CFGBuilder {
 
     this.currentCFG.metadata = {
       hasExternalCalls,
-      hasStateUpdates, 
+      hasStateUpdates,
       hasReentrancyRisk,
       cyclomaticComplexity: this.calculateCyclomaticComplexity(),
-      potentialVulnerabilities: []
+      potentialVulnerabilities: [],
     };
   }
 
@@ -558,12 +632,12 @@ export class CFGBuilder {
    */
   private calculateCyclomaticComplexity(): number {
     if (!this.currentCFG) return 1;
-    
+
     // McCabe complexity = E - N + 2P
     // E = edges, N = nodes, P = connected components (1 for single function)
     const edges = this.currentCFG.edges.length;
     const nodes = this.currentCFG.nodes.size;
-    
+
     return edges - nodes + 2;
   }
 
@@ -573,7 +647,7 @@ export class CFGBuilder {
       hasStateUpdates: false,
       hasReentrancyRisk: false,
       cyclomaticComplexity: 1,
-      potentialVulnerabilities: []
+      potentialVulnerabilities: [],
     };
   }
 }

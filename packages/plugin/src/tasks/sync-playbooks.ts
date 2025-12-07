@@ -1,11 +1,11 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types/hre";
+import * as dotenv from "dotenv";
 import {
   initializeRegistry,
   getPlaybookRegistry,
   initializeLighthouseFromEnv,
   getSamplePlaybooks,
 } from "../playbooks/index.js";
-import * as dotenv from "dotenv";
 
 dotenv.config();
 
@@ -31,13 +31,16 @@ export default async function syncPlaybooksTask(
       return;
     }
 
-    console.log(`✅ Synced ${syncedCount} new playbook(s) from community storage!\n`);
+    console.log(
+      `✅ Synced ${syncedCount} new playbook(s) from community storage!\n`,
+    );
     console.log(`📊 Total registered playbooks: ${registry.getAll().length}\n`);
     console.log(`💡 View all playbooks:`);
     console.log(`   npx hardhat list-playbooks`);
-
   } catch (error) {
-    console.error(`\n❌ Sync failed: ${error instanceof Error ? error.message : String(error)}`);
+    console.error(
+      `\n❌ Sync failed: ${error instanceof Error ? error.message : String(error)}`,
+    );
     process.exit(1);
   }
 }
