@@ -1,7 +1,7 @@
 version: "1.0"
 meta:
   name: "AI-Enhanced DeFi Security Audit"
-  author: "SuperAudit Team"
+  author: "MrklTree Team"
   description: "Comprehensive DeFi security audit with AI-powered analysis and fix suggestions"
   tags: ["defi", "security", "reentrancy", "access-control"]
   ai:
@@ -23,7 +23,7 @@ checks:
       2. How much ETH or tokens could be stolen
       3. Detailed step-by-step fix with code examples
       4. Alternative secure patterns (e.g., ReentrancyGuard)
-      
+
       Provide a clear explanation that developers can understand.
 
   - id: "access-control-check"
@@ -65,4 +65,3 @@ checks:
 targets:
   contracts: ["*Vault", "*Token", "*Pool", "*Staking"]
   exclude: ["Mock*", "Test*"]
-

@@ -85,7 +85,7 @@ export default async function uploadPlaybookTask(
     console.log(`   ${registered.source.cid}\n`);
     console.log(`🔗 Anyone can now use this playbook:`);
     console.log(
-      `   npx hardhat superaudit --playbook-cid ${registered.source.cid}`,
+      `   npx hardhat auditagent --playbook-cid ${registered.source.cid}`,
     );
   } catch (error) {
     console.error(

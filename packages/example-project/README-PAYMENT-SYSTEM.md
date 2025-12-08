@@ -1,4 +1,4 @@
-# SuperAudit Payment System
+# MrklTree Payment System
 
 ## Setup
 
@@ -25,7 +25,7 @@ npx hardhat upload-playbook-encrypted \
 ### Access Playbook
 
 ```bash
-npx hardhat superaudit --playbook-cid <PLAYBOOK_CID>
+npx hardhat auditagent --playbook-cid <PLAYBOOK_CID>
 ```
 
 ## Test Accounts
@@ -33,7 +33,7 @@ npx hardhat superaudit --playbook-cid <PLAYBOOK_CID>
 ## Payment Flow
 
 1. **Upload**: Creator uploads encrypted playbook with payment info
-2. **Access**: User runs `superaudit --playbook-cid <CID>`
+2. **Access**: User runs `auditagent --playbook-cid <CID>`
 3. **Keys**: Enter public/private keys for Lighthouse decryption
 4. **Payment**: Choose Auto (1) or Manual (2) payment
    - **Auto**: Enter payment private key, system sends transaction

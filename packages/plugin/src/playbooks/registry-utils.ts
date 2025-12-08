@@ -379,7 +379,7 @@ export async function mergePlaybooks(
     name:
       newMeta?.name ||
       `Merged: ${playbooks.map((pb) => pb.meta.name).join(" + ")}`,
-    author: newMeta?.author || "SuperAudit Registry",
+    author: newMeta?.author || "MrklTree Registry",
     description:
       newMeta?.description ||
       `Merged from: ${playbooks.map((pb) => pb.id).join(", ")}`,

@@ -4,7 +4,7 @@ Get started with the Playbook Registry in 5 minutes!
 
 ## Installation
 
-The registry is already included in the SuperAudit plugin. No additional installation needed.
+The registry is already included in the MrklTree plugin. No additional installation needed.
 
 ## Basic Usage (3 Steps)
 
@@ -149,7 +149,7 @@ import {
   registerProjectPlaybooks
 } from "../playbooks/index.js";
 
-task("superaudit", "Run security analysis")
+task("auditagent", "Run security analysis")
   .addParam("playbook", "Playbook ID or file path", undefined, types.string, true)
   .addFlag("listPlaybooks", "List all registered playbooks")
   .setAction(async (taskArgs, hre) => {
@@ -198,20 +198,20 @@ Once integrated, you can use:
 
 ```bash
 # Initialize and list builtin playbooks
-npx hardhat superaudit --list-playbooks
+npx hardhat auditagent --list-playbooks
 
 # Use a registered playbook by ID
-npx hardhat superaudit --playbook erc20-security
+npx hardhat auditagent --playbook erc20-security
 
 # Register and use a new playbook
-npx hardhat superaudit --register-playbook ./my-playbook.yaml
-npx hardhat superaudit --playbook my-playbook
+npx hardhat auditagent --register-playbook ./my-playbook.yaml
+npx hardhat auditagent --playbook my-playbook
 
 # Search for playbooks
-npx hardhat superaudit --search-playbooks "defi,reentrancy"
+npx hardhat auditagent --search-playbooks "defi,reentrancy"
 
 # Show registry stats
-npx hardhat superaudit --registry-stats
+npx hardhat auditagent --registry-stats
 ```
 
 ## Creating Custom Playbooks

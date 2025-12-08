@@ -65,7 +65,7 @@ A  packages/example-project/playbooks/complete-defi-security.yaml
 A  packages/example-project/contracts/ExampleToken.sol
 A  packages/example-project/audit-report.txt    (test output)
 A  packages/example-project/audit-results.json  (test output)
-A  packages/example-project/superaudit.sarif    (test output)
+A  packages/example-project/auditagent.sarif    (test output)
 ```
 
 ---
@@ -134,7 +134,7 @@ A  packages/example-project/superaudit.sarif    (test output)
 # File Output Tests
 ✅ audit-report.txt       (6.1 KB)
 ✅ audit-results.json     (8.2 KB, 179 lines)
-✅ superaudit.sarif       (15 KB, valid SARIF 2.1.0)
+✅ auditagent.sarif       (15 KB, valid SARIF 2.1.0)
 
 # Playbook Tests
 ✅ ERC20 playbook loaded successfully
@@ -191,11 +191,11 @@ A  packages/example-project/superaudit.sarif    (test output)
 git pull origin feat/ai-integration
 
 # Use file output
-npx hardhat superaudit --output ./report.txt
+npx hardhat auditagent --output ./report.txt
 
 # Use ERC20 playbook
 # In hardhat.config.ts:
-superaudit: {
+auditagent: {
   playbook: "./playbooks/erc20-token-security.yaml"
 }
 ```

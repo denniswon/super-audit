@@ -33,7 +33,7 @@ export default async function analyzeTask(
   taskArguments: AnalyzeTaskArguments,
   hre: HardhatRuntimeEnvironment,
 ) {
-  console.log("🔍 SuperAudit - Advanced Smart Contract Security Analysis\n");
+  console.log("🔍 MrklTree - Advanced Smart Contract Security Analysis\n");
 
   try {
     // Initialize playbook registry and Lighthouse (always available with default shared API key)
@@ -57,7 +57,7 @@ export default async function analyzeTask(
     }
 
     // Get config from hardhat.config.ts (if available)
-    const configDefaults = hre.config.superaudit || {};
+    const configDefaults = hre.config.auditagent || {};
 
     // Parse command line arguments manually (CLI overrides config)
     const argv = process.argv;
@@ -78,7 +78,7 @@ export default async function analyzeTask(
       aiEnabled:
         hasFlag(argv, "--ai") ||
         configDefaults.ai?.enabled ||
-        process.env.SUPERAUDIT_AI_ENABLED === "true",
+        process.env.AUDIT_AGENT_AI_ENABLED === "true",
     };
 
     // Handle special commands
@@ -135,7 +135,7 @@ export default async function analyzeTask(
       console.log(`   URL: ${registered.source.location}`);
       console.log(`\n💡 Anyone can now use this playbook with:`);
       console.log(
-        `   npx hardhat superaudit --playbook-cid ${registered.source.cid}`,
+        `   npx hardhat auditagent --playbook-cid ${registered.source.cid}`,
       );
       return;
     }
@@ -573,7 +573,7 @@ async function determineAnalysisRules(args: any): Promise<{
  * Show sample playbooks to help users get started
  */
 function showSamplePlaybooks(): void {
-  console.log("📋 SuperAudit Sample Playbooks\n");
+  console.log("📋 MrklTree Sample Playbooks\n");
 
   const samples = getSamplePlaybooks();
 
@@ -710,9 +710,9 @@ function outputSARIF(
       {
         tool: {
           driver: {
-            name: "SuperAudit",
+            name: "MrklTree",
             version: "1.0.0",
-            informationUri: "https://github.com/superaudit/hardhat-plugin",
+            informationUri: "https://github.com/auditagent/hardhat-plugin",
           },
         },
         results: issues.map((issue) => ({
@@ -753,7 +753,7 @@ function outputSARIF(
  * Get AI configuration from environment variables
  */
 function getAIConfig() {
-  const provider = (process.env.SUPERAUDIT_AI_PROVIDER || "openai") as
+  const provider = (process.env.AUDIT_AGENT_AI_PROVIDER || "openai") as
     | "openai"
     | "anthropic"
     | "local";
@@ -765,7 +765,7 @@ function getAIConfig() {
         : undefined;
 
   // Get model from env, or use provider-appropriate default
-  let model = process.env.SUPERAUDIT_AI_MODEL;
+  let model = process.env.AUDIT_AGENT_AI_MODEL;
   if (!model) {
     // Set default based on provider
     if (provider === "anthropic") {
@@ -775,7 +775,10 @@ function getAIConfig() {
     }
   } else {
     // Validate model matches provider
-    const isOpenAIModel = model.startsWith("gpt-") || model.startsWith("o1-") || model.startsWith("o3-");
+    const isOpenAIModel =
+      model.startsWith("gpt-") ||
+      model.startsWith("o1-") ||
+      model.startsWith("o3-");
     const isAnthropicModel = model.startsWith("claude-");
 
     if (provider === "openai" && !isOpenAIModel) {
@@ -807,15 +810,24 @@ function getAIConfig() {
 
   // Final validation - ensure model matches provider
   if (model) {
-    if (provider === "anthropic" && (model.startsWith("gpt-") || model.startsWith("o1-") || model.startsWith("o3-"))) {
-      console.warn(`⚠️  Correcting model mismatch: "${model}" -> "claude-sonnet-4-0"`);
+    if (
+      provider === "anthropic" &&
+      (model.startsWith("gpt-") ||
+        model.startsWith("o1-") ||
+        model.startsWith("o3-"))
+    ) {
+      console.warn(
+        `⚠️  Correcting model mismatch: "${model}" -> "claude-sonnet-4-0"`,
+      );
       model = "claude-sonnet-4-0";
     } else if (provider === "openai" && model.startsWith("claude-")) {
-      console.warn(`⚠️  Correcting model mismatch: "${model}" -> "gpt-4o-mini"`);
+      console.warn(
+        `⚠️  Correcting model mismatch: "${model}" -> "gpt-4o-mini"`,
+      );
       model = "gpt-4o-mini";
     }
   }
-  
+
   // Ensure model is set
   if (!model) {
     model = provider === "anthropic" ? "claude-sonnet-4-0" : "gpt-4o-mini";
@@ -825,8 +837,7 @@ function getAIConfig() {
     provider,
     apiKey,
     model,
-    temperature: parseFloat(process.env.SUPERAUDIT_AI_TEMPERATURE || "0.3"),
-    maxTokens: parseInt(process.env.SUPERAUDIT_AI_MAX_TOKENS || "1000"),
+    temperature: parseFloat(process.env.AUDIT_AGENT_AI_TEMPERATURE || "0.3"),
+    maxTokens: parseInt(process.env.AUDIT_AGENT_AI_MAX_TOKENS || "1000"),
   };
 }
-

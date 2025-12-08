@@ -162,7 +162,7 @@ export default async function uploadPlaybookEncryptedTask(
       `🔐 Users must pay ${paymentAmount} ETH to access this playbook`,
     );
     console.log(`🔗 To use this playbook:`);
-    console.log(`   npx hardhat superaudit --playbook-cid ${registered.cid}`);
+    console.log(`   npx hardhat auditagent --playbook-cid ${registered.cid}`);
     console.log(
       `   (Users will be prompted for payment when they run this command)`,
     );

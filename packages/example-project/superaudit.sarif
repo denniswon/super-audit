@@ -5,9 +5,9 @@
     {
       "tool": {
         "driver": {
-          "name": "SuperAudit",
+          "name": "MrklTree",
           "version": "1.0.0",
-          "informationUri": "https://github.com/superaudit/hardhat-plugin"
+          "informationUri": "https://github.com/auditagent/hardhat-plugin"
         }
       },
       "results": [
@@ -21,7 +21,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/VulnerableVault.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/VulnerableVault.sol"
                 },
                 "region": {
                   "startLine": 105,
@@ -41,7 +41,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/VulnerableVault.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/VulnerableVault.sol"
                 },
                 "region": {
                   "startLine": 26,
@@ -61,7 +61,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/VulnerableVault.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/VulnerableVault.sol"
                 },
                 "region": {
                   "startLine": 27,
@@ -81,7 +81,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/VulnerableVault.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/VulnerableVault.sol"
                 },
                 "region": {
                   "startLine": 28,
@@ -101,7 +101,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/VulnerableVault.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/VulnerableVault.sol"
                 },
                 "region": {
                   "startLine": 29,
@@ -121,7 +121,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/VulnerableVault.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/VulnerableVault.sol"
                 },
                 "region": {
                   "startLine": 79,
@@ -141,7 +141,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/VulnerableVault.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/VulnerableVault.sol"
                 },
                 "region": {
                   "startLine": 151,
@@ -161,7 +161,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/VulnerableVault.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/VulnerableVault.sol"
                 },
                 "region": {
                   "startLine": 155,
@@ -181,7 +181,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/VulnerableVault.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/VulnerableVault.sol"
                 },
                 "region": {
                   "startLine": 160,
@@ -201,7 +201,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/VulnerableVault.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/VulnerableVault.sol"
                 },
                 "region": {
                   "startLine": 80,
@@ -221,7 +221,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/VulnerableVault.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/VulnerableVault.sol"
                 },
                 "region": {
                   "startLine": 80,
@@ -241,7 +241,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/VulnerableVault.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/VulnerableVault.sol"
                 },
                 "region": {
                   "startLine": 79,
@@ -261,7 +261,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/VulnerableVault.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/VulnerableVault.sol"
                 },
                 "region": {
                   "startLine": 0,
@@ -281,7 +281,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/VulnerableVault.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/VulnerableVault.sol"
                 },
                 "region": {
                   "startLine": 0,
@@ -301,7 +301,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/TestViolations.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/TestViolations.sol"
                 },
                 "region": {
                   "startLine": 13,
@@ -321,7 +321,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/TestViolations.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/TestViolations.sol"
                 },
                 "region": {
                   "startLine": 20,
@@ -341,7 +341,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/TestViolations.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/TestViolations.sol"
                 },
                 "region": {
                   "startLine": 7,
@@ -361,7 +361,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/TestViolations.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/TestViolations.sol"
                 },
                 "region": {
                   "startLine": 8,
@@ -381,7 +381,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/TestViolations.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/TestViolations.sol"
                 },
                 "region": {
                   "startLine": 6,
@@ -401,7 +401,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/TestViolations.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/TestViolations.sol"
                 },
                 "region": {
                   "startLine": 11,
@@ -421,7 +421,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "/Users/rudranshshinghal/SuperAudit-Plugin/packages/example-project/contracts/TestViolations.sol"
+                  "uri": "/Users/rudranshshinghal/MrklTree-Plugin/packages/example-project/contracts/TestViolations.sol"
                 },
                 "region": {
                   "startLine": 18,

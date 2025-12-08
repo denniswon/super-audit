@@ -22,7 +22,7 @@ export default async function lighthouseInfoTask(
       console.log(`✅ Using your custom Lighthouse API key`);
       console.log(`   (from LIGHTHOUSE_API_KEY environment variable)\n`);
     } else {
-      console.log(`🌍 Using shared SuperAudit community storage`);
+      console.log(`🌍 Using shared MrklTree community storage`);
       console.log(`   (no API key required!)\n`);
     }
 
@@ -48,8 +48,8 @@ export default async function lighthouseInfoTask(
     console.log(`   npx hardhat sync-playbooks\n`);
 
     console.log(`Run analysis with a specific playbook:`);
-    console.log(`   npx hardhat superaudit --playbook-id <ID>`);
-    console.log(`   npx hardhat superaudit --playbook-cid <CID>\n`);
+    console.log(`   npx hardhat auditagent --playbook-id <ID>`);
+    console.log(`   npx hardhat auditagent --playbook-cid <CID>\n`);
 
     console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
     console.log(`💡 Tips`);

@@ -8,11 +8,11 @@
     "watch": "tsc --build . --watch"
   },
   "devDependencies": {
+    "@mrkltree/auditagent": "^1.1.5",
     "@tsconfig/node22": "^22.0.2",
     "@types/node": "^22.11.0",
+    "forge-std": "github:foundry-rs/forge-std#v1.9.4",
     "hardhat": "^3.0.6",
-    "@jhwon0820/super-audit": "^1.1.0",
-    "typescript": "~5.8.0",
-    "forge-std": "github:foundry-rs/forge-std#v1.9.4"
+    "typescript": "~5.8.0"
   }
 }

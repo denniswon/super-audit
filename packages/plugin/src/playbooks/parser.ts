@@ -151,6 +151,7 @@ export class PlaybookParser {
       severity: check.severity,
       description: check.description,
       enabled: check.enabled !== false, // Default to true
+      ai_prompt: check.ai_prompt, // Include AI prompt if present
     }));
   }
 

@@ -47,7 +47,7 @@ PLAYBOOK_FILE=./playbooks/erc20-token-security.yaml npx hardhat upload-playbook
 ```
 📤 Uploading Playbook to Community Storage
 
-🌐 Using shared SuperAudit community Lighthouse storage
+🌐 Using shared MrklTree community Lighthouse storage
 📄 File: /path/to/playbook.yaml
 
    Progress: 100.00%
@@ -57,7 +57,7 @@ PLAYBOOK_FILE=./playbooks/erc20-token-security.yaml npx hardhat upload-playbook
 📋 Details:
    ID: erc20-token-security
    Name: ERC20 Token Security Audit
-   Author: SuperAudit Team
+   Author: MrklTree Team
    CID: bafkreifnhbl7m6jga6f24b7wiqo6iyrk46nuubdcpwx4bjhsvsps3otygy
    URL: https://gateway.lighthouse.storage/ipfs/bafkreif...
 
@@ -65,7 +65,7 @@ PLAYBOOK_FILE=./playbooks/erc20-token-security.yaml npx hardhat upload-playbook
    bafkreifnhbl7m6jga6f24b7wiqo6iyrk46nuubdcpwx4bjhsvsps3otygy
 
 🔗 Anyone can now use this playbook:
-   npx hardhat superaudit --playbook-cid bafkreif...
+   npx hardhat auditagent --playbook-cid bafkreif...
 ```
 
 **Features:**
@@ -99,7 +99,7 @@ PLAYBOOK_CID=bafkreifnhbl7m6jga6f24b7wiqo6iyrk46nuubdcpwx4bjhsvsps3otygy npx har
 ```
 📥 Downloading Playbook from Community Storage
 
-🌐 Using shared SuperAudit community Lighthouse storage
+🌐 Using shared MrklTree community Lighthouse storage
 📦 CID: bafkreif...
 
 ⏳ Downloading from IPFS...
@@ -111,13 +111,13 @@ PLAYBOOK_CID=bafkreifnhbl7m6jga6f24b7wiqo6iyrk46nuubdcpwx4bjhsvsps3otygy npx har
 
 📋 Details:
    Name: ERC20 Token Security Audit
-   Author: SuperAudit Team
+   Author: MrklTree Team
    Version: 1.0
    Tags: erc20, token, security
    Checks: 11
 
 💡 Use this playbook in analysis:
-   npx hardhat superaudit --playbook-cid bafkreif...
+   npx hardhat auditagent --playbook-cid bafkreif...
 ```
 
 **Features:**
@@ -144,13 +144,13 @@ npx hardhat list-playbooks
 ```
 📚 Available Playbooks
 
-🌐 Using shared SuperAudit community Lighthouse storage
+🌐 Using shared MrklTree community Lighthouse storage
 
 Found 3 playbook(s):
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📋 DeFi Vault Security (defi-vault-security)
-   Author: SuperAudit Team
+   Author: MrklTree Team
    Version: 1.0.0
    Tags: defi, vault, reentrancy, access-control
    Description: Comprehensive security analysis for DeFi vault contracts
@@ -158,7 +158,7 @@ Found 3 playbook(s):
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📋 ERC20 Security (erc20-security)
-   Author: SuperAudit Team
+   Author: MrklTree Team
    Version: 1.0.0
    Tags: erc20, token, transfers
    Description: Security analysis for ERC20 token contracts
@@ -169,8 +169,8 @@ Found 3 playbook(s):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 💡 Use a playbook in analysis:
-   npx hardhat superaudit --playbook-id <ID>
-   npx hardhat superaudit --playbook-cid <CID>
+   npx hardhat auditagent --playbook-id <ID>
+   npx hardhat auditagent --playbook-cid <CID>
 ```
 
 **Features:**
@@ -198,7 +198,7 @@ npx hardhat sync-playbooks
 ```
 🔄 Syncing Community Playbooks
 
-🌐 Using shared SuperAudit community Lighthouse storage
+🌐 Using shared MrklTree community Lighthouse storage
 🔄 Syncing playbooks from Lighthouse...
 
 ✅ Synced 3 new playbook(s) from community storage!
@@ -214,7 +214,7 @@ npx hardhat sync-playbooks
 ```
 🔄 Syncing Community Playbooks
 
-🌐 Using shared SuperAudit community Lighthouse storage
+🌐 Using shared MrklTree community Lighthouse storage
 
 ✅ No new playbooks to sync.
 
@@ -330,7 +330,7 @@ PLAYBOOK_CID=bafkreif... npx hardhat download-playbook
 ### 5. Run Analysis with Shared Playbook
 
 ```bash
-npx hardhat superaudit --playbook-cid bafkreif...
+npx hardhat auditagent --playbook-cid bafkreif...
 ```
 
 ### 6. List All Available Playbooks

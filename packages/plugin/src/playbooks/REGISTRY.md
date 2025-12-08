@@ -1,6 +1,6 @@
 # Playbook Registry Module
 
-A centralized registry system for managing, discovering, and validating audit playbooks in SuperAudit.
+A centralized registry system for managing, discovering, and validating audit playbooks in MrklTree.
 
 ## Overview
 
@@ -97,7 +97,7 @@ const defiPlaybooks = registry.search({
 
 // Search by author
 const teamPlaybooks = registry.search({
-  author: "SuperAudit Team",
+  author: "MrklTree Team",
 });
 
 // Search by multiple criteria
@@ -111,7 +111,7 @@ const criticalERC20 = registry.search({
 const reentrancyPlaybooks = registry.getByTag("reentrancy");
 
 // Get all playbooks by author
-const authorPlaybooks = registry.getByAuthor("SuperAudit Team");
+const authorPlaybooks = registry.getByAuthor("MrklTree Team");
 ```
 
 ### Working with Registered Playbooks
@@ -225,9 +225,9 @@ const registry = getPlaybookRegistry();
 console.log(`Loaded ${registry.getAll().length} builtin playbooks`);
 ```
 
-## Integration with SuperAudit Task
+## Integration with MrklTree Task
 
-The registry can be integrated into the main SuperAudit analysis task:
+The registry can be integrated into the main MrklTree analysis task:
 
 ```typescript
 // In tasks/analyze.ts
@@ -268,22 +268,22 @@ async function determineAnalysisRules(args: any) {
 
 ```bash
 # List all registered playbooks
-npx hardhat superaudit --list-playbooks
+npx hardhat auditagent --list-playbooks
 
 # Show registry statistics
-npx hardhat superaudit --registry-stats
+npx hardhat auditagent --registry-stats
 
 # Search playbooks by tag
-npx hardhat superaudit --search-playbooks "defi,reentrancy"
+npx hardhat auditagent --search-playbooks "defi,reentrancy"
 
 # Register a new playbook
-npx hardhat superaudit --register-playbook ./my-playbook.yaml
+npx hardhat auditagent --register-playbook ./my-playbook.yaml
 
 # Validate all registered playbooks
-npx hardhat superaudit --validate-playbooks
+npx hardhat auditagent --validate-playbooks
 
 # Show detailed info about a playbook
-npx hardhat superaudit --playbook-info erc20-security
+npx hardhat auditagent --playbook-info erc20-security
 ```
 
 ## Type Definitions
@@ -389,4 +389,4 @@ When adding new features to the registry:
 
 ## License
 
-Same as SuperAudit-Plugin project license.
+Same as MrklTree-Plugin project license.

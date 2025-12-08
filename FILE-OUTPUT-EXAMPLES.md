@@ -1,6 +1,6 @@
 # File Output Examples
 
-SuperAudit now supports saving audit reports to files for documentation, compliance, and historical reference.
+MrklTree now supports saving audit reports to files for documentation, compliance, and historical reference.
 
 ## Quick Examples
 
@@ -10,7 +10,7 @@ SuperAudit now supports saving audit reports to files for documentation, complia
 
 ```typescript
 // hardhat.config.ts
-superaudit: {
+auditagent: {
   format: "console",
   output: "./reports/audit-2024-10-23.txt"
 }
@@ -32,7 +32,7 @@ superaudit: {
 
 ```typescript
 // hardhat.config.ts
-superaudit: {
+auditagent: {
   format: "json",
   output: "./reports/audit-results.json"
 }
@@ -73,9 +73,9 @@ superaudit: {
 
 ```typescript
 // hardhat.config.ts
-superaudit: {
+auditagent: {
   format: "sarif",
-  output: "./superaudit.sarif"
+  output: "./auditagent.sarif"
 }
 ```
 
@@ -95,14 +95,14 @@ You can also use environment variables:
 
 ```bash
 # .env
-SUPERAUDIT_FORMAT=console
-SUPERAUDIT_OUTPUT=./reports/audit-report.txt
+AUDIT_AGENT_FORMAT=console
+AUDIT_AGENT_OUTPUT=./reports/audit-report.txt
 ```
 
 Or set them directly:
 
 ```bash
-SUPERAUDIT_OUTPUT=./audit.json npx hardhat superaudit
+AUDIT_AGENT_OUTPUT=./audit.json npx hardhat auditagent
 ```
 
 ---
@@ -113,7 +113,7 @@ SUPERAUDIT_OUTPUT=./audit.json npx hardhat superaudit
 
 ```typescript
 // hardhat.config.ci.ts
-superaudit: {
+auditagent: {
   mode: "basic",
   format: "json",
   output: `./reports/ci-audit-${Date.now()}.json`
@@ -122,14 +122,14 @@ superaudit: {
 
 ```bash
 # GitHub Actions
-npx hardhat --config hardhat.config.ci.ts superaudit
+npx hardhat --config hardhat.config.ci.ts auditagent
 ```
 
 ### Example 2: Pre-Release Audit
 
 ```typescript
 // hardhat.config.release.ts
-superaudit: {
+auditagent: {
   mode: "full",
   format: "console",
   output: "./reports/release-audit-v1.0.0.txt",
@@ -142,24 +142,24 @@ superaudit: {
 
 ```bash
 # Manual release audit
-npx hardhat --config hardhat.config.release.ts superaudit
+npx hardhat --config hardhat.config.release.ts auditagent
 ```
 
 ### Example 3: GitHub Integration
 
 ```yaml
 # .github/workflows/security.yml
-- name: Run SuperAudit
+- name: Run MrklTree
   run: |
-    npx hardhat superaudit
+    npx hardhat auditagent
   env:
-    SUPERAUDIT_FORMAT: sarif
-    SUPERAUDIT_OUTPUT: ./superaudit.sarif
+    AUDIT_AGENT_FORMAT: sarif
+    AUDIT_AGENT_OUTPUT: ./auditagent.sarif
 
 - name: Upload SARIF
   uses: github/codeql-action/upload-sarif@v2
   with:
-    sarif_file: superaudit.sarif
+    sarif_file: auditagent.sarif
 ```
 
 ---
@@ -184,7 +184,7 @@ output: `./reports/audit-v${require("./package.json").version}.json`;
 
 ```bash
 COMMIT=$(git rev-parse --short HEAD)
-SUPERAUDIT_OUTPUT="./reports/audit-${COMMIT}.txt" npx hardhat superaudit
+AUDIT_AGENT_OUTPUT="./reports/audit-${COMMIT}.txt" npx hardhat auditagent
 # Result: ./reports/audit-abc1234.txt
 ```
 
@@ -206,8 +206,8 @@ After running audits with different configurations:
 
 ```bash
 # Generate multiple reports
-SUPERAUDIT_OUTPUT=./audit-basic.txt SUPERAUDIT_MODE=basic npx hardhat superaudit
-SUPERAUDIT_OUTPUT=./audit-full.txt SUPERAUDIT_MODE=full npx hardhat superaudit
+AUDIT_AGENT_OUTPUT=./audit-basic.txt AUDIT_AGENT_MODE=basic npx hardhat auditagent
+AUDIT_AGENT_OUTPUT=./audit-full.txt AUDIT_AGENT_MODE=full npx hardhat auditagent
 
 # Compare reports
 diff audit-basic.txt audit-full.txt
@@ -217,7 +217,7 @@ diff audit-basic.txt audit-full.txt
 
 ## Automatic File Extensions
 
-SuperAudit automatically adds correct extensions if missing:
+MrklTree automatically adds correct extensions if missing:
 
 ```typescript
 output: "./report";
@@ -240,7 +240,7 @@ output: "./my-audit-report.txt"; // ✅ Keeps .txt
 
 ```bash
 mkdir -p ./reports
-SUPERAUDIT_OUTPUT=./reports/audit.txt npx hardhat superaudit
+AUDIT_AGENT_OUTPUT=./reports/audit.txt npx hardhat auditagent
 ```
 
 ### 2. Combine Console + File Output
@@ -248,7 +248,7 @@ SUPERAUDIT_OUTPUT=./reports/audit.txt npx hardhat superaudit
 The plugin shows output **AND** saves to file simultaneously:
 
 ```typescript
-superaudit: {
+auditagent: {
   format: "console",
   output: "./audit.txt"  // You see it AND it's saved!
 }
@@ -281,22 +281,22 @@ mkdir -p reports
 
 # 2. Run basic audit (fast, for quick checks)
 echo "Running basic audit..."
-SUPERAUDIT_MODE=basic \
-SUPERAUDIT_OUTPUT=./reports/audit-basic.txt \
-npx hardhat superaudit
+AUDIT_AGENT_MODE=basic \
+AUDIT_AGENT_OUTPUT=./reports/audit-basic.txt \
+npx hardhat auditagent
 
 # 3. Run full audit with JSON output
 echo "Running full audit..."
-SUPERAUDIT_MODE=full \
-SUPERAUDIT_FORMAT=json \
-SUPERAUDIT_OUTPUT=./reports/audit-full.json \
-npx hardhat superaudit
+AUDIT_AGENT_MODE=full \
+AUDIT_AGENT_FORMAT=json \
+AUDIT_AGENT_OUTPUT=./reports/audit-full.json \
+npx hardhat auditagent
 
 # 4. Run AI-enhanced audit
 echo "Running AI-enhanced audit..."
-SUPERAUDIT_AI_ENABLED=true \
-SUPERAUDIT_OUTPUT=./reports/audit-ai-enhanced.txt \
-npx hardhat superaudit
+AUDIT_AGENT_AI_ENABLED=true \
+AUDIT_AGENT_OUTPUT=./reports/audit-ai-enhanced.txt \
+npx hardhat auditagent
 
 # 5. Generate summary
 echo "Audit complete! Reports saved in ./reports/"
@@ -308,7 +308,7 @@ ls -lh ./reports/
 ## Next Steps
 
 1. **Try it yourself:** Add `output: "./my-audit.txt"` to your config
-2. **Automate:** Add SuperAudit to your CI/CD pipeline
+2. **Automate:** Add MrklTree to your CI/CD pipeline
 3. **Track progress:** Save reports over time to measure improvements
 4. **Share:** Send reports to team members or auditors
 

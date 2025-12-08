@@ -1,12 +1,12 @@
 import { HardhatUserConfig } from "hardhat/config";
-import superauditPlugin from "@jhwon0820/super-audit";
+import MrklAgentPlugin from "@mrkltree/auditagent";
 
 export default {
-  plugins: [superauditPlugin],
+  plugins: [MrklAgentPlugin],
   solidity: "0.8.29",
 
-  // SuperAudit configuration (optional - can also use CLI flags)
-  superaudit: {
+  // MrklTree configuration (optional - can also use CLI flags)
+  auditagent: {
     mode: "full", // Options: "basic", "advanced", "full"
     format: "console", // Options: "console", "json", "sarif"
     // output: "./audit-report.txt",  // Optional: save report to file

@@ -1,4 +1,4 @@
-# SuperAudit - Quick Reference
+# MrklTree - Quick Reference
 
 ## ✅ What Was Fixed
 
@@ -23,37 +23,37 @@
 
 ```bash
 cd packages/example-project
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 ### With AI Enhancement
 
 ```bash
 # 1. Enable in .env
-SUPERAUDIT_AI_ENABLED=true
+AUDIT_AGENT_AI_ENABLED=true
 OPENAI_API_KEY=your-key
 
 # 2. Run
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 ### Save Report to File
 
 ```bash
 # In hardhat.config.ts
-superaudit: {
+auditagent: {
   output: "./reports/audit.txt"
 }
 
 # Or use environment variable
-SUPERAUDIT_OUTPUT=./audit-report.txt
+AUDIT_AGENT_OUTPUT=./audit-report.txt
 ```
 
 ### Different Modes
 
 ```typescript
 // hardhat.config.ts
-superaudit: {
+auditagent: {
   mode: "basic",    // Fast: AST only (~2ms)
   mode: "advanced", // Medium: AST + CFG (~10ms)
   mode: "full",     // Complete: All rules (~20ms)
@@ -63,7 +63,7 @@ superaudit: {
 ### Output Formats
 
 ```typescript
-superaudit: {
+auditagent: {
   format: "console",  // Human-readable (default)
   format: "json",     // Machine-readable
   format: "sarif",    // GitHub integration
@@ -93,7 +93,7 @@ superaudit: {
 ### Configuration
 
 4. `packages/plugin/src/type-extensions.ts`
-   - Added SuperAuditConfig types
+   - Added MrklTreeConfig types
 
 5. `packages/plugin/src/config.ts`
    - Configuration validation & resolution
@@ -160,7 +160,7 @@ superaudit: {
 ## 🎓 Example Output
 
 ```txt
-🔍 SuperAudit - Advanced Smart Contract Security Analysis
+🔍 MrklTree - Advanced Smart Contract Security Analysis
 
 🤖 AI Enhancement: ENABLED (openai)
 📊 Analysis Mode: FULL

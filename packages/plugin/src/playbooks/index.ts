@@ -67,7 +67,7 @@ function getDeFiVaultSecurityPlaybook(): string {
 version: "1.0"
 meta:
   name: "DeFi Vault Security"
-  author: "SuperAudit Team"
+  author: "MrklTree Team"
   description: "Comprehensive security analysis for DeFi vault contracts"
   tags: ["defi", "vault", "reentrancy", "access-control"]
   version: "1.0.0"
@@ -180,7 +180,7 @@ function getERC20SecurityPlaybook(): string {
 version: "1.0"
 meta:
   name: "ERC20 Security"
-  author: "SuperAudit Team"
+  author: "MrklTree Team"
   description: "Security analysis for ERC20 token contracts"
   tags: ["erc20", "token", "transfers"]
 
@@ -213,7 +213,7 @@ function getAccessControlPlaybook(): string {
 version: "1.0"
 meta:
   name: "Access Control Security"
-  author: "SuperAudit Team" 
+  author: "MrklTree Team" 
   description: "Access control and privilege management analysis"
   tags: ["access-control", "admin", "ownership"]
 

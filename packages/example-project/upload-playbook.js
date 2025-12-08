@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Lighthouse Playbook Upload Demo
- * 
+ *
  * This script demonstrates uploading a playbook to Lighthouse/IPFS
  * and then loading it back for analysis.
  */
@@ -29,7 +29,9 @@ async function main() {
   // Initialize
   const lighthouse = initializeLighthouseFromEnv();
   if (!lighthouse) {
-    console.error("❌ Lighthouse not initialized. Set LIGHTHOUSE_API_KEY in .env file.");
+    console.error(
+      "❌ Lighthouse not initialized. Set LIGHTHOUSE_API_KEY in .env file.",
+    );
     process.exit(1);
   }
   console.log("✅ Lighthouse initialized\n");
@@ -43,7 +45,8 @@ async function main() {
   console.log(`📤 Uploading playbook: ${playbookPath}\n`);
 
   const progressCallback = (progressData) => {
-    const percentage = 100 - ((progressData?.total / progressData?.uploaded) * 100 || 0);
+    const percentage =
+      100 - ((progressData?.total / progressData?.uploaded) * 100 || 0);
     process.stdout.write(`\r   Progress: ${percentage.toFixed(2)}%`);
   };
 
@@ -51,7 +54,7 @@ async function main() {
     const registered = await registry.uploadAndRegisterToLighthouse(
       playbookPath,
       undefined,
-      progressCallback
+      progressCallback,
     );
 
     console.log(`\n\n✅ Upload successful!`);
@@ -60,10 +63,11 @@ async function main() {
     console.log(`   CID: ${registered.source.cid}`);
     console.log(`   URL: ${registered.source.location}`);
     console.log(`\n📋 To use this playbook in analysis:`);
-    console.log(`   npx hardhat superaudit --playbook-cid ${registered.source.cid}`);
+    console.log(
+      `   npx hardhat auditagent --playbook-cid ${registered.source.cid}`,
+    );
     console.log(`   or`);
-    console.log(`   npx hardhat superaudit --playbook-id ${registered.id}`);
-
+    console.log(`   npx hardhat auditagent --playbook-id ${registered.id}`);
   } catch (error) {
     console.error(`\n\n❌ Upload failed:`, error.message);
     process.exit(1);

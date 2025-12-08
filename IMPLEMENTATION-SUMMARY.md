@@ -1,4 +1,4 @@
-# SuperAudit Plugin - Implementation Summary
+# MrklTree Plugin - Implementation Summary
 
 ## 🎯 What Was Accomplished
 
@@ -12,7 +12,7 @@
 **Example configuration:**
 
 ```typescript
-superaudit: {
+auditagent: {
   mode: "full",  // "basic" | "advanced" | "full"
   format: "console",  // "console" | "json" | "sarif"
   ai: {
@@ -101,8 +101,8 @@ Comprehensive guide covering:
 
 **File:** `packages/example-project/.env`
 
-- Set `SUPERAUDIT_AI_ENABLED=true`
-- Configured `SUPERAUDIT_AI_MODEL=gpt-3.5-turbo` for faster/cheaper testing
+- Set `AUDIT_AGENT_AI_ENABLED=true`
+- Configured `AUDIT_AGENT_AI_MODEL=gpt-3.5-turbo` for faster/cheaper testing
 - Added API key
 
 ## 🔍 Testing Results
@@ -111,7 +111,7 @@ Comprehensive guide covering:
 
 ```bash
 # Config: mode: "basic"
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 **Result:** SUCCESS
@@ -125,7 +125,7 @@ npx hardhat superaudit
 
 ```bash
 # Config: mode: "full", ai.enabled: true
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 **Result:** SUCCESS
@@ -230,14 +230,14 @@ npx hardhat superaudit
 ### How It Actually Works
 
 1. **Plugin Registration**
-   - Hardhat loads plugin via `import superauditPlugin from "@jhwon0820/super-audit"`
-   - Plugin registers `superaudit` task
+   - Hardhat loads plugin via `import MrklAgentPlugin from "@mrkltree/auditagent"`
+   - Plugin registers `auditagent` task
    - Configuration hooks validate and resolve config
 
 2. **Task Execution Flow**
 
    ```txt
-   User runs: npx hardhat superaudit
+   User runs: npx hardhat auditagent
    ↓
    Task reads config (hardhat.config + env vars)
    ↓

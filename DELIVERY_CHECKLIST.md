@@ -332,7 +332,7 @@ You can integrate it immediately or wait - the choice is yours. The module is fu
 
 ---
 
-**Location**: `/Users/rudranshshinghal/SuperAudit-Plugin/packages/plugin/src/playbooks/`
+**Location**: `/packages/plugin/src/playbooks/`
 
 **Entry Point**: `registry.ts` (exported via `index.ts`)
 

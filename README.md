@@ -1,8 +1,8 @@
-# 🔐 SuperAudit - Revolutionary Smart Contract Security Analysis
+# 🔐 MrklTree - Revolutionary Smart Contract Security Analysis
 
 > **Advanced static analysis plugin for Hardhat with Control Flow Graph analysis, YAML programmable audits, and comprehensive vulnerability detection.**
 
-[![npm version](https://img.shields.io/npm/v/@jhwon0820%2Fsuper-audit.svg)](https://www.npmjs.com/package/@jhwon0820/super-audit)
+[![npm version](https://img.shields.io/npm/v/@mrkltree%2Fauditagent.svg)](https://www.npmjs.com/package/@mrkltree/auditagent)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
@@ -11,25 +11,25 @@
 
 ```bash
 # Install in your Hardhat project
-pnpm install @jhwon0820/super-audit
+pnpm install @mrkltree/auditagent
 
 # Add to hardhat.config.ts
-import superauditPlugin from "@jhwon0820/super-audit";
+import MrklAgentPlugin from "@mrkltree/auditagent";
 export default {
-  plugins: [superauditPlugin]
+  plugins: [MrklAgentPlugin]
 };
 
 # Run security analysis
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
-**That's it!** SuperAudit will analyze all your contracts and provide detailed security reports.
+**That's it!** MrklTree will analyze all your contracts and provide detailed security reports.
 
 ---
 
-## 🎯 **What is SuperAudit?**
+## 🎯 **What is MrklTree?**
 
-SuperAudit is a **comprehensive smart contract security analysis plugin** for Hardhat that goes far beyond basic linting:
+MrklTree is a **comprehensive smart contract security analysis plugin** for Hardhat that goes far beyond basic linting:
 
 ### 🔍 **Advanced Analysis Capabilities**
 
@@ -60,14 +60,14 @@ SuperAudit is a **comprehensive smart contract security analysis plugin** for Ha
 
 ## 📊 **Live Demo Results**
 
-Running SuperAudit on the example vulnerable vault:
+Running MrklTree on the example vulnerable vault:
 
 ```bash
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 ```
-🔍 SuperAudit - Advanced Smart Contract Security Analysis
+🔍 MrklTree - Advanced Smart Contract Security Analysis
 
 📊 Analysis Mode: FULL
 🔧 Rules: 7 active rule(s)
@@ -115,7 +115,7 @@ VulnerableVault.sol
 ### Core Components
 
 ```
-SuperAudit Architecture
+MrklTree Architecture
 ├── AST Parser (Solidity → Abstract Syntax Tree)
 ├── CFG Builder (Functions → Control Flow Graphs)
 ├── Rule Engine (Modular vulnerability detection)
@@ -174,13 +174,13 @@ SuperAudit Architecture
 
 ```bash
 # Using npm
-npm install @jhwon0820/super-audit
+npm install @mrkltree/auditagent
 
 # Using pnpm
-pnpm install @jhwon0820/super-audit
+pnpm install @mrkltree/auditagent
 
 # Using yarn
-yarn add @jhwon0820/super-audit
+yarn add @mrkltree/auditagent
 ```
 
 ### 2. Configure Hardhat
@@ -189,11 +189,11 @@ Add to your `hardhat.config.ts`:
 
 ```typescript
 import { HardhatUserConfig } from "hardhat/config";
-import superauditPlugin from "@jhwon0820/super-audit";
+import MrklAgentPlugin from "@mrkltree/auditagent";
 
 const config: HardhatUserConfig = {
   solidity: "0.8.27",
-  plugins: [superauditPlugin],
+  plugins: [MrklAgentPlugin],
   // ... your other config
 };
 
@@ -204,22 +204,22 @@ export default config;
 
 ```bash
 # Full analysis (default)
-npx hardhat superaudit
+npx hardhat auditagent
 
 # Basic mode (fast, AST-only)
-npx hardhat superaudit --mode basic
+npx hardhat auditagent --mode basic
 
 # Advanced mode (includes CFG)
-npx hardhat superaudit --mode advanced
+npx hardhat auditagent --mode advanced
 
 # JSON output for CI/CD
-npx hardhat superaudit --format json > audit-report.json
+npx hardhat auditagent --format json > audit-report.json
 
 # SARIF for GitHub Code Scanning
-npx hardhat superaudit --format sarif > audit.sarif
+npx hardhat auditagent --format sarif > audit.sarif
 
 # Save report to file (automatically adds correct extension)
-npx hardhat superaudit --output ./reports/audit-report.txt
+npx hardhat auditagent --output ./reports/audit-report.txt
 ```
 
 ### 4. Configure Output (Optional)
@@ -227,7 +227,7 @@ npx hardhat superaudit --output ./reports/audit-report.txt
 Add to `hardhat.config.ts`:
 
 ```typescript
-superaudit: {
+auditagent: {
   mode: "full",  // Options: "basic", "advanced", "full"
   format: "console",  // Options: "console", "json", "sarif"
   output: "./reports/audit-report.txt"  // Optional: save to file
@@ -237,17 +237,17 @@ superaudit: {
 Or use environment variables in `.env`:
 
 ```bash
-SUPERAUDIT_MODE=full
-SUPERAUDIT_FORMAT=console
-SUPERAUDIT_OUTPUT=./audit-report.txt
+AUDIT_AGENT_MODE=full
+AUDIT_AGENT_FORMAT=console
+AUDIT_AGENT_OUTPUT=./audit-report.txt
 ```
 
 ### 5. Use Specialized Playbooks (Recommended)
 
-SuperAudit includes pre-built playbooks for common contract types:
+MrklTree includes pre-built playbooks for common contract types:
 
 ```typescript
-superaudit: {
+auditagent: {
   // For ERC20 tokens
   playbook: "./playbooks/erc20-token-security.yaml";
 
@@ -269,18 +269,18 @@ superaudit: {
 
 ```bash
 cd your-hardhat-project
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 ### Audit ERC20 Token
 
 ```bash
 # Set playbook in hardhat.config.ts
-superaudit: {
+auditagent: {
   playbook: "./playbooks/erc20-token-security.yaml"
 }
 
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 ### CI/CD Integration
@@ -297,7 +297,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
       - run: pnpm install
-      - run: npx hardhat superaudit --format sarif > results.sarif
+      - run: npx hardhat auditagent --format sarif > results.sarif
       - uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: results.sarif
@@ -333,7 +333,7 @@ _Note: Playbook infrastructure is ready, CLI integration coming soon._
 
 ## 🤖 **AI-Powered Analysis (NEW!)**
 
-SuperAudit now supports **AI-enhanced security analysis** using latest 2025 models (OpenAI GPT-5.1/GPT-5/GPT-4.1 or Anthropic Claude Opus 4.5/Sonnet 4) to provide:
+MrklTree now supports **AI-enhanced security analysis** using latest 2025 models (OpenAI GPT-5.1/GPT-5/GPT-4.1 or Anthropic Claude Opus 4.5/Sonnet 4) to provide:
 
 - 🧠 **Detailed Vulnerability Explanations** - Understand WHY code is vulnerable
 - 🔧 **Automated Fix Suggestions** - Get concrete code fixes with examples
@@ -355,25 +355,25 @@ Copy `env.example` to `.env` in your project root:
 
 ```bash
 # .env
-SUPERAUDIT_AI_ENABLED=true
-SUPERAUDIT_AI_PROVIDER=openai
+AUDIT_AGENT_AI_ENABLED=true
+AUDIT_AGENT_AI_PROVIDER=openai
 OPENAI_API_KEY=sk-your-api-key-here
 
 # Optional customization
-# SUPERAUDIT_AI_MODEL=gpt-4o-mini-2025  # Latest 2025 models: gpt-5.1, gpt-5, gpt-4.1, gpt-4o-mini-2025, claude-opus-4.5, claude-sonnet-4
-# SUPERAUDIT_AI_TEMPERATURE=0.3
-# SUPERAUDIT_AI_MAX_TOKENS=1000
+# AUDIT_AGENT_AI_MODEL=gpt-4o-mini-2025  # Latest 2025 models: gpt-5.1, gpt-5, gpt-4.1, gpt-4o-mini-2025, claude-opus-4.5, claude-sonnet-4
+# AUDIT_AGENT_AI_TEMPERATURE=0.3
+# AUDIT_AGENT_AI_MAX_TOKENS=1000
 ```
 
 **3. Run analysis with AI**:
 
 ```bash
 # Enable AI enhancement
-npx hardhat superaudit --ai
+npx hardhat auditagent --ai
 
 # Or set in environment
-export SUPERAUDIT_AI_ENABLED=true
-npx hardhat superaudit
+export AUDIT_AGENT_AI_ENABLED=true
+npx hardhat auditagent
 ```
 
 ### AI-Enhanced Output Example
@@ -517,7 +517,7 @@ function withdraw(uint256 amount) external {
 }
 ```
 
-**SuperAudit Detection:**
+**MrklTree Detection:**
 
 ```
 [CRITICAL] external-before-state at line 58
@@ -547,7 +547,7 @@ function emergencyWithdraw() external {
 }
 ```
 
-**SuperAudit Detection:**
+**MrklTree Detection:**
 
 ```
 [HIGH] no-tx-origin at line 105
@@ -568,7 +568,7 @@ MITIGATION:
 
 ## 📋 **YAML Playbook System**
 
-SuperAudit includes a powerful DSL for defining custom audit strategies:
+MrklTree includes a powerful DSL for defining custom audit strategies:
 
 ### Playbook Structure
 
@@ -615,7 +615,7 @@ checks:
 
 ## 💰 **Encrypted Playbooks & Payment System**
 
-SuperAudit supports **encrypted playbooks** stored on Lighthouse/IPFS that creators can monetize. Payment is **only required** when accessing encrypted playbooks from the community marketplace.
+MrklTree supports **encrypted playbooks** stored on Lighthouse/IPFS that creators can monetize. Payment is **only required** when accessing encrypted playbooks from the community marketplace.
 
 ### When Payment is Required
 
@@ -627,7 +627,7 @@ Payment is **only required** when:
 
 ### When Payment is NOT Required
 
-You can use SuperAudit **without payment** for:
+You can use MrklTree **without payment** for:
 
 - ✅ Local playbook files (`--playbook ./path/to/playbook.yaml`)
 - ✅ Built-in analysis modes (`--mode basic|advanced|full`)
@@ -667,7 +667,7 @@ This creates a payment entry in `playbook-payments.json`:
 
 ```bash
 # Access encrypted playbook
-npx hardhat superaudit --playbook-cid bafkreib...
+npx hardhat auditagent --playbook-cid bafkreib...
 ```
 
 **Payment Flow:**
@@ -741,7 +741,7 @@ anvil --fork-url https://eth-mainnet.g.alchemy.com/v2/demo --port 8545
 - **Access Control**: Only paid users can decrypt and use encrypted playbooks
 - **Lighthouse Integration**: Leverages Lighthouse's encryption and file sharing features
 
-**Summary**: Payment is **optional** and only for encrypted playbooks. Most SuperAudit usage (local playbooks, built-in rules) requires **no payment**.
+**Summary**: Payment is **optional** and only for encrypted playbooks. Most MrklTree usage (local playbooks, built-in rules) requires **no payment**.
 
 ---
 
@@ -761,12 +761,12 @@ The architecture is ready for AI-enhanced analysis. See [`LLM-INTEGRATION-PLAN.m
 
 ## 🏃 **Quick Demo**
 
-Try SuperAudit on the included vulnerable contracts:
+Try MrklTree on the included vulnerable contracts:
 
 ```bash
 # Clone the repository
 git clone <repo-url>
-cd SuperAudit-Plugin
+cd MrklTree-Plugin
 
 # Install dependencies
 pnpm install
@@ -777,10 +777,10 @@ pnpm build
 
 # Run on example project
 cd ../example-project
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
-The example project includes intentionally vulnerable contracts that demonstrate SuperAudit's detection capabilities:
+The example project includes intentionally vulnerable contracts that demonstrate MrklTree's detection capabilities:
 
 - **VulnerableVault.sol** - Reentrancy, CEI violations, access control issues
 - **TestViolations.sol** - Naming conventions, visibility issues, tx.origin usage
@@ -792,7 +792,7 @@ The example project includes intentionally vulnerable contracts that demonstrate
 ### Project Structure
 
 ```
-SuperAudit-Plugin/
+MrklTree-Plugin/
 ├── packages/
 │   ├── plugin/              # Main plugin code
 │   │   ├── src/
@@ -837,8 +837,8 @@ pnpm link --global
 
 # Use in another project
 cd your-project
-pnpm link --global @jhwon0820/super-audit
-npx hardhat superaudit
+pnpm link --global @mrkltree/auditagent
+npx hardhat auditagent
 ```
 
 ### Running Tests
@@ -864,7 +864,7 @@ _Benchmarked on M1 MacBook Pro with 16GB RAM_
 
 ## 🎯 **Comparison with Other Tools**
 
-| Feature                 | SuperAudit  | Slither     | Mythril     | Manticore    |
+| Feature                 | MrklTree    | Slither     | Mythril     | Manticore    |
 | ----------------------- | ----------- | ----------- | ----------- | ------------ |
 | **CFG Analysis**        | ✅ Built-in | ✅ Yes      | ✅ Yes      | ✅ Yes       |
 | **Hardhat Integration** | ✅ Native   | ⚠️ External | ⚠️ External | ⚠️ External  |
@@ -882,10 +882,10 @@ _Benchmarked on M1 MacBook Pro with 16GB RAM_
 
 ```bash
 # Ensure plugin is installed
-npm list @jhwon0820/super-audit
+npm list @mrkltree/auditagent
 
 # Rebuild if needed
-cd node_modules/@jhwon0820/super-audit
+cd node_modules/@mrkltree/auditagent
 pnpm run build
 ```
 
@@ -901,10 +901,10 @@ npx hardhat compile
 
 ```bash
 # Try advanced mode
-npx hardhat superaudit --mode advanced
+npx hardhat auditagent --mode advanced
 
 # Check if contracts are being found
-npx hardhat superaudit --verbose
+npx hardhat auditagent --verbose
 ```
 
 ---
@@ -919,13 +919,13 @@ cd packages/example-project
 
 # 2. Create .env file
 cat > .env << EOF
-SUPERAUDIT_AI_ENABLED=true
-SUPERAUDIT_AI_PROVIDER=openai
+AUDIT_AGENT_AI_ENABLED=true
+AUDIT_AGENT_AI_PROVIDER=openai
 OPENAI_API_KEY=your-key-here
 EOF
 
 # 3. Run AI-enhanced analysis
-npx hardhat superaudit --ai
+npx hardhat auditagent --ai
 ```
 
 ### Expected Output
@@ -971,8 +971,8 @@ ls -la .env
 cat .env
 
 # Should contain:
-# SUPERAUDIT_AI_ENABLED=true
-# SUPERAUDIT_AI_PROVIDER=openai
+# AUDIT_AGENT_AI_ENABLED=true
+# AUDIT_AGENT_AI_PROVIDER=openai
 # OPENAI_API_KEY=sk-...
 ```
 
@@ -991,15 +991,15 @@ cat .env
 
 3. Try cheaper model for testing:
    ```bash
-   export SUPERAUDIT_AI_MODEL=gpt-4o-mini-2025  # Faster and cheaper than gpt-5.1
-   npx hardhat superaudit --ai
+   export AUDIT_AGENT_AI_MODEL=gpt-4o-mini-2025  # Faster and cheaper than gpt-5.1
+   npx hardhat auditagent --ai
    ```
 
 **Issue: "No AI analysis shown in output"**
 
 **Solutions:**
 
-1. Ensure you're using the `--ai` flag OR have `SUPERAUDIT_AI_ENABLED=true` in `.env`
+1. Ensure you're using the `--ai` flag OR have `AUDIT_AGENT_AI_ENABLED=true` in `.env`
 2. Check that issues were actually found (AI only enhances existing findings)
 3. Look for the "🤖 AI ANALYSIS:" section in issue output
 
@@ -1021,11 +1021,11 @@ pnpm build
 
 ```bash
 # Install locally in your project
-pnpm install --save-dev hardhat @jhwon0820/super-audit
+pnpm install --save-dev hardhat @mrkltree/auditagent
 
 # Or run from example project
 cd packages/example-project
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 ### Performance Issues
@@ -1037,7 +1037,7 @@ npx hardhat superaudit
 1. Use faster model:
 
    ```bash
-   export SUPERAUDIT_AI_MODEL=gpt-4o-mini-2025  # Faster and cheaper than gpt-5.1
+   export AUDIT_AGENT_AI_MODEL=gpt-4o-mini-2025  # Faster and cheaper than gpt-5.1
    ```
 
 2. Run basic analysis first, then AI only for critical issues
@@ -1045,7 +1045,7 @@ npx hardhat superaudit
 3. Limit analysis to specific files:
    ```bash
    # Analyze only critical contracts
-   npx hardhat superaudit --ai
+   npx hardhat auditagent --ai
    ```
 
 ### Cost Concerns
@@ -1057,17 +1057,17 @@ npx hardhat superaudit
 1. **Use GPT-4o-mini-2025** (faster and cheaper than GPT-5.1):
 
    ```bash
-   export SUPERAUDIT_AI_MODEL=gpt-4o-mini-2025  # Faster and cheaper than gpt-5.1
+   export AUDIT_AGENT_AI_MODEL=gpt-4o-mini-2025  # Faster and cheaper than gpt-5.1
    ```
 
 2. **Run AI selectively**: Use basic mode first, then AI for finals:
 
    ```bash
    # Fast initial scan
-   npx hardhat superaudit --mode basic
+   npx hardhat auditagent --mode basic
 
    # AI-enhanced final review
-   npx hardhat superaudit --ai
+   npx hardhat auditagent --ai
    ```
 
 3. **Disable AI in CI**, enable for release audits:
@@ -1075,12 +1075,12 @@ npx hardhat superaudit
    ```yaml
    # .github/workflows/audit.yml
    - name: Quick Audit (No AI)
-     run: npx hardhat superaudit
+     run: npx hardhat auditagent
 
    # Only for release branches
    - name: Full AI Audit
      if: github.ref == 'refs/heads/main'
-     run: npx hardhat superaudit --ai
+     run: npx hardhat auditagent --ai
      env:
        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
    ```
@@ -1146,15 +1146,15 @@ Inspired by:
 
 ## 📞 **Support**
 
-- **Issues**: [GitHub Issues](https://github.com/your-org/SuperAudit-Plugin/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/SuperAudit-Plugin/discussions)
+- **Issues**: [GitHub Issues](https://github.com/your-org/MrklTree-Plugin/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/your-org/MrklTree-Plugin/discussions)
 - **Documentation**: This README contains complete documentation including AI integration
 
 ---
 
 ## 🎉 **Key Achievements**
 
-SuperAudit represents a **paradigm shift** in smart contract security:
+MrklTree represents a **paradigm shift** in smart contract security:
 
 ✅ **~95% of full static analysis vision implemented**  
 ✅ **AI-powered vulnerability analysis with GPT-4 & Claude**  
@@ -1172,6 +1172,6 @@ SuperAudit represents a **paradigm shift** in smart contract security:
 **Try it now:**
 
 ```bash
-pnpm install @jhwon0820/super-audit
-npx hardhat superaudit
+pnpm install @mrkltree/auditagent
+npx hardhat auditagent
 ```

@@ -2,7 +2,7 @@
 
 ## Overview
 
-SuperAudit includes **automatic decentralized storage** for security playbooks using Lighthouse (IPFS). **No API key required!**
+MrklTree includes **automatic decentralized storage** for security playbooks using Lighthouse (IPFS). **No API key required!**
 
 ## Key Features
 
@@ -10,7 +10,7 @@ SuperAudit includes **automatic decentralized storage** for security playbooks u
 
 - **Zero Setup**: Works out of the box, no registration needed
 - **Decentralized**: Playbooks stored on IPFS, accessible to everyone
-- **Community Driven**: Share playbooks with the entire SuperAudit community
+- **Community Driven**: Share playbooks with the entire MrklTree community
 
 ### 🔒 Optional Private Storage
 
@@ -24,14 +24,14 @@ SuperAudit includes **automatic decentralized storage** for security playbooks u
 The plugin automatically uses a shared community Lighthouse account:
 
 ```bash
-# Just run superaudit - Lighthouse works automatically!
-npx hardhat superaudit
+# Just run auditagent - Lighthouse works automatically!
+npx hardhat auditagent
 ```
 
 You'll see:
 
 ```
-🌐 Using shared SuperAudit community Lighthouse storage
+🌐 Using shared MrklTree community Lighthouse storage
 ```
 
 ### Using Your Own API Key (Optional)
@@ -62,19 +62,19 @@ Once playbooks are uploaded, anyone can use them:
 
 ```bash
 # Load a specific playbook by its IPFS CID
-npx hardhat superaudit --playbook-cid bafkreih...
+npx hardhat auditagent --playbook-cid bafkreih...
 ```
 
 ### 3. List Available Community Playbooks
 
 ```bash
 # See all playbooks in your registry (including community playbooks)
-npx hardhat superaudit --list-playbooks
+npx hardhat auditagent --list-playbooks
 ```
 
 ## Automatic Sync
 
-Every time you run SuperAudit, it automatically:
+Every time you run MrklTree, it automatically:
 
 1. Connects to shared Lighthouse storage
 2. Syncs community playbooks to your local registry
@@ -120,7 +120,7 @@ If you need private playbooks:
 
 ### Default API Key
 
-- Managed by SuperAudit maintainers
+- Managed by MrklTree maintainers
 - Shared across all plugin users
 - Funded for community use
 - Rate limits apply to fair usage
@@ -143,7 +143,7 @@ A: Yes! Just set `LIGHTHOUSE_API_KEY` in your `.env` file.
 A: No, playbooks uploaded via the shared account are public. Use your own API key for privacy.
 
 **Q: What if the shared API key runs out of credits?**
-A: SuperAudit maintainers monitor and refill as needed. You can also use your own key.
+A: MrklTree maintainers monitor and refill as needed. You can also use your own key.
 
 **Q: Can I download playbooks without uploading?**
 A: Yes! You can download and use any community playbook by its CID.
@@ -160,13 +160,13 @@ A: Upload functionality via CLI coming soon. For now, use the registry API direc
 CID="bafkreihldcnedjyea5jbfgzwkwie5jzjp6sr75mfndhxmvbofo4ep2oneu"
 
 # Use it in your analysis
-npx hardhat superaudit --playbook-cid $CID
+npx hardhat auditagent --playbook-cid $CID
 ```
 
 ### Check What's in Your Registry
 
 ```bash
-npx hardhat superaudit --list-playbooks
+npx hardhat auditagent --list-playbooks
 ```
 
 Output:
@@ -176,13 +176,13 @@ Output:
 
   🔸 erc20-security
      Name: ERC20 Token Security Audit
-     Author: SuperAudit Community
+     Author: MrklTree Community
      Source: lighthouse
      CID: bafkreih...
 
   🔸 defi-vault-security
      Name: DeFi Vault Security
-     Author: SuperAudit Community
+     Author: MrklTree Community
      Source: lighthouse
      CID: bafybeif...
 
@@ -216,4 +216,4 @@ Questions or issues with Lighthouse storage?
 
 ---
 
-**Made with ❤️ by the SuperAudit Community**
+**Made with ❤️ by the MrklTree Community**

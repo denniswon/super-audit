@@ -69,7 +69,7 @@ async function main() {
 version: "1.0"
 meta:
   name: "Lighthouse Test Playbook"
-  author: "SuperAudit Demo"
+  author: "MrklTree Demo"
   description: "A test playbook for Lighthouse integration"
   tags: ["test", "demo", "lighthouse"]
   version: "1.0.0"
@@ -232,7 +232,7 @@ checks:
       `   2. They can register it: await registry.registerFromLighthouse("${metadata.cid}")`,
     );
     console.log(
-      `   3. Or use CLI: npx hardhat superaudit --register-from-lighthouse ${metadata.cid}`,
+      `   3. Or use CLI: npx hardhat auditagent --register-from-lighthouse ${metadata.cid}`,
     );
     console.log();
   } catch (error) {

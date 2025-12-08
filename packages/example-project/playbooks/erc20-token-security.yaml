@@ -1,7 +1,7 @@
 version: "1.0"
 meta:
   name: "ERC20 Token Security Audit"
-  author: "SuperAudit Team"
+  author: "MrklTree Team"
   description: "Comprehensive security analysis for ERC20 token contracts"
   tags: ["erc20", "token", "defi", "security"]
   version: "1.0.0"
@@ -33,7 +33,7 @@ checks:
       For Solidity 0.8+:
       - Arithmetic is checked by default
       - Remove 'unchecked' blocks around balance updates
-      
+
       For Solidity <0.8:
       - Use OpenZeppelin's SafeMath library
       - Example: balanceOf[to] = balanceOf[to].add(value);
@@ -134,7 +134,7 @@ checks:
       Add access control using OpenZeppelin Ownable:
       ```solidity
       import "@openzeppelin/contracts/access/Ownable.sol";
-      
+
       contract ExampleToken is Ownable {
           function mint(address to, uint256 value) external onlyOwner returns (bool) {
               require(to != address(0), "ERC20: mint to zero address");
@@ -295,12 +295,12 @@ dynamic:
       expression: "totalSupply == sum(balanceOf[*])"
       description: "Total supply must always equal sum of all balances"
       severity: "critical"
-    
+
     - id: "token-non-negative-balance"
       expression: "forall(address a): balanceOf[a] >= 0"
       description: "All balances must be non-negative"
       severity: "critical"
-    
+
     - id: "token-transfer-conservation"
       expression: "balanceOf[from] + balanceOf[to] == constant (during transfer)"
       description: "Transfer should not create or destroy tokens"

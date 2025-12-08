@@ -1,5 +1,5 @@
 /**
- * Example integration of Playbook Registry with SuperAudit Task
+ * Example integration of Playbook Registry with MrklTree Task
  *
  * This file demonstrates how to integrate the playbook registry
  * into the main analyze task for enhanced playbook management.
@@ -349,7 +349,7 @@ export async function registerProjectPlaybooks(
   const playbookDirs = [
     `${projectRoot}/playbooks`,
     `${projectRoot}/audit/playbooks`,
-    `${projectRoot}/.superaudit/playbooks`,
+    `${projectRoot}/.auditagent/playbooks`,
   ];
 
   let registered = 0;
@@ -468,7 +468,7 @@ export function showPlaybookInfo(playbookId: string): void {
 export function exampleTaskIntegration() {
   // This shows how you would modify the task in tasks/analyze.ts
   /*
-  task("superaudit")
+  task("auditagent")
     .addParam("playbook", "Playbook file path or registry ID", undefined, types.string, true)
     .addParam("playbooks", "Comma-separated playbook IDs", undefined, types.string, true)
     .addFlag("listPlaybooks", "List all registered playbooks")

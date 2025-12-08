@@ -2,7 +2,7 @@
 
 ## 📦 What Was Created
 
-A complete, production-ready **Playbook Registry System** for the SuperAudit plugin that provides centralized management, discovery, and validation of audit playbooks.
+A complete, production-ready **Playbook Registry System** for the MrklTree plugin that provides centralized management, discovery, and validation of audit playbooks.
 
 ## 📁 Files Created
 
@@ -270,31 +270,31 @@ await determineAnalysisRulesWithRegistry(args, basicRules, advancedRules);
 
 ```bash
 # List all playbooks
-npx hardhat superaudit --list-playbooks
+npx hardhat auditagent --list-playbooks
 
 # Show statistics
-npx hardhat superaudit --registry-stats
+npx hardhat auditagent --registry-stats
 
 # Search by tags
-npx hardhat superaudit --search-playbooks "defi,reentrancy"
+npx hardhat auditagent --search-playbooks "defi,reentrancy"
 
 # Register new playbook
-npx hardhat superaudit --register-playbook ./my-playbook.yaml
+npx hardhat auditagent --register-playbook ./my-playbook.yaml
 
 # Use playbook by ID
-npx hardhat superaudit --playbook erc20-security
+npx hardhat auditagent --playbook erc20-security
 
 # Use multiple playbooks
-npx hardhat superaudit --playbooks "erc20,vault,access-control"
+npx hardhat auditagent --playbooks "erc20,vault,access-control"
 
 # Auto-recommend
-npx hardhat superaudit --auto-recommend
+npx hardhat auditagent --auto-recommend
 
 # Show playbook info
-npx hardhat superaudit --playbook-info erc20-security
+npx hardhat auditagent --playbook-info erc20-security
 
 # Validate all
-npx hardhat superaudit --validate-playbooks
+npx hardhat auditagent --validate-playbooks
 ```
 
 ## 🚀 Quick Start (30 seconds)
@@ -469,6 +469,6 @@ You now have a **complete, production-ready Playbook Registry System** that:
 
 ---
 
-**All files are in**: `/Users/rudranshshinghal/SuperAudit-Plugin/packages/plugin/src/playbooks/`
+**All files are in**: `/Users/rudranshshinghal/MrklTree-Plugin/packages/plugin/src/playbooks/`
 
 **Questions?** Check the docs or run the demo script!

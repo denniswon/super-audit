@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# SuperAudit CLI Demo Script
+# MrklTree CLI Demo Script
 # This script demonstrates the new CLI interface features
 
-echo "🎨 SuperAudit CLI Interface Demo"
+echo "🎨 MrklTree CLI Interface Demo"
 echo "================================="
 echo ""
-echo "This demo shows the new beautiful CLI interface for SuperAudit"
+echo "This demo shows the new beautiful CLI interface for MrklTree"
 echo ""
 
 # Check if we're in the right directory
@@ -19,13 +19,13 @@ fi
 echo "📋 Available Demo Commands:"
 echo ""
 echo "1. Interactive Menu (Recommended!)"
-echo "   npx hardhat superaudit-menu"
+echo "   npx hardhat auditagent-menu"
 echo ""
 echo "2. List Playbooks with New UI"
 echo "   npx hardhat list-playbooks"
 echo ""
 echo "3. Run Analysis with Beautiful Output"
-echo "   npx hardhat superaudit"
+echo "   npx hardhat auditagent"
 echo ""
 echo "4. Show Lighthouse Info"
 echo "   npx hardhat lighthouse-info"
@@ -44,7 +44,7 @@ case $choice in
         echo ""
         echo "🚀 Launching Interactive Menu..."
         echo ""
-        npx hardhat superaudit-menu
+        npx hardhat auditagent-menu
         ;;
     2)
         echo ""
@@ -56,7 +56,7 @@ case $choice in
         echo ""
         echo "🔍 Running Security Analysis..."
         echo ""
-        npx hardhat superaudit
+        npx hardhat auditagent
         ;;
     4)
         echo ""
@@ -90,7 +90,7 @@ case $choice in
         
         echo ""
         echo "3️⃣  Run Quick Analysis:"
-        npx hardhat superaudit --mode basic
+        npx hardhat auditagent --mode basic
         echo ""
         
         echo "✅ Demo complete!"
@@ -105,7 +105,7 @@ echo ""
 echo "✨ Demo Complete!"
 echo ""
 echo "💡 Tips:"
-echo "   - Use 'npx hardhat superaudit-menu' for the best experience"
+echo "   - Use 'npx hardhat auditagent-menu' for the best experience"
 echo "   - All commands now have beautiful, color-coded output"
 echo "   - Try different analysis modes: --mode basic|advanced|full"
 echo "   - Enable AI with: --ai"

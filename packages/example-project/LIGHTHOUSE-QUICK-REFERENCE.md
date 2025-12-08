@@ -41,7 +41,7 @@ npx hardhat list-playbooks
 ### 5. Use in Analysis
 
 ```bash
-npx hardhat superaudit --playbook-cid bafkreih...
+npx hardhat auditagent --playbook-cid bafkreih...
 ```
 
 ## 💡 Key Features
@@ -57,13 +57,13 @@ Use uploaded/downloaded playbooks directly:
 
 ```bash
 # By CID (recommended for sharing)
-npx hardhat superaudit --playbook-cid bafkreih...
+npx hardhat auditagent --playbook-cid bafkreih...
 
 # By ID (for locally registered playbooks)
-npx hardhat superaudit --playbook-id my-playbook
+npx hardhat auditagent --playbook-id my-playbook
 
 # By file path (traditional)
-npx hardhat superaudit --playbook ./playbooks/my-playbook.yaml
+npx hardhat auditagent --playbook ./playbooks/my-playbook.yaml
 ```
 
 ## 🌐 Sharing Playbooks
@@ -85,7 +85,7 @@ bafkreifnhbl7m6jga6f24b7wiqo6iyrk46nuubdcpwx4bjhsvsps3otygy
 4. They can use it directly:
 
 ```bash
-npx hardhat superaudit --playbook-cid bafkreifnhbl7m6jga6f24b7wiqo6iyrk46nuubdcpwx4bjhsvsps3otygy
+npx hardhat auditagent --playbook-cid bafkreifnhbl7m6jga6f24b7wiqo6iyrk46nuubdcpwx4bjhsvsps3otygy
 ```
 
 No setup needed on their end!
@@ -108,7 +108,7 @@ PLAYBOOK_FILE=./team-playbook.yaml npx hardhat upload-playbook
 # Shares CID: bafkreih...
 
 # Team members use it
-npx hardhat superaudit --playbook-cid bafkreih...
+npx hardhat auditagent --playbook-cid bafkreih...
 ```
 
 ### Workflow 2: Community Contribution
@@ -128,7 +128,7 @@ PLAYBOOK_FILE=./my-awesome-playbook.yaml npx hardhat upload-playbook
 npx hardhat list-playbooks
 
 # Pick one for your project
-npx hardhat superaudit --playbook-id erc20-security
+npx hardhat auditagent --playbook-id erc20-security
 
 # Or download a specific one
 PLAYBOOK_CID=bafkreih... npx hardhat download-playbook

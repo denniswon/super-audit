@@ -1,8 +1,8 @@
-// SuperAudit plugin configuration extensions
+// MrklTree plugin configuration extensions
 
 import "hardhat/types/config";
 declare module "hardhat/types/config" {
-  export interface SuperAuditUserConfig {
+  export interface MrklTreeUserConfig {
     mode?: "basic" | "advanced" | "full";
     playbook?: string;
     rules?: string[];
@@ -17,7 +17,7 @@ declare module "hardhat/types/config" {
     };
   }
 
-  export interface SuperAuditConfig {
+  export interface MrklTreeConfig {
     mode: "basic" | "advanced" | "full";
     playbook?: string;
     rules?: string[];
@@ -33,11 +33,11 @@ declare module "hardhat/types/config" {
   }
 
   interface HardhatUserConfig {
-    superaudit?: SuperAuditUserConfig;
+    auditagent?: MrklTreeUserConfig;
   }
 
   interface HardhatConfig {
-    superaudit: SuperAuditConfig;
+    auditagent: MrklTreeConfig;
   }
 }
 

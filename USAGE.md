@@ -1,8 +1,8 @@
-# SuperAudit Usage Guide
+# MrklTree Usage Guide
 
 ## Overview
 
-SuperAudit can be configured in three ways (in order of precedence):
+MrklTree can be configured in three ways (in order of precedence):
 
 1. **Environment Variables** (highest priority)
 2. **Hardhat Configuration File** (`hardhat.config.ts`)
@@ -16,13 +16,13 @@ Add configuration to your `hardhat.config.ts`:
 
 ```typescript
 import { HardhatUserConfig } from "hardhat/config";
-import superauditPlugin from "@jhwon0820/super-audit";
+import MrklAgentPlugin from "@mrkltree/auditagent";
 
 export default {
-  plugins: [superauditPlugin],
+  plugins: [MrklAgentPlugin],
   solidity: "0.8.29",
 
-  superaudit: {
+  auditagent: {
     mode: "full", // Options: "basic", "advanced", "full"
     format: "console", // Options: "console", "json", "sarif"
     playbook: "./custom-audit.yaml", // Optional: custom playbook path
@@ -41,7 +41,7 @@ export default {
 Then run:
 
 ```bash
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 ### Method 2: Using Environment Variables
@@ -50,24 +50,24 @@ Create a `.env` file or set environment variables:
 
 ```bash
 # Analysis Configuration
-SUPERAUDIT_MODE=full
-SUPERAUDIT_FORMAT=console
+AUDIT_AGENT_MODE=full
+AUDIT_AGENT_FORMAT=console
 
 # AI Enhancement
-SUPERAUDIT_AI_ENABLED=true
-SUPERAUDIT_AI_PROVIDER=openai
+AUDIT_AGENT_AI_ENABLED=true
+AUDIT_AGENT_AI_PROVIDER=openai
 OPENAI_API_KEY=sk-your-api-key-here
 
 # Optional AI settings
-SUPERAUDIT_AI_MODEL=gpt-4o-mini-2025  # Latest 2025 models: gpt-5.1, gpt-5, gpt-4.1, gpt-4o-mini-2025, claude-opus-4.5, claude-sonnet-4
-SUPERAUDIT_AI_TEMPERATURE=0.3
-SUPERAUDIT_AI_MAX_TOKENS=1000
+AUDIT_AGENT_AI_MODEL=gpt-4o-mini-2025  # Latest 2025 models: gpt-5.1, gpt-5, gpt-4.1, gpt-4o-mini-2025, claude-opus-4.5, claude-sonnet-4
+AUDIT_AGENT_AI_TEMPERATURE=0.3
+AUDIT_AGENT_AI_MAX_TOKENS=1000
 ```
 
 Then run:
 
 ```bash
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 ### Method 3: Multiple Configurations for Different Scenarios
@@ -78,8 +78,8 @@ You can create different config files:
 
 ```typescript
 export default {
-  plugins: [superauditPlugin],
-  superaudit: {
+  plugins: [MrklAgentPlugin],
+  auditagent: {
     mode: "basic", // Only AST rules, very fast
     format: "json", // Machine-readable output
   },
@@ -90,8 +90,8 @@ export default {
 
 ```typescript
 export default {
-  plugins: [superauditPlugin],
-  superaudit: {
+  plugins: [MrklAgentPlugin],
+  auditagent: {
     mode: "full", // All rules including CFG
     format: "sarif", // GitHub integration
     ai: {
@@ -106,10 +106,10 @@ Then run with specific config:
 
 ```bash
 # Fast CI check
-npx hardhat --config hardhat.config.basic.ts superaudit
+npx hardhat --config hardhat.config.basic.ts auditagent
 
 # Full security audit
-npx hardhat --config hardhat.config.full.ts superaudit
+npx hardhat --config hardhat.config.full.ts auditagent
 ```
 
 ## Configuration Options
@@ -135,7 +135,7 @@ npx hardhat --config hardhat.config.full.ts superaudit
 Use the `output` option to save audit reports:
 
 ```typescript
-superaudit: {
+auditagent: {
   mode: "full",
   format: "console",
   output: "./reports/audit-report.txt"  // Save console output to file
@@ -145,7 +145,7 @@ superaudit: {
 Or with environment variable:
 
 ```bash
-SUPERAUDIT_OUTPUT=./reports/audit-report.txt
+AUDIT_AGENT_OUTPUT=./reports/audit-report.txt
 ```
 
 **Supported Output Files:**
@@ -158,21 +158,21 @@ SUPERAUDIT_OUTPUT=./reports/audit-report.txt
 
 ```typescript
 // Console output to file
-superaudit: {
+auditagent: {
   format: "console",
   output: "./audit-report.txt"
 }
 
 // JSON output to file
-superaudit: {
+auditagent: {
   format: "json",
   output: "./audit-results.json"
 }
 
 // SARIF for GitHub
-superaudit: {
+auditagent: {
   format: "sarif",
-  output: "./superaudit.sarif"
+  output: "./auditagent.sarif"
 }
 ```
 
@@ -188,7 +188,7 @@ superaudit: {
 Enable AI-powered vulnerability analysis:
 
 ```typescript
-superaudit: {
+auditagent: {
   ai: {
     enabled: true,
     provider: "openai" | "anthropic" | "local",
@@ -232,7 +232,7 @@ checks:
 Then reference in config:
 
 ```typescript
-superaudit: {
+auditagent: {
   playbook: "./vault-audit.yaml";
 }
 ```
@@ -242,7 +242,7 @@ superaudit: {
 ### Example 1: Quick CI Check
 
 ```typescript
-superaudit: {
+auditagent: {
   mode: "basic",
   format: "json"
 }
@@ -251,7 +251,7 @@ superaudit: {
 ### Example 2: Full Audit with AI
 
 ```typescript
-superaudit: {
+auditagent: {
   mode: "full",
   format: "console",
   ai: {
@@ -264,7 +264,7 @@ superaudit: {
 ### Example 3: Specific Rules Only
 
 ```typescript
-superaudit: {
+auditagent: {
   rules: ["no-tx-origin", "reentrancy-paths", "external-before-state"];
 }
 ```
@@ -272,7 +272,7 @@ superaudit: {
 ### Example 4: Custom Playbook + AI
 
 ```typescript
-superaudit: {
+auditagent: {
   playbook: "./audits/defi-security.yaml",
   ai: {
     enabled: true,
@@ -304,19 +304,19 @@ jobs:
       - name: Fast Security Check
         run: |
           pnpm install
-          npx hardhat --config hardhat.config.basic.ts superaudit
+          npx hardhat --config hardhat.config.basic.ts auditagent
 
       # Full audit with AI on main branch
       - name: Full AI-Enhanced Audit
         if: github.ref == 'refs/heads/main'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          SUPERAUDIT_AI_ENABLED: true
-        run: npx hardhat superaudit
+          AUDIT_AGENT_AI_ENABLED: true
+        run: npx hardhat auditagent
 
       # Upload SARIF results
       - name: Generate SARIF Report
-        run: npx hardhat superaudit > results.sarif
+        run: npx hardhat auditagent > results.sarif
 
       - uses: github/codeql-action/upload-sarif@v2
         with:
@@ -333,7 +333,7 @@ jobs:
 
 **Solution:**
 
-1. Check `.env` has `SUPERAUDIT_AI_ENABLED=true`
+1. Check `.env` has `AUDIT_AGENT_AI_ENABLED=true`
 2. Verify API key is set (`OPENAI_API_KEY` or `ANTHROPIC_API_KEY`)
 3. Check API key has credits
 
@@ -346,7 +346,7 @@ jobs:
 **Solution:** Use `--config` flag to switch between config files:
 
 ```bash
-npx hardhat --config hardhat.config.basic.ts superaudit
+npx hardhat --config hardhat.config.basic.ts auditagent
 ```
 
 ## Best Practices
@@ -361,5 +361,5 @@ npx hardhat --config hardhat.config.basic.ts superaudit
 
 For issues or questions:
 
-- GitHub Issues: https://github.com/superaudit/hardhat-plugin/issues
+- GitHub Issues: https://github.com/auditagent/hardhat-plugin/issues
 - Documentation: See README.md

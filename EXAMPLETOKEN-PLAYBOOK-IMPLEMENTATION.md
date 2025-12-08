@@ -65,7 +65,7 @@ Created `playbooks/complete-defi-security.yaml` with:
 Updated `hardhat.config.ts` to use the ERC20 playbook:
 
 ```typescript
-superaudit: {
+auditagent: {
   mode: "full",
   playbook: "./playbooks/erc20-token-security.yaml",
   // Alternative options documented
@@ -127,9 +127,9 @@ ExampleToken.sol:31:4 [CRITICAL] token-unprotected-mint
 ### Test Results
 
 ```bash
-$ npx hardhat superaudit
+$ npx hardhat auditagent
 
-🔍 SuperAudit - Advanced Smart Contract Security Analysis
+🔍 MrklTree - Advanced Smart Contract Security Analysis
 
 📋 Loading playbook: ./playbooks/erc20-token-security.yaml
 📊 Analysis Mode: PLAYBOOK
@@ -193,32 +193,32 @@ ExampleToken.sol
 
 ```bash
 # In hardhat.config.ts
-superaudit: {
+auditagent: {
   playbook: "./playbooks/erc20-token-security.yaml"
 }
 
 # Run
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 ### Option 2: Complete Project Audit
 
 ```bash
 # In hardhat.config.ts
-superaudit: {
+auditagent: {
   playbook: "./playbooks/complete-defi-security.yaml",
   output: "./reports/full-audit.txt"
 }
 
 # Run
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 ### Option 3: AI-Enhanced Analysis
 
 ```bash
 # In hardhat.config.ts
-superaudit: {
+auditagent: {
   playbook: "./playbooks/erc20-token-security.yaml",
   ai: {
     enabled: true,
@@ -230,7 +230,7 @@ superaudit: {
 OPENAI_API_KEY=your-key-here
 
 # Run
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 ---
@@ -325,7 +325,7 @@ npx hardhat superaudit
 2. **Run Complete Audit**
 
    ```bash
-   superaudit: {
+   auditagent: {
      playbook: "./playbooks/complete-defi-security.yaml"
    }
    ```

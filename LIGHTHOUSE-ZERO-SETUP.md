@@ -2,7 +2,7 @@
 
 ## 🎉 What We Built
 
-SuperAudit now has **fully automatic decentralized storage** for security playbooks using Lighthouse (IPFS). Users can upload and share playbooks **without needing any API keys or setup**.
+MrklTree now has **fully automatic decentralized storage** for security playbooks using Lighthouse (IPFS). Users can upload and share playbooks **without needing any API keys or setup**.
 
 ## 🌟 Key Features
 
@@ -42,7 +42,7 @@ export function initializeLighthouseFromEnv(): LighthouseStorageManager {
   }
 
   // Use default shared API key for the community
-  console.log("🌐 Using shared SuperAudit community Lighthouse storage");
+  console.log("🌐 Using shared MrklTree community Lighthouse storage");
   return initializeLighthouse(DEFAULT_LIGHTHOUSE_API_KEY);
 }
 ```
@@ -64,10 +64,10 @@ export function initializeLighthouseFromEnv(): LighthouseStorageManager {
 
 ```bash
 # User just runs:
-npx hardhat superaudit
+npx hardhat auditagent
 
 # Output:
-🌐 Using shared SuperAudit community Lighthouse storage
+🌐 Using shared MrklTree community Lighthouse storage
 ✅ Loaded 3 shared playbook(s) from community
 ```
 
@@ -77,26 +77,26 @@ npx hardhat superaudit
 
 ```bash
 # Basic analysis (uses default playbook)
-npx hardhat superaudit
+npx hardhat auditagent
 
 # Load playbook from IPFS by CID
-npx hardhat superaudit --playbook-cid bafkreih...
+npx hardhat auditagent --playbook-cid bafkreih...
 
 # Load playbook from registry by ID
-npx hardhat superaudit --playbook-id erc20-security
+npx hardhat auditagent --playbook-id erc20-security
 ```
 
 ### List Playbooks
 
 ```bash
-npx hardhat superaudit --list-playbooks
+npx hardhat auditagent --list-playbooks
 ```
 
 ### Upload Playbook (Coming Soon via CLI)
 
 ```bash
 # Will be available soon
-npx hardhat superaudit --upload-playbook ./my-playbook.yaml
+npx hardhat auditagent --upload-playbook ./my-playbook.yaml
 ```
 
 ## 🔧 Technical Implementation
@@ -150,7 +150,7 @@ npx hardhat superaudit --upload-playbook ./my-playbook.yaml
 - ✅ **Instant Setup**: No configuration needed
 - ✅ **Free Storage**: No costs for IPFS storage
 - ✅ **Community Playbooks**: Access shared security rules
-- ✅ **Simple CLI**: Just run `npx hardhat superaudit`
+- ✅ **Simple CLI**: Just run `npx hardhat auditagent`
 
 ### For Power Users
 
@@ -182,7 +182,7 @@ Users had to:
 Users just:
 
 - Install the plugin
-- Run `npx hardhat superaudit`
+- Run `npx hardhat auditagent`
 - Everything works automatically! ✨
 
 ## 📈 Future Enhancements
@@ -213,13 +213,13 @@ Users just:
 ```bash
 # Remove LIGHTHOUSE_API_KEY from .env
 cd packages/example-project
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 Result:
 
 ```
-🌐 Using shared SuperAudit community Lighthouse storage
+🌐 Using shared MrklTree community Lighthouse storage
 ✅ Analysis successful!
 ```
 
@@ -229,7 +229,7 @@ Result:
 # Add to .env:
 LIGHTHOUSE_API_KEY=your-key-here
 
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 Result:
@@ -270,8 +270,8 @@ Result:
 
 Users can now:
 
-1. Install SuperAudit
-2. Run `npx hardhat superaudit`
+1. Install MrklTree
+2. Run `npx hardhat auditagent`
 3. **That's it!** ✨
 
 Lighthouse storage works automatically with:

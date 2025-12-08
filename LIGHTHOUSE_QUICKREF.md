@@ -7,7 +7,7 @@
 LIGHTHOUSE_API_KEY=your_key_here
 
 # 2. Upload playbook
-npx hardhat superaudit --upload-playbook ./playbook.yaml
+npx hardhat auditagent --upload-playbook ./playbook.yaml
 
 # 3. Share the CID!
 # Output: CID: QmXxx...
@@ -17,16 +17,16 @@ npx hardhat superaudit --upload-playbook ./playbook.yaml
 
 ```bash
 # Upload to Lighthouse
-npx hardhat superaudit --upload-playbook ./playbook.yaml
+npx hardhat auditagent --upload-playbook ./playbook.yaml
 
 # Register from CID
-npx hardhat superaudit --register-from-lighthouse QmXxx...
+npx hardhat auditagent --register-from-lighthouse QmXxx...
 
 # Sync all uploads
-npx hardhat superaudit --sync-lighthouse
+npx hardhat auditagent --sync-lighthouse
 
 # Use Lighthouse playbook
-npx hardhat superaudit --playbook lighthouse-QmXxx...
+npx hardhat auditagent --playbook lighthouse-QmXxx...
 ```
 
 ## 💻 Code Examples

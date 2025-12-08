@@ -29,6 +29,22 @@ export interface LLMAnalysisResponse {
   confidence: number;
 }
 
+/**
+ * Type guard and interface for API errors that may contain response data
+ */
+interface APIErrorWithResponse extends Error {
+  response?: unknown;
+  responseText?: string;
+}
+
+function isAPIErrorWithResponse(error: unknown): error is APIErrorWithResponse {
+  return (
+    error instanceof Error &&
+    typeof error === "object" &&
+    ("response" in error || "responseText" in error)
+  );
+}
+
 export class LLMClient {
   private openai?: OpenAI;
   private anthropic?: Anthropic;
@@ -160,17 +176,28 @@ Provide your analysis in the following JSON format:
       try {
         const parsed = JSON.parse(responseText);
         response = typeof parsed === "object" && parsed !== null ? parsed : {};
-      } catch {
+      } catch (parseError) {
+        console.warn(
+          `⚠️ OpenAI response is not pure JSON (${parseError instanceof Error ? parseError.message : String(parseError)}), attempting to extract JSON from response...`,
+        );
         // Try to extract JSON from markdown code blocks or other text
         const jsonMatch =
           responseText.match(/```json\n?([\s\S]*?)\n?```/) ||
           responseText.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
           try {
-            const parsed = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+            const jsonToParse = jsonMatch[1] || jsonMatch[0];
+            const parsed = JSON.parse(jsonToParse);
             response =
               typeof parsed === "object" && parsed !== null ? parsed : {};
-          } catch {
+          } catch (extractError) {
+            console.error(
+              `❌ OpenAI JSON extraction error: ${extractError instanceof Error ? extractError.message : String(extractError)}`,
+            );
+            console.error(`📄 Full API response (first 2000 chars):`);
+            console.error(responseText.substring(0, 2000));
+            console.error(`📄 Extracted JSON text (first 1000 chars):`);
+            console.error((jsonMatch[1] || jsonMatch[0]).substring(0, 1000));
             // Fallback: create a basic response from the text
             response = {
               explanation: responseText,
@@ -178,6 +205,10 @@ Provide your analysis in the following JSON format:
             };
           }
         } else {
+          console.error(
+            `❌ OpenAI response contains no valid JSON. Full response (first 2000 chars):`,
+          );
+          console.error(responseText.substring(0, 2000));
           // Fallback: create a basic response from the text
           response = {
             explanation: responseText,
@@ -190,7 +221,26 @@ Provide your analysis in the following JSON format:
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      console.warn(`OpenAI API error: ${errorMessage}`);
+      console.error(`❌ OpenAI API error: ${errorMessage}`);
+
+      // Print full error details if available
+      if (error instanceof Error) {
+        console.error(`📄 Error stack:`, error.stack);
+      }
+
+      // If error has response data, print it
+      if (isAPIErrorWithResponse(error)) {
+        try {
+          const responseData = error.response;
+          console.error(
+            `📄 API Response data:`,
+            JSON.stringify(responseData, null, 2),
+          );
+        } catch {
+          console.error(`📄 API Response data (raw):`, error.response);
+        }
+      }
+
       return this.getFallbackResponse();
     }
   }
@@ -228,23 +278,39 @@ Provide your analysis in the following JSON format:
 
         // Try to extract JSON from markdown code blocks if present
         // Priority: ```json ... ``` > ``` ... ``` > { ... }
-        let jsonText = responseText;
+        let jsonText = responseText.trim();
+
+        // First, try to find JSON in a code block with json language tag
         const jsonCodeBlockMatch = responseText.match(
-          /```json\n?([\s\S]*?)\n?```/,
+          /```json\s*\n?([\s\S]*?)\n?```/i,
         );
-        if (jsonCodeBlockMatch) {
+        if (jsonCodeBlockMatch && jsonCodeBlockMatch[1]) {
           jsonText = jsonCodeBlockMatch[1].trim();
         } else {
-          const codeBlockMatch = responseText.match(/```\n?([\s\S]*?)\n?```/);
-          if (codeBlockMatch) {
-            jsonText = codeBlockMatch[1].trim();
+          // Try generic code block
+          const codeBlockMatch = responseText.match(
+            /```\s*\n?([\s\S]*?)\n?```/,
+          );
+          if (codeBlockMatch && codeBlockMatch[1]) {
+            const extracted = codeBlockMatch[1].trim();
+            // Check if it looks like JSON (starts with { or [)
+            if (extracted.startsWith("{") || extracted.startsWith("[")) {
+              jsonText = extracted;
+            }
           } else {
-            // Try to extract JSON object directly
-            const jsonObjectMatch = responseText.match(/\{[\s\S]*\}/);
-            if (jsonObjectMatch) {
-              jsonText = jsonObjectMatch[0];
+            // Try to extract JSON object directly (find first { ... } or [ ... ])
+            const jsonObjectMatch = responseText.match(
+              /(\{[\s\S]*\}|\[[\s\S]*\])/,
+            );
+            if (jsonObjectMatch && jsonObjectMatch[0]) {
+              jsonText = jsonObjectMatch[0].trim();
             }
           }
+        }
+
+        // Debug: log what we're about to parse (only if it's different from original)
+        if (jsonText !== responseText.trim()) {
+          console.debug(`🔍 Extracted JSON from markdown code block`);
         }
 
         try {
@@ -253,19 +319,113 @@ Provide your analysis in the following JSON format:
             typeof parsed === "object" && parsed !== null ? parsed : {};
           return this.validateResponse(response);
         } catch (parseError) {
-          console.warn(
-            `Anthropic JSON parsing error: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
-          );
-          // If JSON parsing fails, try original text as fallback
+          // JSON parsing failed - likely due to unescaped backticks in code blocks
+          // Try to extract and fix the JSON by handling code blocks inside strings
           try {
-            const parsed = JSON.parse(responseText);
-            const response: Record<string, unknown> =
-              typeof parsed === "object" && parsed !== null ? parsed : {};
-            return this.validateResponse(response);
-          } catch {
-            // Final fallback: return basic response
-            return this.getFallbackResponse();
+            // Find the JSON object boundaries by matching braces (accounting for strings)
+            let braceCount = 0;
+            let jsonStart = -1;
+            let jsonEnd = -1;
+            let inString = false;
+            let escapeNext = false;
+
+            for (let i = 0; i < jsonText.length; i++) {
+              const char = jsonText[i];
+
+              if (escapeNext) {
+                escapeNext = false;
+                continue;
+              }
+
+              if (char === "\\") {
+                escapeNext = true;
+                continue;
+              }
+
+              if (char === '"' && !escapeNext) {
+                inString = !inString;
+                continue;
+              }
+
+              if (!inString) {
+                if (char === "{") {
+                  if (braceCount === 0) jsonStart = i;
+                  braceCount++;
+                } else if (char === "}") {
+                  braceCount--;
+                  if (braceCount === 0) {
+                    jsonEnd = i + 1;
+                    break;
+                  }
+                }
+              }
+            }
+
+            if (jsonStart >= 0 && jsonEnd > jsonStart) {
+              let extractedJson = jsonText.substring(jsonStart, jsonEnd);
+
+              // Fix unescaped code blocks inside JSON strings
+              // Pattern: "text\n```language\ncode\n```"
+              // We need to escape the backticks and newlines properly
+              extractedJson = extractedJson.replace(
+                /("(?:[^"\\]|\\.)*?)\n```(\w+)?\n([\s\S]*?)\n```/g,
+                (
+                  match: string,
+                  prefix: string,
+                  lang: string | undefined,
+                  code: string,
+                ) => {
+                  // Escape the code block content for JSON
+                  const escapedCode = code
+                    .replace(/\\/g, "\\\\")
+                    .replace(/"/g, '\\"')
+                    .replace(/\n/g, "\\n")
+                    .replace(/\r/g, "\\r")
+                    .replace(/\t/g, "\\t");
+                  return (
+                    prefix +
+                    "\\n```" +
+                    (lang || "") +
+                    "\\n" +
+                    escapedCode +
+                    '\\n```"'
+                  );
+                },
+              );
+
+              const parsed = JSON.parse(extractedJson);
+              const response: Record<string, unknown> =
+                typeof parsed === "object" && parsed !== null ? parsed : {};
+              return this.validateResponse(response);
+            }
+          } catch (extractError) {
+            // Extraction failed, log and fall through
+            console.debug(
+              `JSON extraction attempt failed: ${extractError instanceof Error ? extractError.message : String(extractError)}`,
+            );
           }
+
+          console.error(
+            `❌ Anthropic JSON parsing error: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
+          );
+          console.error(`📄 Full API response (first 2000 chars):`);
+          console.error(responseText.substring(0, 2000));
+          if (responseText.length > 2000) {
+            console.error(
+              `... (truncated, total length: ${responseText.length} chars)`,
+            );
+          }
+          console.error(
+            `📄 Extracted JSON text that failed to parse (first 1000 chars):`,
+          );
+          console.error(jsonText.substring(0, 1000));
+          if (jsonText.length > 1000) {
+            console.error(
+              `... (truncated, total length: ${jsonText.length} chars)`,
+            );
+          }
+          // Final fallback: return basic response
+          return this.getFallbackResponse();
         }
       }
 
@@ -273,7 +433,34 @@ Provide your analysis in the following JSON format:
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      console.warn(`Anthropic API error: ${errorMessage}`);
+      console.error(`❌ Anthropic API error: ${errorMessage}`);
+
+      // Print full error details if available
+      if (error instanceof Error) {
+        console.error(`📄 Error stack:`, error.stack);
+      }
+
+      // If error has response data, print it
+      if (isAPIErrorWithResponse(error)) {
+        try {
+          const responseData = error.response;
+          console.error(
+            `📄 API Response data:`,
+            JSON.stringify(responseData, null, 2),
+          );
+        } catch {
+          console.error(`📄 API Response data (raw):`, error.response);
+        }
+
+        // If we have the responseText, print it
+        if (error.responseText !== undefined) {
+          console.error(
+            `📄 API Response text (first 2000 chars):`,
+            error.responseText.substring(0, 2000),
+          );
+        }
+      }
+
       return this.getFallbackResponse();
     }
   }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.27;
 
-// Contract with intentional violations to test SuperAudit rules
+// Contract with intentional violations to test MrklTree rules
 
 contract badContract {
     // Violates contract naming (should be PascalCase)
@@ -11,7 +11,7 @@ contract badContract {
 
     function BadFunction() public {
         // Violates function naming (should be camelCase)
-    // Using tx.origin for auth - security vulnerability
+        // Using tx.origin for auth - security vulnerability
         if (tx.origin == msg.sender) {
             balance += 1;
         }
@@ -19,7 +19,7 @@ contract badContract {
 
     function transfer_tokens(address to, uint256 value) public {
         // Bad function naming
-    // Some logic here
+        // Some logic here
         require(tx.origin != address(0), "Invalid origin"); // Another tx.origin usage
     }
 }
@@ -31,7 +31,7 @@ contract GoodContract {
 
     function transfer(address to, uint256 value) public {
         // Good camelCase naming
-    // Using msg.sender instead of tx.origin - secure
+        // Using msg.sender instead of tx.origin - secure
         require(msg.sender != address(0), "Invalid sender");
         // Transfer logic...
     }

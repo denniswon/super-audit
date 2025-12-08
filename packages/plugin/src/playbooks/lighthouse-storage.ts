@@ -7,7 +7,7 @@
  * - Listing uploaded playbooks
  * - Managing decentralized playbook storage
  *
- * NOTE: Uses a default shared Lighthouse API key for the SuperAudit community.
+ * NOTE: Uses a default shared Lighthouse API key for the MrklTree community.
  * Users can optionally provide their own API key via LIGHTHOUSE_API_KEY env var.
  */
 
@@ -20,7 +20,7 @@ import { ethers } from "ethers";
 import axios from "axios";
 import type { PlaybookMeta } from "./types.js";
 
-// Default shared Lighthouse API key for the SuperAudit community
+// Default shared Lighthouse API key for the MrklTree community
 // This allows users to upload/download playbooks without needing their own API key
 const DEFAULT_LIGHTHOUSE_API_KEY = "7845931a.9b7fbfc7989847c7ba6d4bac4c21b162";
 
@@ -77,7 +77,7 @@ export class LighthouseStorageManager {
       config.gatewayUrl || "https://gateway.lighthouse.storage/ipfs";
 
     // Setup cache directory
-    this.cacheDir = join(tmpdir(), ".superaudit-lighthouse-cache");
+    this.cacheDir = join(tmpdir(), ".auditagent-lighthouse-cache");
     if (!existsSync(this.cacheDir)) {
       mkdirSync(this.cacheDir, { recursive: true });
     }
@@ -554,7 +554,7 @@ export function isLighthouseInitialized(): boolean {
  *
  * This function will:
  * 1. Check for user's own LIGHTHOUSE_API_KEY in environment
- * 2. Fall back to the default shared SuperAudit community API key
+ * 2. Fall back to the default shared MrklTree community API key
  *
  * This ensures users can upload/download playbooks without needing their own API key.
  */
@@ -568,6 +568,6 @@ export function initializeLighthouseFromEnv(): LighthouseStorageManager {
   }
 
   // Use default shared API key for the community
-  console.log("🌐 Using shared SuperAudit community Lighthouse storage");
+  console.log("🌐 Using shared MrklTree community Lighthouse storage");
   return initializeLighthouse(DEFAULT_LIGHTHOUSE_API_KEY);
 }

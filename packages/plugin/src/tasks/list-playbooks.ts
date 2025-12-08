@@ -61,8 +61,8 @@ export default async function listPlaybooksTask(
 
     console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
     console.log(`💡 Use a playbook in analysis:`);
-    console.log(`   npx hardhat superaudit --playbook-id <ID>`);
-    console.log(`   npx hardhat superaudit --playbook-cid <CID>`);
+    console.log(`   npx hardhat auditagent --playbook-id <ID>`);
+    console.log(`   npx hardhat auditagent --playbook-cid <CID>`);
   } catch (error) {
     console.error(
       `\n❌ Error: ${error instanceof Error ? error.message : String(error)}`,

@@ -110,7 +110,7 @@ Once integrated into your task, you can use:
 ### Upload to Lighthouse
 
 ```bash
-npx hardhat superaudit --upload-playbook ./playbooks/my-security.yaml
+npx hardhat auditagent --upload-playbook ./playbooks/my-security.yaml
 ```
 
 Output:
@@ -130,7 +130,7 @@ Output:
 ### Register from Lighthouse CID
 
 ```bash
-npx hardhat superaudit --register-from-lighthouse QmXxx...
+npx hardhat auditagent --register-from-lighthouse QmXxx...
 ```
 
 Output:
@@ -148,7 +148,7 @@ Output:
 ### Sync from Lighthouse
 
 ```bash
-npx hardhat superaudit --sync-lighthouse
+npx hardhat auditagent --sync-lighthouse
 ```
 
 Output:
@@ -165,10 +165,10 @@ Output:
 
 ```bash
 # Use by CID (if registered)
-npx hardhat superaudit --playbook lighthouse-QmXxx...
+npx hardhat auditagent --playbook lighthouse-QmXxx...
 
 # Or by custom ID
-npx hardhat superaudit --playbook my-security
+npx hardhat auditagent --playbook my-security
 ```
 
 ## API Reference
@@ -297,15 +297,15 @@ await registry.registerFromLighthouse("QmXxx...");
 
 ```bash
 # Team lead uploads playbooks
-npx hardhat superaudit --upload-playbook ./playbooks/team-standard.yaml
+npx hardhat auditagent --upload-playbook ./playbooks/team-standard.yaml
 
 # CID: QmAbc123...
 
 # Team members sync
-npx hardhat superaudit --sync-lighthouse
+npx hardhat auditagent --sync-lighthouse
 
 # Use the playbook
-npx hardhat superaudit --playbook team-standard
+npx hardhat auditagent --playbook team-standard
 ```
 
 ### Marketplace Workflow: Public Playbook Registry
@@ -526,7 +526,7 @@ The Lighthouse integration provides:
 **Get started:**
 
 1. Add `LIGHTHOUSE_API_KEY` to `.env`
-2. Run `npx hardhat superaudit --upload-playbook ./my-playbook.yaml`
+2. Run `npx hardhat auditagent --upload-playbook ./my-playbook.yaml`
 3. Share the CID with others
 4. They can register with `--register-from-lighthouse <CID>`
 

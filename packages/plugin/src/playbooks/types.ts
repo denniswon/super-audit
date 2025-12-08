@@ -155,6 +155,7 @@ export interface ParsedStaticRule {
   severity: "critical" | "high" | "medium" | "low" | "info";
   description?: string;
   enabled: boolean;
+  ai_prompt?: string; // Custom AI prompt for this check
 }
 
 export interface ParsedDynamicScenario {

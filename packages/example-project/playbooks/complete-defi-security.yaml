@@ -1,7 +1,7 @@
 version: "1.0"
 meta:
   name: "Complete DeFi Project Security Audit"
-  author: "SuperAudit Team"
+  author: "MrklTree Team"
   description: "Comprehensive security analysis for complete DeFi projects including tokens, vaults, and protocols"
   tags: ["defi", "token", "vault", "security", "comprehensive"]
   version: "1.0.0"
@@ -25,13 +25,13 @@ token_checks:
     severity: "critical"
     description: "Token arithmetic must be checked to prevent overflow/underflow"
     category: "token"
-    
+
   - id: "token-zero-address-check"
     rule: "pattern.missing(check=['address(0)'], functions=['transfer', 'transferFrom', 'mint'])"
     severity: "high"
     description: "Token functions should check for zero address"
     category: "token"
-    
+
   - id: "token-unprotected-mint"
     rule: "access.missingOwnable(functions=['mint', 'burn'])"
     severity: "critical"
@@ -47,7 +47,7 @@ vault_checks:
     severity: "critical"
     description: "External calls must not occur before updating critical vault state"
     category: "vault"
-    
+
   - id: "vault-access-control"
     rule: "access.missingOwnable(functions=['withdraw', 'emergencyWithdraw', 'setStrategy'])"
     severity: "high"
@@ -76,11 +76,11 @@ checks:
       1. Checks: Validate all inputs and conditions
       2. Effects: Update all state variables
       3. Interactions: Make external calls last
-      
+
       Or use OpenZeppelin's ReentrancyGuard:
       ```solidity
       import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-      
+
       contract MyContract is ReentrancyGuard {
           function withdraw() external nonReentrant {
               // Safe from reentrancy
@@ -105,7 +105,7 @@ checks:
       ```solidity
       // ❌ VULNERABLE
       require(tx.origin == owner);
-      
+
       // ✅ SECURE
       require(msg.sender == owner);
       ```
@@ -177,7 +177,7 @@ checks:
 
   # Low: Code documentation
   - id: "universal-documentation"
-    rule: "pattern.missing(natspec=['@notice', '@param', '@return'])"
+    rule: 'pattern.missing(natspec=["@notice", "@param", "@return"])'
     severity: "low"
     description: "Public functions should have NatSpec documentation"
     ai_prompt: |
@@ -262,13 +262,13 @@ dynamic:
       expression: "token.totalSupply == sum(token.balanceOf[*])"
       description: "Token total supply must equal sum of all balances"
       severity: "critical"
-    
+
     # Vault invariants
     - id: "vault-balance-consistency"
       expression: "vault.balance >= sum(vault.shares[*] * vault.sharePrice)"
       description: "Vault balance must cover all user shares"
       severity: "critical"
-    
+
     # Cross-contract invariants
     - id: "vault-token-consistency"
       expression: "token.balanceOf[vault] >= vault.totalDeposits"
@@ -278,7 +278,7 @@ dynamic:
   fuzzing:
     runs: 10000
     depth: 15
-    strategy: "hybrid"  # Combines mutation + coverage
+    strategy: "hybrid" # Combines mutation + coverage
     timeout: 900
     targets:
       - "token.transfer(address,uint256)"

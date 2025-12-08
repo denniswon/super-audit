@@ -2,7 +2,7 @@
 
 ## Summary
 
-The Lighthouse integration for SuperAudit is **100% complete** with proper Hardhat tasks and zero-setup experience!
+The Lighthouse integration for MrklTree is **100% complete** with proper Hardhat tasks and zero-setup experience!
 
 ## 🎯 What Was Delivered
 
@@ -187,7 +187,7 @@ npx hardhat upload-playbook
 # Share CID: bafkreih...
 
 # Anyone can use it
-npx hardhat superaudit --playbook-cid bafkreih...
+npx hardhat auditagent --playbook-cid bafkreih...
 ```
 
 ### 3. Permanent Storage ✅
@@ -233,7 +233,7 @@ PLAYBOOK_FILE=./my-playbook.yaml npx hardhat upload-playbook
 
 # 4. Share with team
 # They can use it directly:
-npx hardhat superaudit --playbook-cid bafkreih...
+npx hardhat auditagent --playbook-cid bafkreih...
 
 # 5. List all playbooks
 npx hardhat list-playbooks
@@ -250,7 +250,7 @@ PLAYBOOK_FILE=./team-security.yaml npx hardhat upload-playbook
 # CID: bafkreih...
 
 # Team Members (zero setup!)
-npx hardhat superaudit --playbook-cid bafkreih...
+npx hardhat auditagent --playbook-cid bafkreih...
 ```
 
 ## 📊 Integration Points
@@ -259,10 +259,10 @@ npx hardhat superaudit --playbook-cid bafkreih...
 
 ```bash
 # Use uploaded playbook in analysis
-npx hardhat superaudit --playbook-cid bafkreih...
+npx hardhat auditagent --playbook-cid bafkreih...
 
 # Auto-syncs community playbooks on every run
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 ### With Registry System ✅

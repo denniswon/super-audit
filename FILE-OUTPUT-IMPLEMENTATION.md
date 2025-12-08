@@ -2,7 +2,7 @@
 
 ## 🎉 Feature Overview
 
-**SuperAudit now supports saving audit reports to files!**
+**MrklTree now supports saving audit reports to files!**
 
 Users can now save their security audit reports in multiple formats for:
 
@@ -54,7 +54,7 @@ stripAnsiCodes() - Removes color codes for clean file output
 
 ```typescript
 // hardhat.config.ts
-superaudit: {
+auditagent: {
   output: "./reports/audit-report.txt";
 }
 ```
@@ -63,13 +63,13 @@ superaudit: {
 
 ```bash
 # .env
-SUPERAUDIT_OUTPUT=./audit-report.txt
+AUDIT_AGENT_OUTPUT=./audit-report.txt
 ```
 
 #### C. Command Line
 
 ```bash
-npx hardhat superaudit --output ./report.txt
+npx hardhat auditagent --output ./report.txt
 ```
 
 ---
@@ -99,7 +99,7 @@ npx hardhat superaudit --output ./report.txt
 ### Test 1: Console Output to Text File ✅
 
 ```bash
-SUPERAUDIT_OUTPUT=./audit-report.txt npx hardhat superaudit
+AUDIT_AGENT_OUTPUT=./audit-report.txt npx hardhat auditagent
 ```
 
 **Result:**
@@ -112,7 +112,7 @@ SUPERAUDIT_OUTPUT=./audit-report.txt npx hardhat superaudit
 ### Test 2: JSON Output to File ✅
 
 ```bash
-SUPERAUDIT_FORMAT=json SUPERAUDIT_OUTPUT=./audit-results.json npx hardhat superaudit
+AUDIT_AGENT_FORMAT=json AUDIT_AGENT_OUTPUT=./audit-results.json npx hardhat auditagent
 ```
 
 **Result:**
@@ -125,12 +125,12 @@ SUPERAUDIT_FORMAT=json SUPERAUDIT_OUTPUT=./audit-results.json npx hardhat supera
 ### Test 3: SARIF Output to File ✅
 
 ```bash
-SUPERAUDIT_FORMAT=sarif SUPERAUDIT_OUTPUT=./superaudit.sarif npx hardhat superaudit
+AUDIT_AGENT_FORMAT=sarif AUDIT_AGENT_OUTPUT=./auditagent.sarif npx hardhat auditagent
 ```
 
 **Result:**
 
-- ✅ File created: `superaudit.sarif` (15 KB)
+- ✅ File created: `auditagent.sarif` (15 KB)
 - ✅ Valid SARIF 2.1.0 format
 - ✅ GitHub-compatible structure
 - ✅ All 21 issues included
@@ -143,7 +143,7 @@ SUPERAUDIT_FORMAT=sarif SUPERAUDIT_OUTPUT=./superaudit.sarif npx hardhat superau
 
 ```bash
 # Save daily audits with timestamps
-SUPERAUDIT_OUTPUT="./reports/audit-$(date +%Y-%m-%d).txt" npx hardhat superaudit
+AUDIT_AGENT_OUTPUT="./reports/audit-$(date +%Y-%m-%d).txt" npx hardhat auditagent
 ```
 
 ### 2. Version Comparison
@@ -151,11 +151,11 @@ SUPERAUDIT_OUTPUT="./reports/audit-$(date +%Y-%m-%d).txt" npx hardhat superaudit
 ```bash
 # Before changes
 git checkout v1.0.0
-SUPERAUDIT_OUTPUT=./audit-v1.0.0.txt npx hardhat superaudit
+AUDIT_AGENT_OUTPUT=./audit-v1.0.0.txt npx hardhat auditagent
 
 # After changes
 git checkout v1.1.0
-SUPERAUDIT_OUTPUT=./audit-v1.1.0.txt npx hardhat superaudit
+AUDIT_AGENT_OUTPUT=./audit-v1.1.0.txt npx hardhat auditagent
 
 # Compare
 diff audit-v1.0.0.txt audit-v1.1.0.txt
@@ -165,22 +165,22 @@ diff audit-v1.0.0.txt audit-v1.1.0.txt
 
 ```yaml
 - name: Run Security Audit
-  run: npx hardhat superaudit
+  run: npx hardhat auditagent
   env:
-    SUPERAUDIT_FORMAT: sarif
-    SUPERAUDIT_OUTPUT: ./superaudit.sarif
+    AUDIT_AGENT_FORMAT: sarif
+    AUDIT_AGENT_OUTPUT: ./auditagent.sarif
 
 - name: Upload to GitHub
   uses: github/codeql-action/upload-sarif@v2
   with:
-    sarif_file: superaudit.sarif
+    sarif_file: auditagent.sarif
 ```
 
 ### 4. Team Sharing
 
 ```bash
 # Generate and share report
-SUPERAUDIT_OUTPUT=./shared-reports/security-audit-v2.txt npx hardhat superaudit
+AUDIT_AGENT_OUTPUT=./shared-reports/security-audit-v2.txt npx hardhat auditagent
 git add shared-reports/
 git commit -m "Add security audit for v2"
 git push
@@ -251,7 +251,7 @@ git push
 ### Before (No File Output)
 
 ```bash
-$ npx hardhat superaudit > output.txt  # Manual redirect
+$ npx hardhat auditagent > output.txt  # Manual redirect
 # Problems:
 # - Loses colors
 # - No format control
@@ -262,12 +262,12 @@ $ npx hardhat superaudit > output.txt  # Manual redirect
 ### After (Built-in File Output)
 
 ```bash
-$ npx hardhat superaudit
+$ npx hardhat auditagent
 # With config:
-# superaudit: { output: "./audit.txt" }
+# auditagent: { output: "./audit.txt" }
 
 # Output:
-# 🔍 SuperAudit - Analysis...
+# 🔍 MrklTree - Analysis...
 # ... (full console output) ...
 # 📄 Report saved to: ./audit.txt
 # ✅ Clean file + console display!
@@ -292,7 +292,7 @@ $ npx hardhat superaudit
 
    ```typescript
    // hardhat.config.ts
-   superaudit: {
+   auditagent: {
      output: "./my-audit-report.txt";
    }
    ```

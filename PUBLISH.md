@@ -1,19 +1,19 @@
-# Publishing SuperAudit to npm
+# Publishing MrklTree to npm
 
-This guide will help you publish your forked SuperAudit plugin to npm.
+This guide will help you publish your forked MrklTree plugin to npm.
 
 ## Prerequisites
 
 1. **npm account**: Make sure you're logged in to npm
-2. **Package name**: You'll need to use a scoped package name like `@jhwon0820/super-audit` since `super-audit` may already be taken
+2. **Package name**: You'll need to use a scoped package name like `@mrkltree/auditagent` since `auditagent` may already be taken
 
 ## Step 1: Update Package Name in Your Fork
 
 Before publishing, you need to update the package name in your fork:
 
-1. Go to your fork: https://github.com/denniswon/super-audit
+1. Go to your fork: https://github.com/denniswon/auditagent
 2. Edit `packages/plugin/package.json`
-3. Change the `name` field from `"super-audit"` to `"@jhwon0820/super-audit"`
+3. Change the `name` field from `"auditagent"` to `"@mrkltree/auditagent"`
 4. Commit and push the change
 
 ## Step 2: Publish to npm
@@ -22,14 +22,14 @@ Before publishing, you need to update the package name in your fork:
 
 ```bash
 cd contracts
-bash scripts/publish-superaudit.sh
+bash scripts/publish-auditagent.sh
 ```
 
 This script will:
 
 1. Clone your fork
 2. Build the plugin
-3. Update the package name to `@jhwon0820/super-audit`
+3. Update the package name to `@mrkltree/auditagent`
 4. Publish to npm
 
 ### Option B: Manual Publishing
@@ -37,8 +37,8 @@ This script will:
 1. **Clone your fork**:
 
    ```bash
-   git clone https://github.com/denniswon/super-audit.git /tmp/superaudit-publish
-   cd /tmp/superaudit-publish/packages/plugin
+   git clone https://github.com/denniswon/auditagent.git /tmp/auditagent-publish
+   cd /tmp/auditagent-publish/packages/plugin
    ```
 
 2. **Install dependencies and build**:
@@ -51,7 +51,7 @@ This script will:
 3. **Update package name**:
 
    ```bash
-   npm pkg set name="@jhwon0820/super-audit"
+   npm pkg set name="@mrkltree/auditagent"
    ```
 
 4. **Login to npm** (if not already logged in):
@@ -75,7 +75,7 @@ After publishing, update `contracts/package.json`:
 ```json
 {
   "devDependencies": {
-    "@jhwon0820/super-audit": "^1.0.0"
+    "@mrkltree/auditagent": "^1.0.0"
   }
 }
 ```
@@ -83,7 +83,7 @@ After publishing, update `contracts/package.json`:
 Then update `hardhat.config.ts`:
 
 ```typescript
-import superauditPlugin from "@jhwon0820/super-audit";
+import MrklAgentPlugin from "@mrkltree/auditagent";
 ```
 
 Finally, install:
@@ -92,7 +92,7 @@ Finally, install:
 pnpm install
 ```
 
-You can then remove the `install-superaudit` script from `package.json` since the package will be installed from npm.
+You can then remove the `install-auditagent` script from `package.json` since the package will be installed from npm.
 
 ## Security Note
 
@@ -102,7 +102,7 @@ You can then remove the `install-superaudit` script from `package.json` since th
 2. Using environment variables instead:
    ```bash
    export NPM_TOKEN=your-token-here
-   bash scripts/publish-superaudit.sh
+   bash scripts/publish-auditagent.sh
    ```
 3. Using `npm login` instead of tokens for local development
 
@@ -110,11 +110,11 @@ You can then remove the `install-superaudit` script from `package.json` since th
 
 ### "Package name already exists"
 
-If `@jhwon0820/super-audit` is taken, try:
+If `@mrkltree/auditagent` is taken, try:
 
-- `@denniswon/superaudit`
-- `super-audit-denniswon`
-- `@your-org/super-audit`
+- `@denniswon/auditagent`
+- `auditagent-denniswon`
+- `@your-org/auditagent`
 
 ### "You do not have permission to publish"
 
@@ -130,7 +130,7 @@ npm login
 Scoped packages must start with `@username/`. Make sure you're using:
 
 ```bash
-npm pkg set name="@jhwon0820/super-audit"
+npm pkg set name="@mrkltree/auditagent"
 ```
 
 ## Updating the Published Package
@@ -155,5 +155,5 @@ To publish a new version:
 
 3. Run the publish script again:
    ```bash
-   bash scripts/publish-superaudit.sh
+   bash scripts/publish-auditagent.sh
    ```

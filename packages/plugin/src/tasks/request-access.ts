@@ -144,7 +144,7 @@ export default async function requestAccessTask(
     console.log("🔓 You can now decrypt and use the playbook");
     console.log("\n💡 To use the playbook:");
     console.log(
-      `   npx hardhat superaudit --playbook-cid ${taskArguments.playbookCid}`,
+      `   npx hardhat auditagent --playbook-cid ${taskArguments.playbookCid}`,
     );
   } catch (error) {
     console.error(

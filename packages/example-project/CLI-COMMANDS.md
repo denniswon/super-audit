@@ -1,6 +1,6 @@
-# SuperAudit CLI Commands - Example Usage
+# MrklTree CLI Commands - Example Usage
 
-This document demonstrates all available CLI commands in the SuperAudit plugin from the example project.
+This document demonstrates all available CLI commands in the MrklTree plugin from the example project.
 
 ## Prerequisites
 
@@ -15,7 +15,7 @@ Make sure you have:
 ### 1. Run Analysis with Default Playbook
 
 ```bash
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 Uses the playbook configured in `hardhat.config.ts` (currently `./playbooks/erc20-token-security.yaml`)
@@ -23,68 +23,68 @@ Uses the playbook configured in `hardhat.config.ts` (currently `./playbooks/erc2
 ### 2. Run Analysis with Different Playbook
 
 ```bash
-npx hardhat superaudit --playbook ./playbooks/complete-defi-security.yaml
+npx hardhat auditagent --playbook ./playbooks/complete-defi-security.yaml
 ```
 
 ### 3. Run Analysis with AI DeFi Playbook
 
 ```bash
-npx hardhat superaudit --playbook ./playbooks/ai-defi-security.yaml
+npx hardhat auditagent --playbook ./playbooks/ai-defi-security.yaml
 ```
 
 ### 4. Run Analysis in Different Modes
 
 ```bash
 # Basic mode (fastest, AST rules only)
-npx hardhat superaudit --mode basic
+npx hardhat auditagent --mode basic
 
 # Advanced mode (AST + CFG analysis)
-npx hardhat superaudit --mode advanced
+npx hardhat auditagent --mode advanced
 
 # Full mode (all rules + playbooks)
-npx hardhat superaudit --mode full
+npx hardhat auditagent --mode full
 ```
 
 ### 5. Different Output Formats
 
 ```bash
 # Console output (default, colored)
-npx hardhat superaudit --format console
+npx hardhat auditagent --format console
 
 # JSON output (machine-readable)
-npx hardhat superaudit --format json
+npx hardhat auditagent --format json
 
 # SARIF format (GitHub Code Scanning)
-npx hardhat superaudit --format sarif
+npx hardhat auditagent --format sarif
 ```
 
 ### 6. Save Output to File
 
 ```bash
 # Save console report
-npx hardhat superaudit --output ./audit-report.txt
+npx hardhat auditagent --output ./audit-report.txt
 
 # Save JSON report
-npx hardhat superaudit --format json --output ./audit-results.json
+npx hardhat auditagent --format json --output ./audit-results.json
 
 # Save SARIF report
-npx hardhat superaudit --format sarif --output ./superaudit.sarif
+npx hardhat auditagent --format sarif --output ./auditagent.sarif
 ```
 
 ### 7. Run Specific Rules Only
 
 ```bash
-npx hardhat superaudit --rules no-tx-origin,reentrancy-paths,explicit-visibility
+npx hardhat auditagent --rules no-tx-origin,reentrancy-paths,explicit-visibility
 ```
 
 ### 8. Enable/Disable AI Enhancement
 
 ```bash
 # Enable AI (if not already enabled in config)
-npx hardhat superaudit --ai
+npx hardhat auditagent --ai
 
 # Disable AI (override config)
-SUPERAUDIT_AI_ENABLED=false npx hardhat superaudit
+AUDIT_AGENT_AI_ENABLED=false npx hardhat auditagent
 ```
 
 ## Advanced Usage
@@ -93,7 +93,7 @@ SUPERAUDIT_AI_ENABLED=false npx hardhat superaudit
 
 ```bash
 # Full analysis with specific playbook, JSON output, and AI
-npx hardhat superaudit \
+npx hardhat auditagent \
   --mode full \
   --playbook ./playbooks/complete-defi-security.yaml \
   --format json \
@@ -105,17 +105,17 @@ npx hardhat superaudit \
 
 ```bash
 # Use GPT-4 (slower, more thorough)
-SUPERAUDIT_AI_MODEL=gpt-4 npx hardhat superaudit
+AUDIT_AGENT_AI_MODEL=gpt-4 npx hardhat auditagent
 
 # Use GPT-3.5-turbo (faster, cheaper - already configured)
-SUPERAUDIT_AI_MODEL=gpt-3.5-turbo npx hardhat superaudit
+AUDIT_AGENT_AI_MODEL=gpt-3.5-turbo npx hardhat auditagent
 ```
 
 ### Quick CI/CD Check
 
 ```bash
 # Fast check without AI for CI
-npx hardhat superaudit --mode basic --format json --output ./ci-report.json
+npx hardhat auditagent --mode basic --format json --output ./ci-report.json
 ```
 
 ## Playbook Registry Commands (Coming Soon)
@@ -124,28 +124,28 @@ The following commands will be available once the registry integration is fully 
 
 ```bash
 # List all registered playbooks
-npx hardhat superaudit --list-playbooks
+npx hardhat auditagent --list-playbooks
 
 # Show registry statistics
-npx hardhat superaudit --registry-stats
+npx hardhat auditagent --registry-stats
 
 # Register a new playbook
-npx hardhat superaudit --register-playbook ./my-custom-playbook.yaml
+npx hardhat auditagent --register-playbook ./my-custom-playbook.yaml
 
 # Upload playbook to Lighthouse/IPFS
-npx hardhat superaudit --upload-playbook ./playbooks/erc20-token-security.yaml
+npx hardhat auditagent --upload-playbook ./playbooks/erc20-token-security.yaml
 
 # Register from Lighthouse CID
-npx hardhat superaudit --register-from-lighthouse bafkreih...
+npx hardhat auditagent --register-from-lighthouse bafkreih...
 
 # Sync all playbooks from Lighthouse
-npx hardhat superaudit --sync-lighthouse
+npx hardhat auditagent --sync-lighthouse
 
 # Search playbooks by tags
-npx hardhat superaudit --search-playbooks defi,vault,security
+npx hardhat auditagent --search-playbooks defi,vault,security
 
 # Auto-recommend playbooks based on contracts
-npx hardhat superaudit --auto-recommend
+npx hardhat auditagent --auto-recommend
 ```
 
 ## Test Scripts
@@ -177,7 +177,7 @@ After running various commands, you'll see:
 
 - `audit-report.txt` - Console format report
 - `audit-results.json` - JSON format report
-- `superaudit.sarif` - SARIF format for GitHub
+- `auditagent.sarif` - SARIF format for GitHub
 
 ## Performance Metrics
 
@@ -228,7 +228,7 @@ The `contracts/` directory contains sample contracts with various security issue
 - **TestViolations.sol** - Multiple rule violations (for testing)
 - **VulnerableVault.sol** - DeFi vault with vulnerabilities
 
-Run analysis to see how SuperAudit detects these issues!
+Run analysis to see how MrklTree detects these issues!
 
 ## Next Steps
 

@@ -47,9 +47,9 @@ async function main() {
   }
 
   // 6. Get playbooks by author
-  console.log("\n5️⃣  Playbooks by 'SuperAudit Team':");
+  console.log("\n5️⃣  Playbooks by 'MrklTree Team':");
   console.log("-".repeat(60));
-  const teamPlaybooks = registry.getByAuthor("SuperAudit Team");
+  const teamPlaybooks = registry.getByAuthor("MrklTree Team");
   console.log(`Found ${teamPlaybooks.length} playbook(s):`);
   for (const pb of teamPlaybooks) {
     console.log(`  - ${pb.meta.name}`);

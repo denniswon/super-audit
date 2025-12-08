@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Playbook Registry is a comprehensive module for managing, discovering, and validating audit playbooks in the SuperAudit plugin. It provides a centralized, singleton-based system for playbook lifecycle management.
+The Playbook Registry is a comprehensive module for managing, discovering, and validating audit playbooks in the MrklTree plugin. It provides a centralized, singleton-based system for playbook lifecycle management.
 
 ## Created Files
 
@@ -212,23 +212,23 @@ const rules = await loadRulesFromMultiplePlaybooks(
 
 ```bash
 # Existing (still works)
-npx hardhat superaudit --playbook ./my-playbook.yaml
+npx hardhat auditagent --playbook ./my-playbook.yaml
 
 # New registry-based (backward compatible)
-npx hardhat superaudit --playbook my-playbook-id
+npx hardhat auditagent --playbook my-playbook-id
 
 # Registry management
-npx hardhat superaudit --list-playbooks
-npx hardhat superaudit --registry-stats
-npx hardhat superaudit --search-playbooks "defi,vault"
-npx hardhat superaudit --register-playbook ./new-playbook.yaml
-npx hardhat superaudit --playbook-info erc20-security
+npx hardhat auditagent --list-playbooks
+npx hardhat auditagent --registry-stats
+npx hardhat auditagent --search-playbooks "defi,vault"
+npx hardhat auditagent --register-playbook ./new-playbook.yaml
+npx hardhat auditagent --playbook-info erc20-security
 
 # Multiple playbooks
-npx hardhat superaudit --playbooks "erc20,vault,access-control"
+npx hardhat auditagent --playbooks "erc20,vault,access-control"
 
 # Auto-recommend based on contracts
-npx hardhat superaudit --auto-recommend
+npx hardhat auditagent --auto-recommend
 ```
 
 ## Benefits
@@ -394,7 +394,7 @@ packages/plugin/src/playbooks/
 
 ## Summary
 
-The Playbook Registry module is a **production-ready**, **well-documented**, and **fully backward-compatible** enhancement to the SuperAudit plugin. It provides:
+The Playbook Registry module is a **production-ready**, **well-documented**, and **fully backward-compatible** enhancement to the MrklTree plugin. It provides:
 
 ✅ Centralized playbook management
 ✅ Powerful search and discovery

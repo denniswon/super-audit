@@ -1,5 +1,5 @@
 import { HardhatUserConfig } from "hardhat/config";
-import { HardhatConfig, SuperAuditConfig } from "hardhat/types/config";
+import { HardhatConfig, MrklTreeConfig } from "hardhat/types/config";
 import { HardhatUserConfigValidationError } from "hardhat/types/hooks";
 
 /**
@@ -16,13 +16,16 @@ export async function validatePluginConfig(
 ): Promise<HardhatUserConfigValidationError[]> {
   const errors: HardhatUserConfigValidationError[] = [];
 
-  if (userConfig.superaudit) {
-    const config = userConfig.superaudit;
+  if (userConfig.auditagent) {
+    const config = userConfig.auditagent;
 
     // Validate mode
-    if (config.mode && !["basic", "advanced", "full"].includes(config.mode)) {
+    if (
+      config.mode &&
+      !["basic", "advanced", "full"].includes(config.mode as string)
+    ) {
       errors.push({
-        path: ["superaudit", "mode"],
+        path: ["auditagent", "mode"],
         message: `Invalid mode: ${config.mode}. Must be one of: basic, advanced, full`,
       });
     }
@@ -30,10 +33,10 @@ export async function validatePluginConfig(
     // Validate format
     if (
       config.format &&
-      !["console", "json", "sarif"].includes(config.format)
+      !["console", "json", "sarif"].includes(config.format as string)
     ) {
       errors.push({
-        path: ["superaudit", "format"],
+        path: ["auditagent", "format"],
         message: `Invalid format: ${config.format}. Must be one of: console, json, sarif`,
       });
     }
@@ -41,10 +44,10 @@ export async function validatePluginConfig(
     // Validate AI provider
     if (
       config.ai?.provider &&
-      !["openai", "anthropic", "local"].includes(config.ai.provider)
+      !["openai", "anthropic", "local"].includes(config.ai.provider as string)
     ) {
       errors.push({
-        path: ["superaudit", "ai", "provider"],
+        path: ["auditagent", "ai", "provider"],
         message: `Invalid AI provider: ${config.ai.provider}. Must be one of: openai, anthropic, local`,
       });
     }
@@ -68,28 +71,28 @@ export async function resolvePluginConfig(
   userConfig: HardhatUserConfig,
   partiallyResolvedConfig: HardhatConfig,
 ): Promise<HardhatConfig> {
-  const userSuperauditConfig = userConfig.superaudit || {};
+  const userMrklTreeConfig = userConfig.auditagent || {};
 
-  // Resolve SuperAudit configuration with defaults
-  const resolvedSuperauditConfig: SuperAuditConfig = {
-    mode: userSuperauditConfig.mode || "full",
-    playbook: userSuperauditConfig.playbook,
-    rules: userSuperauditConfig.rules,
-    format: userSuperauditConfig.format || "console",
-    output: userSuperauditConfig.output,
-    ai: userSuperauditConfig.ai
+  // Resolve MrklTree configuration with defaults
+  const resolvedMrklTreeConfig: MrklTreeConfig = {
+    mode: userMrklTreeConfig.mode || "full",
+    playbook: userMrklTreeConfig.playbook,
+    rules: userMrklTreeConfig.rules,
+    format: userMrklTreeConfig.format || "console",
+    output: userMrklTreeConfig.output,
+    ai: userMrklTreeConfig.ai
       ? {
-          enabled: userSuperauditConfig.ai.enabled !== false, // default true if ai config exists
-          provider: userSuperauditConfig.ai.provider || "openai",
-          model: userSuperauditConfig.ai.model,
-          temperature: userSuperauditConfig.ai.temperature,
-          maxTokens: userSuperauditConfig.ai.maxTokens,
+          enabled: userMrklTreeConfig.ai.enabled !== false, // default true if ai config exists
+          provider: userMrklTreeConfig.ai.provider || "openai",
+          model: userMrklTreeConfig.ai.model,
+          temperature: userMrklTreeConfig.ai.temperature,
+          maxTokens: userMrklTreeConfig.ai.maxTokens,
         }
       : undefined,
   };
 
   return {
     ...partiallyResolvedConfig,
-    superaudit: resolvedSuperauditConfig,
+    auditagent: resolvedMrklTreeConfig,
   };
 }

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.27;
 
 /**
- * Example vulnerable vault contract to demonstrate SuperAudit's advanced analysis capabilities
+ * Example vulnerable vault contract to demonstrate MrklTree's advanced analysis capabilities
  *
  * This contract contains multiple deliberate security vulnerabilities:
  * 1. Reentrancy in withdraw function (CEI pattern violation)

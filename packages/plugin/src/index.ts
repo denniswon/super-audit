@@ -5,14 +5,14 @@ import type { HardhatPlugin } from "hardhat/types/plugins";
 import "./type-extensions.js";
 
 const plugin: HardhatPlugin = {
-  id: "super-audit",
+  id: "auditagent",
   hookHandlers: {
     config: () => import("./hooks/config.js"),
     network: () => import("./hooks/network.js"),
   },
   tasks: [
     task(
-      "superaudit",
+      "auditagent",
       "Run comprehensive security analysis on Solidity contracts with CFG analysis, YAML playbooks, and multiple output formats.",
     )
       .addOption({

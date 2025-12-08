@@ -62,7 +62,7 @@
 │   └──────────────────────────────────────────────────────────┘     │
 │   ┌──────────────────────────────────────────────────────────┐     │
 │   │  Author Index: Map<author, Set<playbook IDs>>            │     │
-│   │  ├─ "SuperAudit Team" → [ids...]                         │     │
+│   │  ├─ "MrklTree Team" → [ids...]                         │     │
 │   │  └─ ...                                                   │     │
 │   └──────────────────────────────────────────────────────────┘     │
 │                                                                       │
@@ -202,7 +202,7 @@ INTEGRATION POINTS:
 ┌─────────────────────┐  │      ┌─────────────────────┐
 │  CLI Interface      │  │      │  Config Files       │
 │  ├─ --playbook      │──┼──────│  hardhat.config.ts  │
-│  ├─ --playbooks     │  │      │  superaudit:        │
+│  ├─ --playbooks     │  │      │  auditagent:        │
 │  ├─ --list-playbooks│  │      │    playbooks: []    │
 │  └─ --search        │  │      └─────────────────────┘
 └─────────────────────┘  │
@@ -217,7 +217,7 @@ INTEGRATION POINTS:
 
 ```
 User Command:
-  $ npx hardhat superaudit --search-playbooks "defi,vault"
+  $ npx hardhat auditagent --search-playbooks "defi,vault"
 
 Flow:
   1. Task initialization
@@ -236,7 +236,7 @@ Flow:
          └─> Display to user
 
   4. User selects playbook
-     └─> npx hardhat superaudit --playbook erc20-security
+     └─> npx hardhat auditagent --playbook erc20-security
 
   5. Load and analyze
      └─> loadRulesFromRegistry("erc20-security")

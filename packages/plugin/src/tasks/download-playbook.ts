@@ -64,7 +64,7 @@ export default async function downloadPlaybookTask(
     }
 
     console.log(`💡 Use this playbook in analysis:`);
-    console.log(`   npx hardhat superaudit --playbook-cid ${cid}`);
+    console.log(`   npx hardhat auditagent --playbook-cid ${cid}`);
   } catch (error) {
     console.error(
       `\n❌ Download failed: ${error instanceof Error ? error.message : String(error)}`,

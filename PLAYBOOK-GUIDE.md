@@ -1,8 +1,8 @@
-# 📋 SuperAudit Playbook Guide
+# 📋 MrklTree Playbook Guide
 
 ## Overview
 
-SuperAudit now includes comprehensive YAML playbooks for auditing different types of smart contracts. These playbooks provide targeted security analysis with AI-enhanced explanations and fix suggestions.
+MrklTree now includes comprehensive YAML playbooks for auditing different types of smart contracts. These playbooks provide targeted security analysis with AI-enhanced explanations and fix suggestions.
 
 ---
 
@@ -37,7 +37,7 @@ SuperAudit now includes comprehensive YAML playbooks for auditing different type
 
 ```typescript
 // hardhat.config.ts
-superaudit: {
+auditagent: {
   playbook: "./playbooks/erc20-token-security.yaml";
 }
 ```
@@ -70,7 +70,7 @@ superaudit: {
 **Usage:**
 
 ```typescript
-superaudit: {
+auditagent: {
   playbook: "./vault-security.yaml";
 }
 ```
@@ -103,7 +103,7 @@ superaudit: {
 **Usage:**
 
 ```typescript
-superaudit: {
+auditagent: {
   playbook: "./playbooks/complete-defi-security.yaml";
 }
 ```
@@ -127,7 +127,7 @@ superaudit: {
 **Usage:**
 
 ```typescript
-superaudit: {
+auditagent: {
   playbook: "./playbooks/ai-defi-security.yaml",
   ai: {
     enabled: true,
@@ -144,36 +144,36 @@ superaudit: {
 
 ```bash
 # Create hardhat.config.ts with:
-superaudit: {
+auditagent: {
   mode: "full",
   playbook: "./playbooks/erc20-token-security.yaml"
 }
 
 # Run audit
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 ### Scan Your Vault Contract
 
 ```bash
 # Use vault playbook
-superaudit: {
+auditagent: {
   playbook: "./vault-security.yaml"
 }
 
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 ### Complete Project Audit
 
 ```bash
 # Scan everything
-superaudit: {
+auditagent: {
   playbook: "./playbooks/complete-defi-security.yaml",
   output: "./reports/complete-audit.txt"
 }
 
-npx hardhat superaudit
+npx hardhat auditagent
 ```
 
 ---
@@ -182,8 +182,8 @@ npx hardhat superaudit
 
 ### ExampleToken.sol Audit Results
 
-```
-🔍 SuperAudit - Advanced Smart Contract Security Analysis
+```md
+🔍 MrklTree - Advanced Smart Contract Security Analysis
 
 📋 Loading playbook: ./playbooks/erc20-token-security.yaml
 📊 Analysis Mode: PLAYBOOK
@@ -192,8 +192,8 @@ npx hardhat superaudit
 📋 Static Analysis Report
 
 ExampleToken.sol
-  [CRITICAL] token-unprotected-mint at line 31
-    Mint function is missing access control
+[CRITICAL] token-unprotected-mint at line 31
+Mint function is missing access control
 
     🔴 SEVERITY: CRITICAL
     💰 IMPACT: Unlimited token minting by anyone
@@ -217,11 +217,11 @@ ExampleToken.sol
     }
 
 📊 Summary:
-  Critical: 1
-  High: 0
-  Medium: 0
-  Low: 2
-  Total: 3 issues
+Critical: 1
+High: 0
+Medium: 0
+Low: 2
+Total: 3 issues
 
 💥 Critical issues detected - review required
 ```
@@ -304,7 +304,7 @@ checks:
 4. **Use it:**
 
 ```typescript
-superaudit: {
+auditagent: {
   playbook: "./playbooks/my-custom-audit.yaml";
 }
 ```
@@ -332,19 +332,19 @@ superaudit: {
 
 ```bash
 # First audit tokens
-superaudit: { playbook: "./playbooks/erc20-token-security.yaml" }
+auditagent: { playbook: "./playbooks/erc20-token-security.yaml" }
 
 # Then audit vaults
-superaudit: { playbook: "./vault-security.yaml" }
+auditagent: { playbook: "./vault-security.yaml" }
 
 # Finally run complete audit
-superaudit: { playbook: "./playbooks/complete-defi-security.yaml" }
+auditagent: { playbook: "./playbooks/complete-defi-security.yaml" }
 ```
 
 ### 2. **Enable AI for Critical Projects**
 
 ```typescript
-superaudit: {
+auditagent: {
   playbook: "./playbooks/erc20-token-security.yaml",
   ai: {
     enabled: true,
@@ -357,7 +357,7 @@ superaudit: {
 ### 3. **Save Reports for Documentation**
 
 ```typescript
-superaudit: {
+auditagent: {
   playbook: "./playbooks/complete-defi-security.yaml",
   format: "console",
   output: `./reports/audit-${Date.now()}.txt`
@@ -369,14 +369,14 @@ superaudit: {
 ```bash
 # GitHub Actions workflow
 - name: Token Audit
-  run: npx hardhat superaudit
+  run: npx hardhat auditagent
   env:
-    SUPERAUDIT_PLAYBOOK: ./playbooks/erc20-token-security.yaml
+    AUDIT_AGENT_PLAYBOOK: ./playbooks/erc20-token-security.yaml
 
 - name: Vault Audit
-  run: npx hardhat superaudit
+  run: npx hardhat auditagent
   env:
-    SUPERAUDIT_PLAYBOOK: ./vault-security.yaml
+    AUDIT_AGENT_PLAYBOOK: ./vault-security.yaml
 ```
 
 ---
@@ -416,7 +416,7 @@ superaudit: {
 
 ## 🎉 Summary
 
-SuperAudit playbooks provide:
+MrklTree playbooks provide:
 
 - ✅ Targeted security analysis for specific contract types
 - ✅ AI-enhanced vulnerability explanations

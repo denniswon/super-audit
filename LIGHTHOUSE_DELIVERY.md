@@ -144,7 +144,7 @@ LIGHTHOUSE_API_KEY=your_api_key_here
 ### Upload Playbook
 
 ```bash
-npx hardhat superaudit --upload-playbook ./playbooks/my-security.yaml
+npx hardhat auditagent --upload-playbook ./playbooks/my-security.yaml
 ```
 
 Output:
@@ -162,19 +162,19 @@ Output:
 ### Register from CID
 
 ```bash
-npx hardhat superaudit --register-from-lighthouse QmXxx...
+npx hardhat auditagent --register-from-lighthouse QmXxx...
 ```
 
 ### Sync from Lighthouse
 
 ```bash
-npx hardhat superaudit --sync-lighthouse
+npx hardhat auditagent --sync-lighthouse
 ```
 
 ### Use Lighthouse Playbook
 
 ```bash
-npx hardhat superaudit --playbook lighthouse-QmXxx...
+npx hardhat auditagent --playbook lighthouse-QmXxx...
 ```
 
 ## 📊 Technical Details
@@ -460,12 +460,12 @@ The Lighthouse integration is **complete, tested, and ready to use**!
 
 1. Add `LIGHTHOUSE_API_KEY` to `.env`
 2. Run the example: `npx ts-node src/playbooks/lighthouse-example.ts`
-3. Upload your first playbook: `npx hardhat superaudit --upload-playbook ./playbook.yaml`
+3. Upload your first playbook: `npx hardhat auditagent --upload-playbook ./playbook.yaml`
 4. Share the CID with others!
 
 ---
 
-**Location**: `/Users/rudranshshinghal/SuperAudit-Plugin/packages/plugin/src/playbooks/`
+**Location**: `/Users/rudranshshinghal/MrklTree-Plugin/packages/plugin/src/playbooks/`
 
 **Main Files**:
 

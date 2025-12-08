@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# SuperAudit AI Integration Test Script
+# MrklTree AI Integration Test Script
 
-echo "🤖 SuperAudit AI Integration Test"
+echo "🤖 MrklTree AI Integration Test"
 echo "=================================="
 echo ""
 
@@ -12,7 +12,7 @@ if [ ! -f ".env" ]; then
     cp env.example .env
     echo ""
     echo "📝 Please edit .env and add your API key:"
-    echo "   - Set SUPERAUDIT_AI_ENABLED=true"
+    echo "   - Set AUDIT_AGENT_AI_ENABLED=true"
     echo "   - Add your OPENAI_API_KEY or ANTHROPIC_API_KEY"
     echo ""
     echo "Then run this script again."
@@ -23,12 +23,12 @@ fi
 export $(cat .env | grep -v '^#' | xargs)
 
 # Check if AI is enabled
-if [ "$SUPERAUDIT_AI_ENABLED" != "true" ]; then
+if [ "$AUDIT_AGENT_AI_ENABLED" != "true" ]; then
     echo "⚠️ AI is not enabled in .env"
-    echo "Set SUPERAUDIT_AI_ENABLED=true to test AI features"
+    echo "Set AUDIT_AGENT_AI_ENABLED=true to test AI features"
     echo ""
     echo "Running standard analysis without AI..."
-    npx hardhat superaudit
+    npx hardhat auditagent
     exit 0
 fi
 
@@ -40,26 +40,26 @@ if [ -z "$OPENAI_API_KEY" ] && [ -z "$ANTHROPIC_API_KEY" ]; then
 fi
 
 echo "✅ AI Configuration Found"
-echo "   Provider: $SUPERAUDIT_AI_PROVIDER"
-echo "   Enabled: $SUPERAUDIT_AI_ENABLED"
+echo "   Provider: $AUDIT_AGENT_AI_PROVIDER"
+echo "   Enabled: $AUDIT_AGENT_AI_ENABLED"
 echo ""
 
 echo "🔍 Test 1: Basic Analysis (No AI)"
 echo "-----------------------------------"
-npx hardhat superaudit --mode basic
+npx hardhat auditagent --mode basic
 echo ""
 echo ""
 
 echo "🤖 Test 2: AI-Enhanced Analysis"
 echo "-----------------------------------"
-npx hardhat superaudit --ai
+npx hardhat auditagent --ai
 echo ""
 echo ""
 
 echo "📋 Test 3: AI-Enhanced Playbook Analysis"
 echo "-----------------------------------"
 if [ -f "playbooks/ai-defi-security.yaml" ]; then
-    npx hardhat superaudit --playbook playbooks/ai-defi-security.yaml --ai
+    npx hardhat auditagent --playbook playbooks/ai-defi-security.yaml --ai
 else
     echo "⚠️ Playbook not found, skipping..."
 fi
