@@ -124,6 +124,11 @@ Provide your analysis in the following JSON format:
       // Latest: gpt-4.1, gpt-4.1-mini (Apr 2025)
       // Current: gpt-4o, gpt-4o-mini (recommended)
       const model = this.config.model || "gpt-4o-mini";
+
+      // Some models (o1, o3, and newer) require max_completion_tokens instead of max_tokens
+      const requiresMaxCompletionTokens =
+        model.startsWith("o1-") || model.startsWith("o3-");
+
       const baseParams: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming =
         {
           model,
@@ -139,7 +144,9 @@ Provide your analysis in the following JSON format:
             },
           ],
           temperature: this.config.temperature || 0.3,
-          max_tokens: this.config.maxTokens || 1000,
+          ...(requiresMaxCompletionTokens
+            ? { max_completion_tokens: this.config.maxTokens || 1000 }
+            : { max_tokens: this.config.maxTokens || 1000 }),
         };
 
       // Only add response_format for models that support JSON mode
