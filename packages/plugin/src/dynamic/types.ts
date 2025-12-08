@@ -1,4 +1,4 @@
-import type { ASTNode } from "../types.js";
+// Types for dynamic analysis and fuzzing engine
 
 /**
  * Types for dynamic analysis and fuzzing engine
@@ -9,7 +9,7 @@ export interface ForkEnvironment {
   blockNumber?: number;
   rpcUrl?: string;
   accounts: string[];
-  provider: any; // Web3Provider or similar
+  provider: unknown; // Web3Provider or similar
 }
 
 export interface FuzzingConfig {
@@ -41,7 +41,7 @@ export interface CoverageInfo {
 export interface FuzzingViolation {
   type: "revert" | "invariant" | "assertion" | "gas" | "panic";
   function: string;
-  input: any;
+  input: unknown;
   trace: ExecutionTrace;
   severity: "critical" | "high" | "medium" | "low";
   description: string;
@@ -60,10 +60,10 @@ export interface ExploitResult {
 export interface AttackStep {
   contract: string;
   method: string;
-  params: any[];
+  params: unknown[];
   value?: string;
   gasUsed?: number;
-  result?: any;
+  result?: unknown;
   events?: Event[];
 }
 
@@ -71,7 +71,7 @@ export interface ExecutionTrace {
   steps: TraceStep[];
   gasUsed: number;
   success: boolean;
-  returnValue?: any;
+  returnValue?: unknown;
   revertReason?: string;
 }
 
@@ -98,8 +98,8 @@ export interface InvariantResult {
   name: string;
   expression: string;
   passed: boolean;
-  failingInput?: any;
-  actualValue?: any;
+  failingInput?: unknown;
+  actualValue?: unknown;
   expectedCondition: string;
 }
 
@@ -160,19 +160,27 @@ export interface NetworkManager {
 /**
  * Contract deployment and interaction types
  */
+export interface ABIItem {
+  type: string;
+  name?: string;
+  stateMutability?: string;
+  inputs?: Array<{ type: string; name?: string }>;
+  outputs?: Array<{ type: string; name?: string }>;
+}
+
 export interface DeployedContract {
   name: string;
   address: string;
-  abi: any[];
+  abi: ABIItem[];
   bytecode: string;
   deployer: string;
-  constructorArgs: any[];
+  constructorArgs: unknown[];
 }
 
 export interface ContractInteraction {
   contract: DeployedContract;
   method: string;
-  params: any[];
+  params: unknown[];
   value?: string;
   gasLimit?: number;
   from?: string;
@@ -180,7 +188,7 @@ export interface ContractInteraction {
 
 export interface InteractionResult {
   success: boolean;
-  returnValue?: any;
+  returnValue?: unknown;
   gasUsed: number;
   events: Event[];
   trace?: ExecutionTrace;
@@ -192,8 +200,11 @@ export interface InteractionResult {
  */
 export interface FuzzingStrategy {
   name: string;
-  generateInput(functionAbi: any, previousInputs: any[]): any[];
-  mutateInput(input: any[], coverage: CoverageInfo): any[];
+  generateInput(
+    functionAbi: Record<string, unknown>,
+    previousInputs: unknown[],
+  ): unknown[];
+  mutateInput(input: unknown[], coverage: CoverageInfo): unknown[];
   shouldContinue(results: FuzzingResults): boolean;
 }
 

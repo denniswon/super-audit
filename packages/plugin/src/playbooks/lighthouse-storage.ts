@@ -88,7 +88,11 @@ export class LighthouseStorageManager {
    */
   async uploadPlaybook(
     filePath: string,
-    progressCallback?: (progress: any) => void,
+    progressCallback?: (progress: {
+      total?: number;
+      uploaded?: number;
+      percentage?: number;
+    }) => void,
   ): Promise<LighthousePlaybookMetadata> {
     try {
       if (!existsSync(filePath)) {
@@ -99,11 +103,12 @@ export class LighthouseStorageManager {
 
       // Upload to Lighthouse
       // SDK signature: upload(path, apiKey, dealParameters?, progressCallback?)
+      // Note: progressCallback type is cast to match Lighthouse SDK's IUploadProgressCallback
       const uploadResponse = (await lighthouse.upload(
         filePath,
         this.apiKey,
         undefined, // dealParameters
-        progressCallback,
+        progressCallback as Parameters<typeof lighthouse.upload>[3],
       )) as LighthouseUploadResponse;
 
       const cid = uploadResponse.data.Hash;
@@ -130,7 +135,7 @@ export class LighthouseStorageManager {
       };
     } catch (error) {
       console.error("Failed to upload playbook to Lighthouse:", error);
-      throw new Error(`Lighthouse upload failed: ${error}`);
+      throw new Error(`Lighthouse upload failed: ${String(error)}`);
     }
   }
 
@@ -144,10 +149,10 @@ export class LighthouseStorageManager {
     const { JWT, error } = await kavach.getJWT(signer.address, signedMessage);
 
     if (error) {
-      throw new Error(`Failed to get JWT: ${error}`);
+      throw new Error(`Failed to get JWT: ${String(error)}`);
     }
 
-    return JWT;
+    return JWT as string;
   }
 
   /**
@@ -172,7 +177,11 @@ export class LighthouseStorageManager {
     filePath: string,
     publicKey: string,
     privateKey: string,
-    progressCallback?: (progress: any) => void,
+    progressCallback?: (progress: {
+      total?: number;
+      uploaded?: number;
+      percentage?: number;
+    }) => void,
   ): Promise<LighthousePlaybookMetadata> {
     try {
       if (!existsSync(filePath)) {
@@ -228,7 +237,10 @@ export class LighthouseStorageManager {
   /**
    * Share an encrypted file with another user (using platform's keys)
    */
-  async shareEncryptedFile(cid: string, userPublicKey: string): Promise<any> {
+  async shareEncryptedFile(
+    cid: string,
+    userPublicKey: string,
+  ): Promise<{ data: { status: string } }> {
     try {
       console.log(`🔐 Sharing encrypted file with user...`);
       console.log(`   CID: ${cid}`);
@@ -260,7 +272,7 @@ export class LighthouseStorageManager {
       return shareResponse;
     } catch (error) {
       console.error("Failed to share encrypted file:", error);
-      throw new Error(`File sharing failed: ${error}`);
+      throw new Error(`File sharing failed: ${String(error)}`);
     }
   }
 
@@ -320,7 +332,7 @@ export class LighthouseStorageManager {
       return contentString;
     } catch (error) {
       console.error("Failed to decrypt playbook:", error);
-      throw new Error(`Playbook decryption failed: ${error}`);
+      throw new Error(`Playbook decryption failed: ${String(error)}`);
     }
   }
 
@@ -330,7 +342,11 @@ export class LighthouseStorageManager {
   async uploadPlaybookFromString(
     yamlContent: string,
     filename: string,
-    progressCallback?: (progress: any) => void,
+    progressCallback?: (progress: {
+      total?: number;
+      uploaded?: number;
+      percentage?: number;
+    }) => void,
   ): Promise<LighthousePlaybookMetadata> {
     try {
       // Write to temporary file
@@ -342,7 +358,7 @@ export class LighthouseStorageManager {
 
       return result;
     } catch (error) {
-      throw new Error(`Failed to upload playbook string: ${error}`);
+      throw new Error(`Failed to upload playbook string: ${String(error)}`);
     }
   }
 
@@ -378,7 +394,9 @@ export class LighthouseStorageManager {
       return yamlContent;
     } catch (error) {
       console.error("Failed to download playbook from Lighthouse:", error);
-      throw new Error(`Failed to download from IPFS (${cid}): ${error}`);
+      throw new Error(
+        `Failed to download from IPFS (${cid}): ${String(error)}`,
+      );
     }
   }
 

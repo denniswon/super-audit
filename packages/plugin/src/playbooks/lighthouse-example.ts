@@ -18,7 +18,6 @@ import dotenv from "dotenv";
 import {
   initializeRegistry,
   getPlaybookRegistry,
-  initializeLighthouse,
   initializeLighthouseFromEnv,
   getLighthouse,
   isLighthouseInitialized,
@@ -99,7 +98,10 @@ checks:
   // 3. Upload to Lighthouse
   console.log("3️⃣  Uploading playbook to Lighthouse...");
 
-  const progressCallback = (progressData: any) => {
+  const progressCallback = (progressData: {
+    total?: number;
+    uploaded?: number;
+  }) => {
     if (progressData?.total && progressData?.uploaded) {
       const percentage = (
         (progressData.uploaded / progressData.total) *
@@ -161,7 +163,7 @@ checks:
         console.log(`   - ${upload.name} (${upload.cid.substring(0, 12)}...)`);
       }
       console.log();
-    } catch (error) {
+    } catch (_error) {
       console.log("   (Unable to list uploads - API limitation)\n");
     }
 

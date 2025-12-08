@@ -53,7 +53,7 @@ export class ForkManager implements NetworkManager {
       );
       return this.currentFork;
     } catch (error) {
-      throw new Error(`Failed to fork mainnet: ${error}`);
+      throw new Error(`Failed to fork mainnet: ${String(error)}`);
     }
   }
 
@@ -102,7 +102,7 @@ export class ForkManager implements NetworkManager {
       );
       return this.currentFork;
     } catch (error) {
-      throw new Error(`Failed to fork ${network}: ${error}`);
+      throw new Error(`Failed to fork ${network}: ${String(error)}`);
     }
   }
 
@@ -115,7 +115,7 @@ export class ForkManager implements NetworkManager {
       this.currentFork = undefined;
       console.log("🔄 [DEMO] Reset blockchain fork");
     } catch (error) {
-      console.warn(`Warning: Could not reset fork: ${error}`);
+      console.warn(`Warning: Could not reset fork: ${String(error)}`);
     }
   }
 
@@ -127,7 +127,7 @@ export class ForkManager implements NetworkManager {
       // Demo implementation
       console.log(`💰 [DEMO] Would set balance of ${address} to ${balance}`);
     } catch (error) {
-      throw new Error(`Failed to set balance: ${error}`);
+      throw new Error(`Failed to set balance: ${String(error)}`);
     }
   }
 
@@ -145,7 +145,7 @@ export class ForkManager implements NetworkManager {
         `🗃️ [DEMO] Would set storage at ${address}[${slot}] = ${value}`,
       );
     } catch (error) {
-      throw new Error(`Failed to set storage: ${error}`);
+      throw new Error(`Failed to set storage: ${String(error)}`);
     }
   }
 
@@ -157,7 +157,7 @@ export class ForkManager implements NetworkManager {
       // Demo implementation
       console.log(`⛏️ [DEMO] Would mine ${blocks} block(s)`);
     } catch (error) {
-      throw new Error(`Failed to mine blocks: ${error}`);
+      throw new Error(`Failed to mine blocks: ${String(error)}`);
     }
   }
 
@@ -169,7 +169,7 @@ export class ForkManager implements NetworkManager {
       // Demo implementation
       console.log(`⏰ [DEMO] Would set next block timestamp to ${timestamp}`);
     } catch (error) {
-      throw new Error(`Failed to set timestamp: ${error}`);
+      throw new Error(`Failed to set timestamp: ${String(error)}`);
     }
   }
 
@@ -178,7 +178,7 @@ export class ForkManager implements NetworkManager {
    */
   async deployContract(
     contractName: string,
-    constructorArgs: any[] = [],
+    constructorArgs: unknown[] = [],
     deployer?: string,
   ): Promise<DeployedContract> {
     try {
@@ -199,7 +199,7 @@ export class ForkManager implements NetworkManager {
       console.log(`📄 [DEMO] Would deploy ${contractName} at ${mockAddress}`);
       return deployed;
     } catch (error) {
-      throw new Error(`Failed to deploy ${contractName}: ${error}`);
+      throw new Error(`Failed to deploy ${contractName}: ${String(error)}`);
     }
   }
 
@@ -278,7 +278,7 @@ export class ForkManager implements NetworkManager {
         );
       }
     } catch (error) {
-      throw new Error(`Failed to simulate price shock: ${error}`);
+      throw new Error(`Failed to simulate price shock: ${String(error)}`);
     }
   }
 
@@ -295,7 +295,7 @@ export class ForkManager implements NetworkManager {
         `⛽ [DEMO] Would simulate network congestion: baseFee=${baseFee}, priority=${maxPriorityFee}`,
       );
     } catch (error) {
-      throw new Error(`Failed to simulate congestion: ${error}`);
+      throw new Error(`Failed to simulate congestion: ${String(error)}`);
     }
   }
 
@@ -322,7 +322,7 @@ export class ForkManager implements NetworkManager {
       console.log(`📸 [DEMO] Would create snapshot: ${snapshotId}`);
       return snapshotId;
     } catch (error) {
-      throw new Error(`Failed to create snapshot: ${error}`);
+      throw new Error(`Failed to create snapshot: ${String(error)}`);
     }
   }
 
@@ -334,7 +334,7 @@ export class ForkManager implements NetworkManager {
       // Demo implementation
       console.log(`↩️ [DEMO] Would revert to snapshot: ${snapshotId}`);
     } catch (error) {
-      throw new Error(`Failed to revert snapshot: ${error}`);
+      throw new Error(`Failed to revert snapshot: ${String(error)}`);
     }
   }
 }

@@ -2,6 +2,14 @@ import parser from "@solidity-parser/parser";
 import { LLMClient, LLMAnalysisRequest } from "../ai/llm-client.js";
 import type { Rule, AnalysisContext, Issue, ASTNode } from "../types.js";
 
+/**
+ * Extended Issue type with AI enhancement metadata
+ */
+interface IssueWithAIEnhancement extends Issue {
+  _needsAIEnhancement?: boolean;
+  _aiContext?: AnalysisContext;
+}
+
 export class AIEnhancedRule implements Rule {
   public readonly id: string;
   public readonly description: string;
@@ -33,8 +41,9 @@ export class AIEnhancedRule implements Rule {
 
     // Enhancement happens asynchronously - we'll mark issues for later enhancement
     originalIssues.forEach((issue) => {
-      (issue as any)._needsAIEnhancement = true;
-      (issue as any)._aiContext = context;
+      const issueWithAI = issue as IssueWithAIEnhancement;
+      issueWithAI._needsAIEnhancement = true;
+      issueWithAI._aiContext = context;
     });
   }
 
@@ -56,11 +65,12 @@ export class AIEnhancedRule implements Rule {
 
     for (const issue of issues) {
       // Only enhance security-critical issues, skip style/naming issues
+      const issueWithAI = issue as IssueWithAIEnhancement;
       const shouldEnhance =
-        (issue as any)._needsAIEnhancement && securityRules.has(issue.ruleId);
+        issueWithAI._needsAIEnhancement && securityRules.has(issue.ruleId);
 
       if (shouldEnhance) {
-        const context = contexts.get(issue) || (issue as any)._aiContext;
+        const context = contexts.get(issue) || issueWithAI._aiContext;
         if (context) {
           try {
             const enhancedIssue = await this.enhanceIssueWithAI(issue, context);
@@ -135,7 +145,13 @@ export class AIEnhancedRule implements Rule {
 
   private formatEnhancedMessage(
     originalMessage: string,
-    aiResponse: any,
+    aiResponse: {
+      explanation: string;
+      suggestedFix?: string;
+      additionalContext?: string;
+      riskScore?: number;
+      confidence?: number;
+    },
   ): string {
     let enhanced = originalMessage;
 
@@ -201,7 +217,7 @@ export class AIEnhancedRule implements Rule {
       let contractName = "unknown";
 
       parser.visit(ast, {
-        ContractDefinition: (node: any) => {
+        ContractDefinition: (node: { name?: string }) => {
           if (node.name) {
             contractName = node.name;
           }

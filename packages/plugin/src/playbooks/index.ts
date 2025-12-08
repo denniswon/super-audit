@@ -10,7 +10,6 @@ export * from "./lighthouse-storage.js";
 import type { Rule } from "../types.js";
 import { PlaybookParser } from "./parser.js";
 import { DSLInterpreter } from "./dsl/interpreter.js";
-import type { ParsedPlaybook } from "./types.js";
 
 /**
  * Load and create executable rules from a playbook file

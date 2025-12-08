@@ -7,9 +7,7 @@ import type {
   DeployedContract,
   ContractInteraction,
   InteractionResult,
-  ExecutionTrace,
   InputGenerator,
-  FuzzingStrategy,
 } from "./types.js";
 import { ForkManager } from "./fork-manager.js";
 
@@ -87,7 +85,7 @@ export class FuzzingEngine {
       return results;
     } catch (error) {
       results.executionTime = Date.now() - startTime;
-      throw new Error(`Fuzzing campaign failed: ${error}`);
+      throw new Error(`Fuzzing campaign failed: ${String(error)}`);
     }
   }
 
@@ -114,7 +112,7 @@ export class FuzzingEngine {
         const result = await this.forkManager.executeInteraction(interaction);
 
         // Check for violations
-        const violation = this.checkForViolations(interaction, result, runId);
+        const violation = this.checkForViolations(interaction, result);
         if (violation) {
           await this.forkManager.revert(snapshot);
           return violation;
@@ -137,7 +135,7 @@ export class FuzzingEngine {
           revertReason: String(error),
         },
         severity: "medium",
-        description: `Execution error in fuzzing run ${runId}: ${error}`,
+        description: `Execution error in fuzzing run ${runId}: ${String(error)}`,
       };
     }
   }
@@ -177,22 +175,39 @@ export class FuzzingEngine {
   /**
    * Get public/external methods from contract ABI
    */
-  private getPublicMethods(contract: DeployedContract): any[] {
+  private getPublicMethods(
+    contract: DeployedContract,
+  ): Array<{
+    type: string;
+    stateMutability?: string;
+    name: string;
+    inputs?: Array<{ type: string }>;
+  }> {
     // Filter for public/external functions, excluding view/pure for state-changing fuzzing
     return contract.abi.filter(
-      (item: any) =>
+      (item) =>
         item.type === "function" &&
+        item.stateMutability &&
         ["public", "external", "nonpayable", "payable"].includes(
           item.stateMutability,
-        ),
-    );
+        ) &&
+        item.name !== undefined,
+    ) as Array<{
+      type: string;
+      stateMutability?: string;
+      name: string;
+      inputs?: Array<{ type: string }>;
+    }>;
   }
 
   /**
    * Generate parameters for a method based on its ABI
    */
-  private generateMethodParams(method: any): any[] {
-    return method.inputs.map((input: any) => {
+  private generateMethodParams(method: {
+    inputs?: Array<{ type: string }>;
+  }): unknown[] {
+    if (!method.inputs) return [];
+    return method.inputs.map((input: { type: string }) => {
       switch (input.type) {
         case "address":
           return this.inputGenerator.generateAddress();
@@ -214,7 +229,6 @@ export class FuzzingEngine {
   private checkForViolations(
     interaction: ContractInteraction,
     result: InteractionResult,
-    runId: number,
   ): FuzzingViolation | null {
     // Check for unexpected reverts
     if (!result.success && result.error && !result.error.includes("revert")) {

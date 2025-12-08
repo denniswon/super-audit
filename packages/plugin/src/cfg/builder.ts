@@ -1,21 +1,18 @@
-import { v4 as uuidv4 } from "uuid";
 import type {
   ASTNode,
   FunctionDefinition,
-  Block,
   IfStatement,
   WhileStatement,
   ForStatement,
   ExpressionStatement,
-  VariableDeclaration,
   MemberAccess,
   FunctionCall,
   Identifier,
+  Location,
 } from "../types.js";
 import type {
   ControlFlowGraph,
   CFGNode,
-  CFGEdge,
   CFGNodeType,
   CFGNodeMetadata,
   ExternalCallInfo,
@@ -142,17 +139,20 @@ export class CFGBuilder {
           fromNodeId,
         );
 
-      case "ForStatement":
+      case "ForStatement": {
         return this.processForStatement(statement as ForStatement, fromNodeId);
+      }
 
-      case "ReturnStatement":
+      case "ReturnStatement": {
         return this.processReturnStatement(statement, fromNodeId);
+      }
 
-      default:
+      default: {
         // For now, treat other control statements as basic blocks
         const node = this.createBasicBlock([statement]);
         this.addEdge(fromNodeId, node.id, "sequential");
         return node.id;
+      }
     }
   }
 
@@ -325,7 +325,7 @@ export class CFGBuilder {
   private createNode(
     type: CFGNodeType,
     statements: ASTNode[],
-    location?: any,
+    location?: Location,
     metadata?: CFGNodeMetadata,
   ): CFGNode {
     const node: CFGNode = {
@@ -403,16 +403,21 @@ export class CFGBuilder {
     metadata: CFGNodeMetadata,
   ): void {
     switch (node.type) {
-      case "ExpressionStatement":
+      case "ExpressionStatement": {
         const exprStmt = node as ExpressionStatement;
         if (exprStmt.expression) {
           this.analyzeStatementRecursively(exprStmt.expression, metadata);
         }
         break;
+      }
 
-      case "AssignmentOperator":
+      case "AssignmentOperator": {
         // State variable assignment
-        const assignment = node as any;
+        interface AssignmentNode extends ASTNode {
+          left?: ASTNode;
+          right?: ASTNode;
+        }
+        const assignment = node as AssignmentNode;
         if (assignment.left && this.isStateVariableAccess(assignment.left)) {
           metadata.stateWrites.push(this.getVariableName(assignment.left));
         }
@@ -420,8 +425,9 @@ export class CFGBuilder {
           this.analyzeStatementRecursively(assignment.right, metadata);
         }
         break;
+      }
 
-      case "FunctionCall":
+      case "FunctionCall": {
         const funcCall = node as FunctionCall;
         const callInfo = this.analyzeFunctionCall(funcCall);
         if (callInfo) {
@@ -433,20 +439,23 @@ export class CFGBuilder {
           metadata.canRevert = true;
         }
         break;
+      }
 
-      case "MemberAccess":
+      case "MemberAccess": {
         const memberAccess = node as MemberAccess;
         if (this.isStateVariableAccess(memberAccess)) {
           metadata.stateReads.push(this.getVariableName(memberAccess));
         }
         break;
+      }
 
-      case "Identifier":
+      case "Identifier": {
         const identifier = node as Identifier;
         if (this.isStateVariable(identifier.name)) {
           metadata.stateReads.push(identifier.name);
         }
         break;
+      }
 
       default:
         // Recursively check child nodes
@@ -514,7 +523,7 @@ export class CFGBuilder {
     );
   }
 
-  private isLocalVariable(name: string): boolean {
+  private isLocalVariable(_name: string): boolean {
     // Simplified - would track local variables in scope
     return false;
   }
@@ -578,19 +587,22 @@ export class CFGBuilder {
     visitor: (child: ASTNode) => void,
   ): void {
     // Simplified visitor - would need to handle all AST node types properly
-    const nodeAny = node as any;
+    interface NodeWithProperties extends ASTNode {
+      [key: string]: unknown;
+    }
+    const nodeWithProps = node as NodeWithProperties;
 
-    for (const key in nodeAny) {
-      const value = nodeAny[key];
+    for (const key in nodeWithProps) {
+      const value = nodeWithProps[key];
       if (value && typeof value === "object") {
         if (Array.isArray(value)) {
           value.forEach((item) => {
-            if (item && item.type) {
-              visitor(item);
+            if (item && typeof item === "object" && "type" in item) {
+              visitor(item as ASTNode);
             }
           });
-        } else if (value.type) {
-          visitor(value);
+        } else if (typeof value === "object" && "type" in value) {
+          visitor(value as ASTNode);
         }
       }
     }
@@ -606,7 +618,7 @@ export class CFGBuilder {
     let hasStateUpdates = false;
     let hasReentrancyRisk = false;
 
-    for (const [_, node] of this.currentCFG.nodes) {
+    for (const [, node] of this.currentCFG.nodes) {
       if (node.metadata?.externalCalls.length) {
         hasExternalCalls = true;
       }

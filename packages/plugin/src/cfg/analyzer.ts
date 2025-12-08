@@ -4,7 +4,6 @@ import type {
   CFGAnalysisResult,
   CFGViolation,
   CFGPath,
-  CFGEvidence,
 } from "./types.js";
 
 /**
@@ -54,7 +53,6 @@ export class CFGAnalyzer {
     criticalStateVars: string[],
   ): CFGViolation | null {
     let lastExternalCallNode: string | null = null;
-    let lastExternalCallIndex = -1;
 
     // Walk through the path looking for external calls followed by state updates
     for (let i = 0; i < path.length; i++) {
@@ -65,7 +63,6 @@ export class CFGAnalyzer {
       // Check if this node has external calls
       if (node.metadata?.externalCalls.length) {
         lastExternalCallNode = nodeId;
-        lastExternalCallIndex = i;
         continue;
       }
 
@@ -328,9 +325,16 @@ export class CFGAnalyzer {
       isImportantForConsistency: boolean;
     }
   > {
-    const usage = new Map();
+    const usage = new Map<
+      string,
+      {
+        reads: number;
+        writes: number;
+        isImportantForConsistency: boolean;
+      }
+    >();
 
-    for (const [_, node] of cfg.nodes) {
+    for (const [, node] of cfg.nodes) {
       if (node.metadata) {
         // Count reads
         for (const varName of node.metadata.stateReads) {
@@ -342,7 +346,10 @@ export class CFGAnalyzer {
                 this.isImportantForConsistency(varName),
             });
           }
-          usage.get(varName).reads++;
+          const usageEntry = usage.get(varName);
+          if (usageEntry) {
+            usageEntry.reads++;
+          }
         }
 
         // Count writes
@@ -355,7 +362,10 @@ export class CFGAnalyzer {
                 this.isImportantForConsistency(varName),
             });
           }
-          usage.get(varName).writes++;
+          const usageEntry = usage.get(varName);
+          if (usageEntry) {
+            usageEntry.writes++;
+          }
         }
       }
     }
@@ -386,7 +396,7 @@ export class CFGAnalyzer {
    * Find node that reads a specific variable
    */
   private findNodeReadingVariable(cfg: ControlFlowGraph, varName: string) {
-    for (const [_, node] of cfg.nodes) {
+    for (const [, node] of cfg.nodes) {
       if (node.metadata?.stateReads.includes(varName)) {
         return node;
       }
@@ -411,7 +421,10 @@ export class CFGAnalyzer {
   /**
    * Extract code snippet from node
    */
-  private extractCodeSnippet(node: any): string {
+  private extractCodeSnippet(node: {
+    statements?: unknown[];
+    location?: { start?: { line?: number } };
+  }): string {
     // Simplified - would extract actual source code
     return node.statements?.length
       ? `${node.statements.length} statement(s) at line ${node.location?.start?.line || "unknown"}`

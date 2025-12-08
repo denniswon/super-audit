@@ -193,7 +193,10 @@ export class PaymentManager {
   /**
    * Verify payment transaction
    */
-  async verifyPayment(txHash: string, userPublicKey: string): Promise<boolean> {
+  async verifyPayment(
+    txHash: string,
+    _userPublicKey: string,
+  ): Promise<boolean> {
     try {
       console.log("🔍 Verifying payment transaction...");
 
@@ -325,6 +328,6 @@ export class PaymentManager {
     const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
     let decrypted = decipher.update(encrypted, "hex", "utf8");
     decrypted += decipher.final("utf8");
-    return JSON.parse(decrypted);
+    return JSON.parse(decrypted) as EncryptedUserList;
   }
 }

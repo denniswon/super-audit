@@ -1,4 +1,4 @@
-import type { ASTNode, FunctionDefinition, Location } from "../types.js";
+import type { ASTNode, Location } from "../types.js";
 
 /**
  * Represents a basic block in the control flow graph

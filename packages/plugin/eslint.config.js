@@ -51,6 +51,17 @@ export default defineConfig(
     },
   },
   {
+    // DSL interpreter deals with dynamic AST parsing which requires more flexible typing
+    files: ["src/playbooks/dsl/interpreter.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unsafe-argument": "warn",
+      "@typescript-eslint/no-unsafe-call": "warn",
+      "@typescript-eslint/no-unsafe-return": "warn",
+      "@typescript-eslint/restrict-template-expressions": "warn",
+    },
+  },
+  {
     files: ["test/**/*.ts", "integration-tests/**/*.ts"],
     languageOptions: {
       parserOptions: {
